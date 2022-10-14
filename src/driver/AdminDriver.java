@@ -114,9 +114,6 @@ public class AdminDriver implements Driver{
         }
         System.out.println("\nEnter S.No to Select Hotel : ");
         int choice = InputHelper.getInputWithinRange(hotelsRequested.size());
-        /*TODO here we need to handle input if input is greater
-           than S.NO or less than  S.No
-        */
         int approval=approvalOptions();
         if(approval==1){
             Hotel hotel=hotelsRequested.get(choice-1);
