@@ -5,6 +5,7 @@ import hotel.Amenity;
 import hotel.AmenityDB;
 import hotel.Hotel;
 import hotel.HotelDB;
+import user.User;
 import utility.InputHelper;
 import utility.Printer;
 import utility.Validator;
@@ -34,8 +35,14 @@ public class HotelDriver implements Driver{
 
         switch (choice){
             case 1:
-                if(signIn()){
-
+                Hotel hotel;
+                if((hotel=(Hotel) signIn())!=null){
+                    if(hotel.isApproved()){
+                        menu();
+                    }
+                    else{
+                        unApprovedHotel();
+                    }
                 }
                 else{
                     System.out.println(Printer.INVALID_CREDENTIALS);
@@ -51,19 +58,25 @@ public class HotelDriver implements Driver{
 
     //------------------------------------------------ Hotel Login ---------------------------------------------------//
     @Override
-    public boolean signIn() {
+    public User signIn() {
         System.out.println(Printer.SIGN_IN);
         System.out.println(Printer.ENTER_PHONE_NUMBER);
         long phoneNumber= InputHelper.getPhoneNumber();
         System.out.println(Printer.ENTER_PASSWORD);
         String passWord= InputHelper.getStringInput();
-        return false;
-        //return Admin.checkAuthentication(phoneNumber,passWord);
+        User user=HotelDB.checkAuthentication(phoneNumber,passWord);
+        return user;
     }
 
     @Override
     public void menu() {
 
+    }
+
+
+
+    public void unApprovedHotel(){
+        System.out.println("Your Hotel yet to approved by the App Admin....!");
     }
 
 
@@ -73,9 +86,12 @@ public class HotelDriver implements Driver{
         roomDetails(hotel);
         addHotelAmenities(hotel);
         HotelDB.registerHotel(hotel);
+        System.out.println("Hotel Successfully Registered");
     }
 
     public Hotel hotelDetails(){
+        System.out.println("Enter Hotel Admin Name : ");
+        String hotelAdminName=InputHelper.getStringInput();
         System.out.println("Enter Phone Number : ");
         long phoneNumber=InputHelper.getPhoneNumber();
         String password,confirmPassword;
@@ -98,7 +114,7 @@ public class HotelDriver implements Driver{
         String address=InputHelper.getStringInput();
         System.out.println("Locality (City) : ");
         String locality=InputHelper.getStringInput();
-        return new Hotel(phoneNumber,password,hotelName,address,locality);
+        return new Hotel(hotelAdminName,phoneNumber,password,hotelName,address,locality);
     }
 
     public void roomDetails(Hotel hotel){
@@ -141,12 +157,7 @@ public class HotelDriver implements Driver{
             System.out.println("1.YES");
             System.out.println("2.NO");
             System.out.println("Enter Input : ");
-            int choice = InputHelper.getIntegerInput();
-
-            /*TODO - make getIntegerInput into getTwoOptions in Input Helper
-            *  Which will be helpful to make get only 2 inputs and handles when
-            *  user inputs greater or lesser than that */
-
+            int choice = InputHelper.getTwoOptionsInput();
             if(choice==1){
                 hotel.addAmenity(amenity);
             }

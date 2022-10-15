@@ -1,7 +1,9 @@
 package driver;
 
+import user.User;
+
 public interface Driver {
     void startDriver();
-    boolean signIn();
+    User signIn();
     void menu();
 }

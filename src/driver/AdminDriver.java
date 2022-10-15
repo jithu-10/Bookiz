@@ -4,6 +4,7 @@ import admin.Admin;
 import hotel.Hotel;
 import hotel.HotelDB;
 import hotel.RoomType;
+import user.User;
 import utility.InputHelper;
 import utility.Printer;
 
@@ -26,7 +27,7 @@ public class AdminDriver implements Driver{
     public void startDriver() {
         System.out.println("Admin Driver");
 
-        if(signIn()){
+        if(signIn()!=null){
             System.out.println(Printer.SIGNED_IN);
             menu();
         }
@@ -37,13 +38,16 @@ public class AdminDriver implements Driver{
     }
 
     @Override
-    public boolean signIn() {
+    public User signIn() {
         System.out.println(Printer.SIGN_IN);
         System.out.println(Printer.ENTER_USERNAME);
         String userName= InputHelper.getStringInput();
         System.out.println(Printer.ENTER_PASSWORD);
         String passWord= InputHelper.getStringInput();
-        return Admin.checkAuthentication(userName,passWord);
+        if(Admin.checkAuthentication(userName,passWord)){
+            return Admin.getInstance();
+        }
+        return null;
     }
 
     @Override
@@ -117,6 +121,7 @@ public class AdminDriver implements Driver{
         int approval=approvalOptions();
         if(approval==1){
             Hotel hotel=hotelsRequested.get(choice-1);
+            hotel.approve();
             HotelDB.addApprovedHotelList(hotel);
             setPriceforHotelRooms(hotel);
             hotel.setHotelType();

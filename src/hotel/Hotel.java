@@ -1,13 +1,13 @@
 package hotel;
 
-import hotel.utils.Price;
+import hotel.subutil.Price;
+import user.User;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
-public class Hotel {
+public class Hotel extends User {
 
-    /* TODO Add Hotel Owner Name Field*/
+    private String hotelAdminName;
     private int hotelID;
     private long phoneNumber;
     private String password;
@@ -26,8 +26,10 @@ public class Hotel {
     private int totalSingleBedRooms;
     private int totalDoubleBedRooms;
     private int totalSuiteRooms;
+    private boolean approved;
 
-    public Hotel(long phoneNumber,String password,String hotelName,String address,String locality){
+    public Hotel(String hotelAdminName,long phoneNumber,String password,String hotelName,String address,String locality){
+        this.hotelAdminName=hotelAdminName;
         this.phoneNumber=phoneNumber;
         this.password=password;
         this.hotelName=hotelName;
@@ -75,9 +77,13 @@ public class Hotel {
     public int getHotelID(){
         return this.hotelID;
     }
+    public String getHotelAdminName(){
+        return this.hotelAdminName;
+    }
     public long getPhoneNumber() {
         return phoneNumber;
     }
+    public String getPassword(){return password;}
 
     public String getHotelName() {
         return hotelName;
@@ -181,6 +187,17 @@ public class Hotel {
 
     public HotelType getHotelType(){
         return this.hotelType;
+    }
+    public void approve(){
+        this.approved=true;
+    }
+
+    public void cancelApprove(){
+        this.approved=false;
+    }
+
+    public boolean isApproved(){
+        return approved;
     }
 
 

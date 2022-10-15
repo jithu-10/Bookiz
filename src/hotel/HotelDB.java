@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 public class HotelDB {
 
+
+
     private static int idHelper=0;
     private static ArrayList<Hotel> hotelsRegisteredForApproval=new ArrayList<>();
     private static ArrayList<Hotel> approvedHotelList=new ArrayList<>();
@@ -27,6 +29,21 @@ public class HotelDB {
 
     public static int generateID(){
         return ++idHelper;
+    }
+
+    public static Hotel checkAuthentication(long phoneNumber,String password){
+        for(Hotel hotel: hotelsRegisteredForApproval){
+            if(hotel.getPhoneNumber()==phoneNumber&&hotel.getPassword().equals(password)){
+                return hotel;
+            }
+        }
+        for(Hotel hotel:approvedHotelList){
+            if(hotel.getPhoneNumber()==phoneNumber&&hotel.getPassword().equals(password)){
+                return hotel;
+            }
+        }
+        return null;
+
     }
 
 

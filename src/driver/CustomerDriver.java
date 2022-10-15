@@ -1,5 +1,7 @@
 package driver;
 
+import user.User;
+
 public class CustomerDriver implements Driver {
 
     static final CustomerDriver customerDriver=new CustomerDriver();
@@ -19,8 +21,8 @@ public class CustomerDriver implements Driver {
     }
 
     @Override
-    public boolean signIn() {
-        return false;
+    public User signIn() {
+        return null;
     }
 
     @Override

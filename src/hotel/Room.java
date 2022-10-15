@@ -1,9 +1,5 @@
 package hotel;
 
-import hotel.utils.Price;
-
-import java.util.ArrayList;
-
 public class Room {
 
 
