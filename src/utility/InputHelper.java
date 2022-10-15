@@ -72,6 +72,7 @@ public class InputHelper {
         return phoneNumber;
     }
 
+    /*
     public static int getTwoOptionsInput(){
         int value=InputHelper.getIntegerInput();
         if(value<1||value>2){
@@ -80,13 +81,17 @@ public class InputHelper {
         }
         return value;
     }
+     */
 
-    public static int getInputWithinRange(int end){
+    public static int getInputWithinRange(int end,String str){
+        if(str==null){
+            str="Please enter input only from the options : ";
+        }
         int start=1;
         int value=InputHelper.getIntegerInput();
         if(value<start||value>end){
-            System.out.println("Please enter input only from the options : ");
-            return getInputWithinRange(end);
+            System.out.println(str);
+            return getInputWithinRange(end,str);
         }
         return value;
     }

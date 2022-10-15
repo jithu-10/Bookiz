@@ -26,7 +26,7 @@ public class CustomerDriver implements Driver {
     }
 
     @Override
-    public void menu() {
+    public void menu(User user) {
 
     }
 }

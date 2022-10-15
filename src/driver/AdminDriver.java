@@ -26,10 +26,10 @@ public class AdminDriver implements Driver{
     @Override
     public void startDriver() {
         System.out.println("Admin Driver");
-
-        if(signIn()!=null){
+        Admin admin;
+        if((admin=(Admin)signIn())!=null){
             System.out.println(Printer.SIGNED_IN);
-            menu();
+            menu(admin);
         }
         else{
             System.out.println(Printer.INVALID_CREDENTIALS);
@@ -51,7 +51,7 @@ public class AdminDriver implements Driver{
     }
 
     @Override
-    public void menu() {
+    public void menu(User user) {
 
         do{
             System.out.println("1.List of hotels which have requested for approval.");
@@ -117,11 +117,10 @@ public class AdminDriver implements Driver{
             return;
         }
         System.out.println("\nEnter S.No to Select Hotel : ");
-        int choice = InputHelper.getInputWithinRange(hotelsRequested.size());
+        int choice = InputHelper.getInputWithinRange(hotelsRequested.size(),null);
         int approval=approvalOptions();
         if(approval==1){
             Hotel hotel=hotelsRequested.get(choice-1);
-            hotel.approve();
             HotelDB.addApprovedHotelList(hotel);
             setPriceforHotelRooms(hotel);
             hotel.setHotelType();
@@ -137,7 +136,7 @@ public class AdminDriver implements Driver{
         System.out.println("1.Select From List");
         System.out.println("2.Back");
         System.out.println("Enter Input : ");
-        return InputHelper.getTwoOptionsInput();
+        return InputHelper.getInputWithinRange(2,null);
     }
 
     int approvalOptions(){
@@ -145,7 +144,7 @@ public class AdminDriver implements Driver{
         System.out.println("2.Reject");
         System.out.println("Enter Input : ");
 
-        return InputHelper.getTwoOptionsInput();
+        return InputHelper.getInputWithinRange(2,null);
     }
 
     void setPriceforHotelRooms(Hotel hotel){
@@ -195,9 +194,9 @@ public class AdminDriver implements Driver{
             System.out.println("No Hotels Available Now");
             return;
         }
-        System.out.println("ID\t  Hotel Name  \t Locality \t TotalRooms\n");
+        System.out.println("ID\t  Hotel Name  \t Locality \t TotalRooms \t TypeofRoom\n");
         for(Hotel hotel:HotelDB.getRegisteredHotelList()){
-            System.out.println(hotel.getHotelID()+"\t"+hotel.getHotelName()+"\t"+hotel.getLocality()+"\t"+hotel.getTotalNumberofRooms());
+            System.out.println(hotel.getHotelID()+"\t"+hotel.getHotelName()+"\t"+hotel.getLocality()+"\t"+hotel.getTotalNumberofRooms()+"\t"+hotel.getHotelType());
         }
     }
 //--------------------------------------------3.Remove Registered Hotels-----------------------------------------------//
@@ -224,7 +223,7 @@ public class AdminDriver implements Driver{
         System.out.println("1.Enter Hotel ID and change price for rooms");
         System.out.println("2.List Registered Hotels which updated there price");
         System.out.println("Enter Input : ");
-        int choice=InputHelper.getTwoOptionsInput();
+        int choice=InputHelper.getInputWithinRange(2,null);
         if(choice==1){
             setPriceBasedOnID();
         }
@@ -273,7 +272,7 @@ public class AdminDriver implements Driver{
         System.out.println("1.Change Current Price");
         System.out.println("2.Skip");
         System.out.println("Enter Input :");
-        int choice = InputHelper.getTwoOptionsInput();
+        int choice = InputHelper.getInputWithinRange(2,null);
         if(choice==2){
             return -1;
         }

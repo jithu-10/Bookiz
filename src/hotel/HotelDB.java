@@ -25,6 +25,7 @@ public class HotelDB {
 
     public static void addApprovedHotelList(Hotel hotel){
         approvedHotelList.add(hotel);
+        hotel.approve();
     }
 
     public static int generateID(){
