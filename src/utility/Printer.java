@@ -12,6 +12,7 @@ public class Printer {
     public static final String ENTER_CORRECT_OPTION="Please Enter Correct Option";
     public static final String SIGN_IN="      Sign In      ";
     public static final String ENTER_USERNAME="Enter UserName : ";
+    public static final String ENTER_PHONE_NUMBER="Enter Phone Number : ";
     public static final String ENTER_PASSWORD="Enter Password : ";
     public static final String SIGNED_IN= "Signed In";
     public static final String INVALID_CREDENTIALS="Invalid Credentials";

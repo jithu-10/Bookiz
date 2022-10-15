@@ -1,10 +1,12 @@
 package driver;
 
+import admin.Admin;
 import hotel.Amenity;
 import hotel.AmenityDB;
 import hotel.Hotel;
 import hotel.HotelDB;
 import utility.InputHelper;
+import utility.Printer;
 import utility.Validator;
 
 import java.util.ArrayList;
@@ -32,7 +34,12 @@ public class HotelDriver implements Driver{
 
         switch (choice){
             case 1:
-                signIn();
+                if(signIn()){
+
+                }
+                else{
+                    System.out.println(Printer.INVALID_CREDENTIALS);
+                }
                 break;
             case 2:
                 register();
@@ -45,8 +52,13 @@ public class HotelDriver implements Driver{
     //------------------------------------------------ Hotel Login ---------------------------------------------------//
     @Override
     public boolean signIn() {
-
+        System.out.println(Printer.SIGN_IN);
+        System.out.println(Printer.ENTER_PHONE_NUMBER);
+        long phoneNumber= InputHelper.getPhoneNumber();
+        System.out.println(Printer.ENTER_PASSWORD);
+        String passWord= InputHelper.getStringInput();
         return false;
+        //return Admin.checkAuthentication(phoneNumber,passWord);
     }
 
     @Override

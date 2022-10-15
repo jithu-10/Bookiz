@@ -58,8 +58,14 @@ public class InputHelper {
         try{
             //validate phone number here
             phoneNumber=input.nextLong();
+            if(String.valueOf(phoneNumber).length()!=10){
+                throw new ValidateException();
+            }
         }catch (InputMismatchException e){
             input.nextLine();
+            System.out.println("Enter Valid Phone Number");
+            phoneNumber=getPhoneNumber();
+        } catch (ValidateException e) {
             System.out.println("Enter Valid Phone Number");
             phoneNumber=getPhoneNumber();
         }
