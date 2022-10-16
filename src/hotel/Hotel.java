@@ -44,7 +44,7 @@ public class Hotel extends User {
             rooms.add(room);
             totalSingleBedRooms++;
         }
-        singleBedRoomPrice=new Price(basePrice,maxPrice);
+        setSingleBedRoomPrice(basePrice,maxPrice);
     }
 
     public void addSingleBedRooms(int count){
@@ -61,7 +61,7 @@ public class Hotel extends User {
             rooms.add(room);
             totalDoubleBedRooms++;
         }
-        doubleBedRoomPrice=new Price(basePrice,maxPrice);
+        setDoubleBedRoomPrice(basePrice,maxPrice);
     }
 
     public void addDoubleBedRooms(int count){
@@ -80,7 +80,7 @@ public class Hotel extends User {
             rooms.add(room);
             totalSuiteRooms++;
         }
-        suiteRoomPrice=new Price(basePrice,maxPrice);
+        setSuiteRoomPrice(basePrice,maxPrice);
     }
 
     public void addSuiteRooms(int count){
@@ -245,24 +245,40 @@ public class Hotel extends User {
     }
 
     public void setSingleBedRoomPrice(double basePrice,double maxPrice){
-        singleBedRoomPrice.setBasePrice(basePrice);
-        singleBedRoomPrice.setMaxPrice(maxPrice);
+        if(singleBedRoomPrice==null){
+            singleBedRoomPrice=new Price(basePrice,maxPrice);
+        }
+        else{
+            singleBedRoomPrice.setBasePrice(basePrice);
+            singleBedRoomPrice.setMaxPrice(maxPrice);
+        }
         if(singleBedRoomPrice.getListPrice()<basePrice||singleBedRoomPrice.getListPrice()>maxPrice){
             singleBedRoomPrice.setListPrice(basePrice);
         }
     }
 
     public void setDoubleBedRoomPrice(double basePrice,double maxPrice){
-        this.doubleBedRoomPrice.setBasePrice(basePrice);
-        this.doubleBedRoomPrice.setMaxPrice(maxPrice);
+        if(doubleBedRoomPrice==null){
+            doubleBedRoomPrice=new Price(basePrice,maxPrice);
+        }
+        else{
+            doubleBedRoomPrice.setBasePrice(basePrice);
+            doubleBedRoomPrice.setMaxPrice(maxPrice);
+        }
+
         if(doubleBedRoomPrice.getListPrice()<basePrice||doubleBedRoomPrice.getListPrice()>maxPrice){
             doubleBedRoomPrice.setListPrice(basePrice);
         }
     }
 
     public void setSuiteRoomPrice(double basePrice,double maxPrice){
-       this.suiteRoomPrice.setBasePrice(basePrice);
-       this.suiteRoomPrice.setMaxPrice(maxPrice);
+       if(suiteRoomPrice==null){
+           suiteRoomPrice=new Price(basePrice,maxPrice);
+       }
+       else{
+           suiteRoomPrice.setBasePrice(basePrice);
+           suiteRoomPrice.setMaxPrice(maxPrice);
+       }
         if(suiteRoomPrice.getListPrice()<basePrice||suiteRoomPrice.getListPrice()>maxPrice){
             suiteRoomPrice.setListPrice(basePrice);
         }

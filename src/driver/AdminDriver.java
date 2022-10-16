@@ -1,6 +1,7 @@
 package driver;
 
 import admin.Admin;
+import admin.AdminDB;
 import hotel.Hotel;
 import hotel.HotelDB;
 import hotel.RoomType;
@@ -9,6 +10,9 @@ import utility.InputHelper;
 import utility.Printer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 public class AdminDriver implements Driver{
 
@@ -58,7 +62,7 @@ public class AdminDriver implements Driver{
             System.out.println("2.List of hotels registered");
             System.out.println("3.Remove Hotels");
             System.out.println("4.Set Terms and Conditions");
-            System.out.println("5.Set Discount Percentage for hotels");
+            System.out.println("5.Set Price for hotel rooms");
             System.out.println("6.Sign Out");
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
             int choice =InputHelper.getIntegerInput();
@@ -73,8 +77,8 @@ public class AdminDriver implements Driver{
                     removeRegisteredHotels();
                     break;
                 case 4:
-                    break;
                     /*TODO Set Terms and Conditions*/
+                    break;
                 case 5:
                     setPriceforRooms();
                     break;
@@ -94,7 +98,7 @@ public class AdminDriver implements Driver{
     }
     
     void listHotelsRequestedforApproval(){
-        ArrayList<Hotel> hotelsRequested= HotelDB.getHotelsRegisteredForApproval();
+        LinkedList<Hotel> hotelsRequested= HotelDB.getHotelsRegisteredForApproval();
         if(hotelsRequested.size()==0){
             System.out.println("No Such Requests available now..");
             return;
@@ -124,7 +128,7 @@ public class AdminDriver implements Driver{
             HotelDB.addApprovedHotelList(hotel);
             setPriceforHotelRooms(hotel);
             hotel.setHotelType();
-            hotel.setHotelId(HotelDB.generateID());
+            //hotel.setHotelId(HotelDB.generateID()); NO NEED
             hotelsRequested.remove(choice-1);
         }
         else{
@@ -208,6 +212,7 @@ public class AdminDriver implements Driver{
         for(int i=0;i<registeredHotels.size();i++){
             if(hotelId==registeredHotels.get(i).getHotelID()){
                 registeredHotels.remove(i);
+                AdminDB.removeHotelfromPriceUpdatedHotelList(hotelId);
                 System.out.println("Hotel Removed Successfully");
                 return;
             }
@@ -225,23 +230,23 @@ public class AdminDriver implements Driver{
         System.out.println("Enter Input : ");
         int choice=InputHelper.getInputWithinRange(2,null);
         if(choice==1){
-            setPriceBasedOnID();
+            getHotelID();
         }
         else if(choice==2){
-            /*TODO 2.option above*/
+            listHotelsWhichChangedPrice();
         }
     }
 
-    void setPriceBasedOnID(){
-        System.out.println("Enter Hotel Id : ");
-        int hotelID=InputHelper.getIntegerInput();
-        Hotel hotel=null;
-        for(Hotel reghotel:HotelDB.getRegisteredHotelList()){
-            if(reghotel.getHotelID()==hotelID){
-                hotel=reghotel;
-                break;
-            }
-        }
+    void getHotelID(){
+        System.out.println("\n"+"Enter Hotel Id : ");
+        int hotelID=InputHelper.getInputWithinRange(Integer.MAX_VALUE,"There is no hotel with Negative ID's");
+        Hotel hotel=HotelDB.getHotelByID(hotelID);
+        setPrice(hotel);
+    }
+
+    void setPrice(Hotel hotel){
+
+
         if(hotel!=null){
             System.out.println("Hotel ID : "+hotel.getHotelID());
             System.out.println("Hotel Name : "+hotel.getHotelName());
@@ -249,19 +254,20 @@ public class AdminDriver implements Driver{
             System.out.println("Hotel Locality : "+hotel.getLocality());
             System.out.println("No of Rooms : "+hotel.getTotalNumberofRooms());
             System.out.println("Set Price for Rooms");
-            System.out.println("SingleBed Rooms -> Base Price : "+hotel.getSingleBedRoomBasePrice()+" Max Price : "+hotel.getSingleBedRoomMaxPrice());
+            System.out.println("SingleBed Rooms -> Base Price : "+hotel.getSingleBedRoomBasePrice()+" Max Price : "+hotel.getSingleBedRoomMaxPrice()+" Current List Price : "+hotel.getSingleBedRoomListPrice());
             double listPrice;
             if((listPrice=priceChangeOptions(hotel.getSingleBedRoomBasePrice(),hotel.getSingleBedRoomMaxPrice()))!=-1){
                 hotel.setSingleBedRoomListPrice(listPrice);
             }
-            System.out.println("DoubleBed Rooms -> Base Price : "+hotel.getDoubleBedRoomBasePrice()+" Max Price : "+hotel.getDoubleBedRoomMaxPrice());
+            System.out.println("DoubleBed Rooms -> Base Price : "+hotel.getDoubleBedRoomBasePrice()+" Max Price : "+hotel.getDoubleBedRoomMaxPrice()+" Current List Price : "+hotel.getDoubleBedRoomListPrice());
             if((listPrice=priceChangeOptions(hotel.getDoubleBedRoomBasePrice(),hotel.getDoubleBedRoomMaxPrice()))!=-1){
                 hotel.setDoubleBedRoomListPrice(listPrice);
             }
-            System.out.println("Suite Rooms -> Base Price : "+hotel.getSuiteRoomBasePrice()+" Max Price : "+hotel.getSuiteRoomMaxPrice());
+            System.out.println("Suite Rooms -> Base Price : "+hotel.getSuiteRoomBasePrice()+" Max Price : "+hotel.getSuiteRoomMaxPrice()+" Current List Price : "+hotel.getSuiteRoomListPrice());
             if((listPrice=priceChangeOptions(hotel.getSuiteRoomBasePrice(),hotel.getSuiteRoomMaxPrice()))!=-1){
                 hotel.setSuiteRoomListPrice(listPrice);
             }
+            AdminDB.removeHotelfromPriceUpdatedHotelList(hotel.getHotelID());
             return;
         }
         System.out.println("No Hotel With Respected ID Found");
@@ -281,6 +287,27 @@ public class AdminDriver implements Driver{
             return createCurrentPrice(basePrice,maxPrice);
         }
 
+    }
+
+    void listHotelsWhichChangedPrice(){
+        LinkedHashSet<Integer> hotelList= AdminDB.getPriceUpdatedHotelList();
+        if(hotelList.isEmpty()){
+            System.out.println("No Hotels changed their room prices...");
+            return;
+        }
+        System.out.println("HOTEL ID |       HOTEL DETAILS     |    HOTEL TYPE ");
+        for(Integer id:hotelList){
+            Hotel hotel=HotelDB.getHotelByID(id);
+            System.out.println("  "+hotel.getHotelID()+"  "+hotel.getHotelName()+" , "+hotel.getLocality()+"  "+hotel.getHotelType());
+        }
+        System.out.println("\n\n"+"Enter Hotel Id : ");
+        int hotelId=InputHelper.getInputWithinRange(Integer.MAX_VALUE,"There is no hotel with Negative ID's");
+        if(!hotelList.contains(hotelId)){
+            System.out.println("Hotel With ID:"+hotelId+" didn't changed their prices recently");
+            return;
+        }
+        Hotel hotel=HotelDB.getHotelByID(hotelId);
+        setPrice(hotel);
     }
 
 

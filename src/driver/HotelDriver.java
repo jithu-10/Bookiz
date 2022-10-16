@@ -1,6 +1,7 @@
 package driver;
 
 import admin.Admin;
+import admin.AdminDB;
 import hotel.*;
 import user.User;
 import utility.InputHelper;
@@ -158,7 +159,6 @@ public class HotelDriver implements Driver{
 
     public void roomDetails(Hotel hotel){
 
-        /*TODO Base Price should be lesser than Max Price */
         System.out.println("Room Details");
 
         System.out.println("Single Bed Count : ");
@@ -337,6 +337,7 @@ public class HotelDriver implements Driver{
                 return;
         }
         System.out.println("Room Prices Changed Successfully");
+        AdminDB.addPriceUpdatedHotelList(hotel.getHotelID());
     }
 
     double setBaseRoomPrice(String str){
