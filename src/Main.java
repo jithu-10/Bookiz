@@ -5,5 +5,3 @@ public class Main {
         MainDriver.selectUser();
     }
 }
-
-/*TODO if hotel owner puts max price and base price same then */

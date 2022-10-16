@@ -74,7 +74,7 @@ public class HotelDriver implements Driver{
             System.out.println("3.Add Amenities");
             System.out.println("4.Remove Amenities");
             System.out.println("5.Show Rooms which are booked and non booked by Date");
-            System.out.println("6.Change Price of Rooms");
+            System.out.println("6.Change Room Prices");
             System.out.println("7.List of Customers who booked rooms in their hotel");
             System.out.println("8.Sign Out");
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
@@ -91,13 +91,12 @@ public class HotelDriver implements Driver{
                     break;
                 case 4:
                     removeHotelAmenities(hotel);
-                    /*TODO Remove Amenities*/
                     break;
                 case 5:
                     /*TODO Show Rooms which are booked and non booked by Date*/
                     break;
                 case 6:
-                    /*TODO Change Price of Rooms*/
+                    changeRoomPrices(hotel);
                     break;
                 case 7:
                     /*TODO List of Customers who booked Rooms*/
@@ -164,32 +163,26 @@ public class HotelDriver implements Driver{
 
         System.out.println("Single Bed Count : ");
         int singleBedCount=InputHelper.getIntegerInput();
-        System.out.println("Base Price : ");
-        double basePrice=InputHelper.getDoubleInput();
-        System.out.println("Max Price : ");
-        double maxPrice=InputHelper.getDoubleInput();
+        double basePrice=setBaseRoomPrice(null);
+        double maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addSingleBedRooms(singleBedCount,basePrice,maxPrice);
-
 
         System.out.println("Double Bed Count : ");
         int doubleBedCount=InputHelper.getIntegerInput();
-        System.out.println("Base Price : ");
-        basePrice=InputHelper.getDoubleInput();
-        System.out.println("Max Price : ");
-        maxPrice=InputHelper.getDoubleInput();
+        basePrice=setBaseRoomPrice(null);
+        maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addDoubleBedRooms(doubleBedCount,basePrice,maxPrice);
 
         System.out.println("Suite Room Count : ");
         int suiteRoomCount=InputHelper.getIntegerInput();
-        System.out.println("Base Price : ");
-        basePrice=InputHelper.getDoubleInput();
-        System.out.println("Max Price : ");
-        maxPrice=InputHelper.getDoubleInput();
+        basePrice=setBaseRoomPrice(null);
+        maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addSuiteRooms(suiteRoomCount,basePrice,maxPrice);
 
     }
 
-    /*public void addHotelAmenities(Hotel hotel){
+    /*
+    public void addHotelAmenities(Hotel hotel){
         System.out.println("Add Hotel Amenities");
         ArrayList<Amenity> amenities= AmenityDB.getAmenities();
         for(Amenity amenity: amenities){
@@ -291,7 +284,7 @@ public class HotelDriver implements Driver{
         }
     }
 
-    //-----------------------------------------------3.Remove Amenities------------------------------------------------//
+    //-----------------------------------------------4.Remove Amenities------------------------------------------------//
 
     void removeHotelAmenities(Hotel hotel){
         System.out.println("Remove Hotel Amenities");
@@ -304,5 +297,68 @@ public class HotelDriver implements Driver{
         int value=InputHelper.getInputWithinRange(hotelAmenities.size(),null);
         hotel.removeAmenity(value-1);
     }
+
+    //----------------------------------------5.Show Rooms which are booked and non booked-----------------------------//
+
+    //----------------------------------------------6.Change Price of Rooms--------------------------------------------//
+
+    void changeRoomPrices(Hotel hotel){
+        /*TODO update to HOTEL DB about the updation of prices so app admin can change list according to that*/
+        System.out.println("Change Room Prices");
+        System.out.println("Enter Type of Room : ");
+        System.out.println("1."+ RoomType.SINGLEBEDROOM);
+        System.out.println("2."+RoomType.DOUBLEBEDROOM);
+        System.out.println("3."+RoomType.SUITEROOM);
+        System.out.println("4.Go Back");
+        System.out.println("Enter Input : ");
+        int choice=InputHelper.getInputWithinRange(4,null);
+
+        switch (choice){
+            case 1:
+                System.out.println(RoomType.SINGLEBEDROOM+" ->Current Base Price : "+hotel.getSingleBedRoomBasePrice()+" Current Max Price : "+hotel.getSingleBedRoomMaxPrice()+" Current List Price : "+hotel.getSingleBedRoomListPrice());
+                double newBaseRoomPrice=setBaseRoomPrice("New");
+                double newMaxRoomPrice=setMaxRoomPrice(newBaseRoomPrice,"New");
+                hotel.setSingleBedRoomPrice(newBaseRoomPrice,newMaxRoomPrice);
+                break;
+            case 2:
+                System.out.println(RoomType.DOUBLEBEDROOM+" ->Current Base Price : "+hotel.getDoubleBedRoomBasePrice()+" Current Max Price : "+hotel.getDoubleBedRoomMaxPrice()+" Current List Price : "+hotel.getDoubleBedRoomListPrice());
+                newBaseRoomPrice=setBaseRoomPrice("New");
+                newMaxRoomPrice=setMaxRoomPrice(newBaseRoomPrice,"New");
+                hotel.setDoubleBedRoomPrice(newBaseRoomPrice,newMaxRoomPrice);
+                break;
+            case 3:
+                System.out.println(RoomType.SUITEROOM+" ->Current Base Price : "+hotel.getSuiteRoomBasePrice()+" Current Max Price : "+hotel.getSuiteRoomMaxPrice()+" Current List Price : "+hotel.getSuiteRoomListPrice());
+                newBaseRoomPrice=setBaseRoomPrice("New");
+                newMaxRoomPrice=setMaxRoomPrice(newBaseRoomPrice,"New");
+                hotel.setSuiteRoomPrice(newBaseRoomPrice,newMaxRoomPrice);
+                break;
+            case 4:
+                System.out.println("Back to Main Menu");
+                return;
+        }
+        System.out.println("Room Prices Changed Successfully");
+    }
+
+    double setBaseRoomPrice(String str){
+        System.out.println((str==null?"":str+" ")+"Base Price : ");
+        double basePrice=InputHelper.getDoubleInput();
+        return basePrice;
+    }
+
+    double setMaxRoomPrice(double basePrice,String str){
+        System.out.println((str==null?"":str+" ")+"Max Price : ");
+        double maxPrice=InputHelper.getDoubleInput();
+        do{
+            if(maxPrice<=basePrice){
+                System.out.println("Max Price Should be Greater than Base Price. Base Price : "+basePrice);
+                return setMaxRoomPrice(basePrice,str);
+            }
+            else{
+                return maxPrice;
+            }
+        }while(true);
+
+    }
+
 
 }

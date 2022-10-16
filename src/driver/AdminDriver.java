@@ -153,39 +153,39 @@ public class AdminDriver implements Driver{
         double basePrice=hotel.getSingleBedRoomBasePrice();
         double maxPrice=hotel.getSingleBedRoomMaxPrice();
         System.out.println(RoomType.SINGLEBEDROOM+"-> Base Price : "+basePrice+" Max Price : "+maxPrice);
-        System.out.println("Set Current Price : ");
-        double currentPrice=createCurrentPrice(basePrice,maxPrice);
-        hotel.setSingleBedRoomCurrentPrice(currentPrice);
+        System.out.println("Set List Price : ");
+        double listPrice=createCurrentPrice(basePrice,maxPrice);
+        hotel.setSingleBedRoomListPrice(listPrice);
 
         basePrice=hotel.getDoubleBedRoomBasePrice();
         maxPrice=hotel.getDoubleBedRoomMaxPrice();
         System.out.println(RoomType.DOUBLEBEDROOM+"-> Base Price : "+basePrice+" Max Price : "+maxPrice);
-        System.out.println("Set Current Price : ");
-        currentPrice=createCurrentPrice(basePrice,maxPrice);
-        hotel.setDoubleBedRoomCurrentPrice(currentPrice);
+        System.out.println("Set List Price : ");
+        listPrice=createCurrentPrice(basePrice,maxPrice);
+        hotel.setDoubleBedRoomListPrice(listPrice);
 
         basePrice=hotel.getSuiteRoomBasePrice();
         maxPrice=hotel.getSuiteRoomMaxPrice();
         System.out.println(RoomType.SUITEROOM+"-> Base Price : "+basePrice+" Max Price : "+maxPrice);
-        System.out.println("Set Current Price : ");
-        currentPrice=createCurrentPrice(basePrice,maxPrice);
-        hotel.setSuiteRoomCurrentPrice(currentPrice);
+        System.out.println("Set List Price : ");
+        listPrice=createCurrentPrice(basePrice,maxPrice);
+        hotel.setSuiteRoomListPrice(listPrice);
     }
 
     double createCurrentPrice(double basePrice,double maxPrice){
-        double currentPrice;
+        double listPrice;
         do{
-            currentPrice=InputHelper.getDoubleInput();
-            if(currentPrice<basePrice||currentPrice>maxPrice){
-                System.out.println("Current Price Should be Greater than Base Price and Lesser than Max Price");
-                System.out.println("Set Current Price : ");
+            listPrice=InputHelper.getDoubleInput();
+            if(listPrice<basePrice||listPrice>maxPrice){
+                System.out.println("List Price Should be Greater than Base Price and Lesser than Max Price");
+                System.out.println("Set List Price : ");
             }
             else{
                 break;
             }
 
         }while(true);
-        return currentPrice;
+        return listPrice;
     }
 
 //---------------------------------------------2.List Registered Hotels------------------------------------------------//
@@ -250,17 +250,17 @@ public class AdminDriver implements Driver{
             System.out.println("No of Rooms : "+hotel.getTotalNumberofRooms());
             System.out.println("Set Price for Rooms");
             System.out.println("SingleBed Rooms -> Base Price : "+hotel.getSingleBedRoomBasePrice()+" Max Price : "+hotel.getSingleBedRoomMaxPrice());
-            double currentPrice;
-            if((currentPrice=priceChangeOptions(hotel.getSingleBedRoomBasePrice(),hotel.getSingleBedRoomMaxPrice()))!=-1){
-                hotel.setSingleBedRoomCurrentPrice(currentPrice);
+            double listPrice;
+            if((listPrice=priceChangeOptions(hotel.getSingleBedRoomBasePrice(),hotel.getSingleBedRoomMaxPrice()))!=-1){
+                hotel.setSingleBedRoomListPrice(listPrice);
             }
             System.out.println("DoubleBed Rooms -> Base Price : "+hotel.getDoubleBedRoomBasePrice()+" Max Price : "+hotel.getDoubleBedRoomMaxPrice());
-            if((currentPrice=priceChangeOptions(hotel.getDoubleBedRoomBasePrice(),hotel.getDoubleBedRoomMaxPrice()))!=-1){
-                hotel.setDoubleBedRoomCurrentPrice(currentPrice);
+            if((listPrice=priceChangeOptions(hotel.getDoubleBedRoomBasePrice(),hotel.getDoubleBedRoomMaxPrice()))!=-1){
+                hotel.setDoubleBedRoomListPrice(listPrice);
             }
             System.out.println("Suite Rooms -> Base Price : "+hotel.getSuiteRoomBasePrice()+" Max Price : "+hotel.getSuiteRoomMaxPrice());
-            if((currentPrice=priceChangeOptions(hotel.getSuiteRoomBasePrice(),hotel.getSuiteRoomMaxPrice()))!=-1){
-                hotel.setSuiteRoomCurrentPrice(currentPrice);
+            if((listPrice=priceChangeOptions(hotel.getSuiteRoomBasePrice(),hotel.getSuiteRoomMaxPrice()))!=-1){
+                hotel.setSuiteRoomListPrice(listPrice);
             }
             return;
         }
@@ -269,7 +269,7 @@ public class AdminDriver implements Driver{
     }
 
     double priceChangeOptions(double basePrice,double maxPrice){
-        System.out.println("1.Change Current Price");
+        System.out.println("1.Change List Price");
         System.out.println("2.Skip");
         System.out.println("Enter Input :");
         int choice = InputHelper.getInputWithinRange(2,null);
@@ -277,7 +277,7 @@ public class AdminDriver implements Driver{
             return -1;
         }
         else{
-            System.out.println("Set Current Price : ");
+            System.out.println("Set List Price : ");
             return createCurrentPrice(basePrice,maxPrice);
         }
 

@@ -2,7 +2,6 @@ package hotel;
 
 import hotel.subutil.Price;
 import user.User;
-import utility.Printer;
 
 import java.util.ArrayList;
 
@@ -224,16 +223,61 @@ public class Hotel extends User {
         return -1;
     }
 
-    public void setSingleBedRoomCurrentPrice(double currentPrice){
-        this.singleBedRoomPrice.setCurrentPrice(currentPrice);
+    public double getSingleBedRoomListPrice(){
+        if(singleBedRoomPrice!=null){
+            return singleBedRoomPrice.getListPrice();
+        }
+        return -1;
     }
 
-    public void setDoubleBedRoomCurrentPrice(double currentPrice){
-        this.doubleBedRoomPrice.setCurrentPrice(currentPrice);
+    public double getDoubleBedRoomListPrice(){
+        if(doubleBedRoomPrice!=null){
+            return doubleBedRoomPrice.getListPrice();
+        }
+        return -1;
     }
 
-    public void setSuiteRoomCurrentPrice(double currentPrice){
-        this.suiteRoomPrice.setCurrentPrice(currentPrice);
+    public double getSuiteRoomListPrice(){
+        if(suiteRoomPrice!=null){
+            return suiteRoomPrice.getListPrice();
+        }
+        return -1;
+    }
+
+    public void setSingleBedRoomPrice(double basePrice,double maxPrice){
+        singleBedRoomPrice.setBasePrice(basePrice);
+        singleBedRoomPrice.setMaxPrice(maxPrice);
+        if(singleBedRoomPrice.getListPrice()<basePrice||singleBedRoomPrice.getListPrice()>maxPrice){
+            singleBedRoomPrice.setListPrice(basePrice);
+        }
+    }
+
+    public void setDoubleBedRoomPrice(double basePrice,double maxPrice){
+        this.doubleBedRoomPrice.setBasePrice(basePrice);
+        this.doubleBedRoomPrice.setMaxPrice(maxPrice);
+        if(doubleBedRoomPrice.getListPrice()<basePrice||doubleBedRoomPrice.getListPrice()>maxPrice){
+            doubleBedRoomPrice.setListPrice(basePrice);
+        }
+    }
+
+    public void setSuiteRoomPrice(double basePrice,double maxPrice){
+       this.suiteRoomPrice.setBasePrice(basePrice);
+       this.suiteRoomPrice.setMaxPrice(maxPrice);
+        if(suiteRoomPrice.getListPrice()<basePrice||suiteRoomPrice.getListPrice()>maxPrice){
+            suiteRoomPrice.setListPrice(basePrice);
+        }
+    }
+
+    public void setSingleBedRoomListPrice(double currentPrice){
+        this.singleBedRoomPrice.setListPrice(currentPrice);
+    }
+
+    public void setDoubleBedRoomListPrice(double currentPrice){
+        this.doubleBedRoomPrice.setListPrice(currentPrice);
+    }
+
+    public void setSuiteRoomListPrice(double currentPrice){
+        this.suiteRoomPrice.setListPrice(currentPrice);
     }
 
     public void setHotelType() {

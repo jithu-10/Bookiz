@@ -3,15 +3,15 @@ package hotel.subutil;
 public class Price {
     private double basePrice;
     private double maxPrice;
-    private double currentPrice;
+    private double listPrice;
 
     public Price(double basePrice,double maxPrice){
         this.basePrice=basePrice;
         this.maxPrice=maxPrice;
     }
 
-    public void setCurrentPrice(double currentPrice){
-        this.currentPrice=currentPrice;
+    public void setListPrice(double listPrice){
+        this.listPrice = listPrice;
     }
 
     public void setBasePrice(double basePrice) {
@@ -22,8 +22,8 @@ public class Price {
         this.maxPrice = maxPrice;
     }
 
-    public double getCurrentPrice() {
-        return currentPrice;
+    public double getListPrice() {
+        return listPrice;
     }
 
     public double getMaxPrice() {
