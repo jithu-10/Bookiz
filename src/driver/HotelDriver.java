@@ -29,10 +29,11 @@ public class HotelDriver implements Driver{
         System.out.println("1. Login");
         System.out.println("2. Register");
         System.out.println("Enter Input : ");
-        int choice = InputHelper.getIntegerInput();
+        int choice = InputHelper.getInputWithinRange(2,null);
 
         switch (choice){
             case 1:
+                System.out.println("Signed In .....");
                 Hotel hotel;
                 if((hotel=(Hotel) signIn())!=null){
                     if(hotel.isApproved()){
@@ -79,7 +80,7 @@ public class HotelDriver implements Driver{
             System.out.println("7.List of Customers who booked rooms in their hotel");
             System.out.println("8.Sign Out");
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
-            int choice = InputHelper.getIntegerInput();
+            int choice = InputHelper.getInputWithinRange(8,null);
             switch (choice){
                 case 1:
                     addRooms(hotel);
@@ -106,6 +107,7 @@ public class HotelDriver implements Driver{
                     System.out.println("Signing Out...");
                     return;
                 default:
+                    //NO NEED
                     System.out.println("Enter Input only from given option");
             }
 

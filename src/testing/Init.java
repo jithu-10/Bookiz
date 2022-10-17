@@ -15,9 +15,9 @@ public class Init {
 
     public static Hotel createHotel(String name,long phoneNumber,String password){
         Hotel hotel=new Hotel(name,phoneNumber,password,name,null,null);
-        hotel.setSingleBedRoomPrice(1,2);
-        hotel.setDoubleBedRoomPrice(1,2);
-        hotel.setSuiteRoomPrice(1,2);
+        hotel.addSingleBedRooms(10,300,700);
+        hotel.addDoubleBedRooms(10,1000,2000);
+        hotel.addSuiteRooms(10,2500,3500);
         HotelDB.addApprovedHotelList(hotel);
         return hotel;
     }

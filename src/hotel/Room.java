@@ -3,7 +3,7 @@ package hotel;
 public class Room {
 
 
-    protected RoomType roomType;
+    private RoomType roomType;
 
 
     Room(RoomType roomType){
