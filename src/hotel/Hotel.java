@@ -3,7 +3,11 @@ package hotel;
 import hotel.subutil.Price;
 import user.User;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Hotel extends User {
 
@@ -27,6 +31,9 @@ public class Hotel extends User {
     private int totalDoubleBedRooms;
     private int totalSuiteRooms;
     private boolean approved;
+    private HashMap<Date, LinkedList<Room>> singleBedroomsBookedByDate=new HashMap<>();
+    private HashMap<Date, LinkedList<Room>> doubleBedroomsBookedByDate=new HashMap<>();
+    private HashMap<Date, LinkedList<Room>> suiteRoomsBookedByDate=new HashMap<>();
 
     public Hotel(String hotelAdminName,long phoneNumber,String password,String hotelName,String address,String locality){
         this.hotelAdminName=hotelAdminName;
@@ -97,7 +104,7 @@ public class Hotel extends User {
         int value=count;
         ArrayList<Room>rooms=this.rooms;
         for(int i=0;i<rooms.size();i++) {
-            if(rooms.get(i).roomType==roomType){
+            if(rooms.get(i).getRoomType()==roomType){
                 rooms.remove(i);
                 --count;
             }
@@ -323,6 +330,34 @@ public class Hotel extends User {
     public boolean isApproved(){
         return approved;
     }
+
+    public int getNoOfSingleBedRoomsBookedByDate(Date date){
+        if(singleBedroomsBookedByDate.containsKey(date)){
+            return singleBedroomsBookedByDate.get(date).size();
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public int getNoOfDoubleBedRoomsBookedByDate(Date date){
+        if(doubleBedroomsBookedByDate.containsKey(date)){
+            return doubleBedroomsBookedByDate.get(date).size();
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public int getNoOfSuiteRoomsBookedByDate(Date date){
+        if(suiteRoomsBookedByDate.containsKey(date)){
+            return suiteRoomsBookedByDate.get(date).size();
+        }
+        else{
+            return 0;
+        }
+    }
+
 
 
 }

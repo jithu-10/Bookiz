@@ -1,7 +1,9 @@
 package utility;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InputHelper {
     private static Scanner input=new Scanner(System.in);
@@ -95,6 +97,97 @@ public class InputHelper {
         }
         return value;
     }
+
+    public static Date getDate(){
+        System.out.println("Enter Date in dd-mm-yyyy format");
+        String dateStr=getStringInput();
+        Pattern p = Pattern.compile("^\\d{2}-\\d{2}-\\d{4}$");
+        Matcher m = p.matcher(dateStr);
+        if(!m.matches()){
+            System.out.println("Please enter date in exact format");
+            return getDate();
+        }
+        else{
+            Date date=convertStringtoDate(dateStr);
+            return date;
+        }
+
+    }
+
+    public static Date convertStringtoDate(String dateStr){
+        int day=0;
+        int month=0;
+        int year;
+        boolean dateSet=false;
+        boolean monthSet=false;
+        int value=0;
+        for(int i=0;i<dateStr.length();i++){
+            if(dateStr.charAt(i)=='-'){
+                if(!dateSet){
+                    dateSet=true;
+                    day=value;
+                    value=0;
+                }
+                else if(!monthSet){
+                    monthSet=true;
+                    month=value;
+                    value=0;
+                }
+            }
+            else{
+                value=value*10;
+                value+=(dateStr.charAt(i)-48);
+            }
+        }
+        year=value;
+        Date date=null;
+        try{
+            SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+            date=sdFormat.parse(year+"-"+month+"-"+day);
+        }
+        catch (Exception e){}
+
+        return date;
+
+    }
+
+    public static Date setTime(Date date){
+        Calendar cal=Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY,0);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        date = cal.getTime();
+        return date;
+
+    }
+
+
+    public static ArrayList<Date> getDatesBetweenTwoDates(Date startDate,Date endDate){
+        ArrayList<Date> datesInRange=new ArrayList<>();
+        Calendar calendar = getCalendarWithoutTime(startDate);
+        Calendar endCalendar = getCalendarWithoutTime(endDate);
+
+        while (calendar.before(endCalendar)) {
+            Date result = calendar.getTime();
+            datesInRange.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }
+        return datesInRange;
+    }
+
+    public static Calendar getCalendarWithoutTime(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
+    }
+
+
 
 
 

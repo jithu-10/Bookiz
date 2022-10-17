@@ -11,6 +11,11 @@ public class Init {
         for(int i=0;i<str.length;i++){
             hotels[i]=createHotel(str[i],phn[i],"pass");
         }
+        Hotel hotel=new Hotel("Special One",9747575427L,"pass","Spec",null,null);
+        hotel.addSingleBedRooms(5,500,800);
+        hotel.addDoubleBedRooms(5,2000,2400);
+        hotel.addSuiteRooms(5,4000,5000);
+        HotelDB.addApprovedHotelList(hotel);
     }
 
     public static Hotel createHotel(String name,long phoneNumber,String password){
