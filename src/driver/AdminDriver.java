@@ -92,7 +92,13 @@ public class AdminDriver implements Driver{
         }while(true);
 
     }
-//----------------------------------------------1.Approve Hotels------------------------------------------------------//
+
+    @Override
+    public void register() {
+
+    }
+
+    //----------------------------------------------1.Approve Hotels------------------------------------------------------//
     void approveHotels(){
         listHotelsRequestedforApproval();
     }

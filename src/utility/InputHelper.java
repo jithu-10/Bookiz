@@ -39,6 +39,20 @@ public class InputHelper {
         return value;
     }
 
+    public static String getEmailInput(){
+        String email=getStringInput();
+        Pattern p = Pattern.compile("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
+        Matcher m = p.matcher(email);
+        if(!m.matches()){
+            System.out.println("Please Enter Valid Email ID");
+            return getEmailInput();
+        }
+        else{
+            return email;
+        }
+
+    }
+
     public static double getDoubleInput(){
         lastIntegerValue=true;
         double value=0;

@@ -78,8 +78,10 @@ public class CustomerDriver implements Driver {
                     bookHotel(customer);
                     break;
                 case 2:
+                    listBookings(customer);
                     break;
                 case 3:
+                    /*TODO Cancel Booking*/
                     break;
                 case 4:
                     listFavoriteHotels(customer);
@@ -95,16 +97,28 @@ public class CustomerDriver implements Driver {
         }while(true);
     }
 
+
     //------------------------------------------------Customer Registration--------------------------------------------//
-    public void register(){
+
+    @Override
+    public void register() {
         Customer customer=customerDetails();
+        if(customer==null){
+            return;
+        }
         CustomerDB.addCustomer(customer);
         System.out.println("Sign Up Completed . You can Sign in Now");
     }
 
+
     public Customer customerDetails(){
+
         System.out.println("Enter Phone Number : ");
         long phoneNumber=InputHelper.getPhoneNumber();
+        if(CustomerDB.isPhoneNumberExist(phoneNumber)){
+            System.out.println("Phone Number already exist");
+            return null;
+        }
         String password,confirmPassword;
         while(true){
             System.out.println("Enter Password : ");
@@ -120,8 +134,7 @@ public class CustomerDriver implements Driver {
         System.out.println("Full Name : ");
         String fullName=InputHelper.getStringInput();
         System.out.println("E-Mail ID : ");
-        /*TODO Validate Mail ID*/
-        String mailID=InputHelper.getStringInput();
+        String mailID=InputHelper.getEmailInput();
         return new Customer(fullName,phoneNumber,mailID,password);
     }
 
@@ -366,6 +379,7 @@ public class CustomerDriver implements Driver {
         switch (choice){
             case 1:
                 System.out.println("Paid Using UPI");
+                booking.setPaid();
                 break;
             case 2:
                 System.out.println("Pay at Hotel ₹"+booking.getTotalPrice());
@@ -375,7 +389,6 @@ public class CustomerDriver implements Driver {
         }
         booking.setCustomerID(customer.getCustomerID());
         hotel.updateHashMap(booking.getNoOfSingleBedroomsNeeded(),booking.getNoOfDoubleBedroomsNeeded(),booking.getNoOfSuiteRoomNeeded(),booking.getCheckInDate(),booking.getCheckOutDate());
-        hotel.addBookingIDs(booking.getBookingID());
         System.out.println("\nYour booking is confirmed\n");
         System.out.println("BOOKIZ "+hotel.getHotelType()+" "+hotel.getHotelID());
         System.out.println(hotel.getHotelName());
@@ -386,6 +399,9 @@ public class CustomerDriver implements Driver {
         System.out.println(InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+"        "+booking.getNoOfDays()+"N             "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
         System.out.println("12:00PM onwards                   Before 11:00AM\n");
         BookingDB.addBooking(booking);
+        hotel.addBookingIDs(booking.getBookingID());
+        booking.setHotel(hotel);
+        customer.addBookingIDs(booking.getBookingID());
         System.out.println("BOOKING ID");
         System.out.println(" --> "+booking.getBookingID()+"\n");
         System.out.println("RESERVED FOR");
@@ -407,20 +423,34 @@ public class CustomerDriver implements Driver {
     }
 
     //------------------------------------------------2.List Bookings--------------------------------------------------//
+
+    void listBookings(Customer customer){
+        ArrayList<Integer>bookingIDs=customer.getBookingIDs();
+        if(bookingIDs.isEmpty()){
+            System.out.println("No bookings available");
+            InputHelper.pressEnterToContinue();
+            return ;
+        }
+        System.out.println("\nBooking List\n");
+        for(int i=0;i<bookingIDs.size();i++){
+            Booking booking=BookingDB.getBookingWithID(bookingIDs.get(i));
+            System.out.println((i+1)+".Booking ID : "+booking.getBookingID());
+            System.out.println("  Check-in Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+"   Check-out Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
+            System.out.println("  "+booking.getHotel().getHotelType()+" "+booking.getHotel().getHotelName());
+            System.out.println("  "+booking.getHotel().getAddress());
+            System.out.println("  "+booking.getHotel().getLocality());
+            System.out.println();
+        }
+        InputHelper.pressEnterToContinue();
+    }
+
     //------------------------------------------------3.Cancel Bookings------------------------------------------------//
-
-
-
-
-
-
     //------------------------------------------------4.Favorite List----------------------------------------------------//
     void addToFavoriteList(Customer customer,Hotel hotel){
         customer.addFavoriteHotels(hotel.getHotelID());
     }
 
     void listFavoriteHotels(Customer customer){
-        /*TODO check whether the fav hotels is empty*/
         if(customer.getFavoriteHotels().isEmpty()){
             System.out.println("No Favorite Hotels ");
             return;

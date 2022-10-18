@@ -16,4 +16,14 @@ public class BookingDB {
     public static ArrayList<Booking> getBookings(){
         return bookings;
     }
+
+    public static Booking getBookingWithID(int ID){
+        for(int i=0;i<bookings.size();i++){
+            if(bookings.get(i).getBookingID()==ID){
+                return bookings.get(i);
+            }
+        }
+        return null;
+    }
+
 }

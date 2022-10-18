@@ -1,6 +1,7 @@
 package hotel;
 
 
+import customer.Customer;
 import utility.InputHelper;
 
 import java.util.ArrayList;
@@ -71,6 +72,16 @@ public class HotelDB {
         locality=InputHelper.modifyString(locality);
         for(int i=0;i<availableLocalities.size();i++){
             if(availableLocalities.get(i).equals(locality)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isPhoneNumberExist(long phoneNumber){
+        ArrayList<Hotel>hotels =approvedHotelList;
+        for(int i=0;i<hotels.size();i++){
+            if(hotels.get(i).getPhoneNumber()==phoneNumber){
                 return true;
             }
         }

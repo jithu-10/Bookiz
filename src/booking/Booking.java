@@ -1,5 +1,6 @@
 package booking;
 
+import hotel.Hotel;
 import hotel.Room;
 import hotel.RoomType;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class Booking {
     private double totalPrice;
     private int noOfDays;
     private int customerID;
+    private boolean paid;
+    private Hotel hotel;
     public Booking(Date checkInDate,Date checkOutDate,int noOfSingleBedroomsNeeded,int noOfDoubleBedroomsNeeded,int noOfSuiteRoomNeeded){
         this.checkInDate=checkInDate;
         this.checkOutDate=checkOutDate;
@@ -75,5 +78,18 @@ public class Booking {
     }
     public int getCustomerID(){
         return customerID;
+    }
+    public void setPaid(){
+        paid=true;
+    }
+    public boolean getPaid(){
+        return paid;
+    }
+
+    public void setHotel(Hotel hotel){
+        this.hotel=hotel;
+    }
+    public Hotel getHotel(){
+        return hotel;
     }
 }

@@ -1,7 +1,10 @@
 package driver;
 
-import admin.Admin;
 import admin.AdminDB;
+import booking.Booking;
+import booking.BookingDB;
+import customer.Customer;
+import customer.CustomerDB;
 import hotel.*;
 import user.User;
 import utility.InputHelper;
@@ -9,6 +12,7 @@ import utility.Printer;
 import utility.Validator;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HotelDriver implements Driver{
 
@@ -95,13 +99,13 @@ public class HotelDriver implements Driver{
                     removeHotelAmenities(hotel);
                     break;
                 case 5:
-                    /*TODO Show Rooms which are booked and non booked by Date*/
+                    showRoomsBookedNonBooked(hotel);
                     break;
                 case 6:
                     changeRoomPrices(hotel);
                     break;
                 case 7:
-                    /*TODO List of Customers who booked Rooms*/
+                    bookedCustomersList(hotel);
                     break;
                 case 8:
                     System.out.println("Signing Out...");
@@ -125,6 +129,9 @@ public class HotelDriver implements Driver{
     //------------------------------------------------Hotel Registration----------------------------------------------//
     public void register(){
         Hotel hotel=hotelDetails();
+        if(hotel==null){
+            return;
+        }
         roomDetails(hotel);
         addHotelAmenities(hotel);
         HotelDB.registerHotel(hotel);
@@ -136,6 +143,10 @@ public class HotelDriver implements Driver{
         String hotelAdminName=InputHelper.getStringInput();
         System.out.println("Enter Phone Number : ");
         long phoneNumber=InputHelper.getPhoneNumber();
+        if(HotelDB.isPhoneNumberExist(phoneNumber)){
+            System.out.println("Phone Number already exist");
+            return null;
+        }
         String password,confirmPassword;
         while(true){
             System.out.println("Enter Password : ");
@@ -183,22 +194,7 @@ public class HotelDriver implements Driver{
 
     }
 
-    /*
-    public void addHotelAmenities(Hotel hotel){
-        System.out.println("Add Hotel Amenities");
-        ArrayList<Amenity> amenities= AmenityDB.getAmenities();
-        for(Amenity amenity: amenities){
-            System.out.println("Does your hotel have "+amenity.getName()+" ?");
-            System.out.println("1.YES");
-            System.out.println("2.NO");
-            System.out.println("Enter Input : ");
-            int choice = InputHelper.getInputWithinRange(2,null);
-            if(choice==1){
-                hotel.addAmenity(amenity);
-            }
 
-        }
-    }*/
 
     //-------------------------------------------1.Add Rooms-----------------------------------------------------------//
 
@@ -244,7 +240,6 @@ public class HotelDriver implements Driver{
         int choice=InputHelper.getInputWithinRange(4,null);
         System.out.println("Enter No of Rooms to remove : ");
         int count=0;
-        /*TODO Only 0 available to remove Problem*/
         switch (choice){
             case 1:
                 count=InputHelper.getInputWithinRange(hotel.getNumberofSingleBedRooms(),"Only "+hotel.getNumberofSingleBedRooms()+" are available to remove");
@@ -302,10 +297,23 @@ public class HotelDriver implements Driver{
 
     //----------------------------------------5.Show Rooms which are booked and non booked-----------------------------//
 
+    void showRoomsBookedNonBooked(Hotel hotel){
+        System.out.println("Enter Date : ");
+        Date date=InputHelper.getDate();
+        int noOfSingleBedRoomsBookedByDate=hotel.getNoOfSingleBedRoomsBookedByDate(date);
+        int noOfDoubleBedRoomsBookedByDate=hotel.getNoOfDoubleBedRoomsBookedByDate(date);
+        int noOfSuiteRoomsBookedByDate=hotel.getNoOfSuiteRoomsBookedByDate(date);
+
+        System.out.println("TYPE OF ROOM      BOOKED  |  UNBOOKED\n");
+        System.out.println(RoomType.SINGLEBEDROOM+"        "+noOfSingleBedRoomsBookedByDate+"        "+(hotel.getNumberofSingleBedRooms()-noOfSingleBedRoomsBookedByDate));
+        System.out.println(RoomType.DOUBLEBEDROOM+"        "+noOfDoubleBedRoomsBookedByDate+"        "+(hotel.getNumberofDoubleBedRooms()-noOfDoubleBedRoomsBookedByDate));
+        System.out.println(RoomType.SUITEROOM+"            "+noOfSuiteRoomsBookedByDate+"        "+(hotel.getNumberofSuiteRooms()-noOfSuiteRoomsBookedByDate));
+        InputHelper.pressEnterToContinue();
+    }
+
     //----------------------------------------------6.Change Price of Rooms--------------------------------------------//
 
     void changeRoomPrices(Hotel hotel){
-        /*TODO update to HOTEL DB about the updation of prices so app admin can change list according to that*/
         System.out.println("Change Room Prices");
         System.out.println("Enter Type of Room : ");
         System.out.println("1."+ RoomType.SINGLEBEDROOM);
@@ -360,7 +368,33 @@ public class HotelDriver implements Driver{
                 return maxPrice;
             }
         }while(true);
+    }
 
+    //----------------------------------------------7.List of Customers who booked rooms-------------------------------//
+
+    void bookedCustomersList(Hotel hotel){
+        ArrayList<Integer> bookingIDs=hotel.getBookingIDs();
+        if(bookingIDs.isEmpty()){
+            System.out.println("No Customers Booked rooms on this date");
+            InputHelper.pressEnterToContinue();
+            return;
+        }
+        System.out.println();
+        for(int i=0;i<bookingIDs.size();i++){
+            Booking booking= BookingDB.getBookingWithID(bookingIDs.get(i));
+            Customer customer= CustomerDB.getCustomerByID(booking.getCustomerID());
+            System.out.println((i+1)+".Customer Name : "+customer.getFullName());
+            System.out.println("  Booking ID : "+booking.getBookingID());
+            System.out.println("  Check In Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate()));
+            System.out.println("  Check Out Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
+            System.out.println("  No of Rooms Booked : ");
+            System.out.println("     1."+RoomType.SINGLEBEDROOM+" - "+booking.getNoOfSingleBedroomsNeeded());
+            System.out.println("     2."+RoomType.DOUBLEBEDROOM+" - "+booking.getNoOfDoubleBedroomsNeeded());
+            System.out.println("     3."+RoomType.SUITEROOM+" - "+booking.getNoOfSuiteRoomNeeded());
+            System.out.println("  Paid : "+(booking.getPaid()?"YES":"NO"));
+            System.out.println("\n");
+        }
+        InputHelper.pressEnterToContinue();
     }
 
 
