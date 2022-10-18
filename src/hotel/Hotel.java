@@ -2,6 +2,7 @@ package hotel;
 
 import hotel.subutil.Price;
 import user.User;
+import utility.InputHelper;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -20,20 +21,48 @@ public class Hotel extends User {
     private String locality;
     private HotelType hotelType;
     private ArrayList<Amenity> amenities=new ArrayList<>();
-
     private ArrayList<Room> rooms=new ArrayList<>();
+    private ArrayList<Integer> bookingIDs=new ArrayList<>();
     private Price singleBedRoomPrice;
     private Price doubleBedRoomPrice;
     private Price suiteRoomPrice;
-
     private int totalAmenityPoints;
     private int totalSingleBedRooms;
     private int totalDoubleBedRooms;
     private int totalSuiteRooms;
     private boolean approved;
-    private HashMap<Date, LinkedList<Room>> singleBedroomsBookedByDate=new HashMap<>();
-    private HashMap<Date, LinkedList<Room>> doubleBedroomsBookedByDate=new HashMap<>();
-    private HashMap<Date, LinkedList<Room>> suiteRoomsBookedByDate=new HashMap<>();
+    private HashMap<Date, Integer> singleBedroomsBookedByDate=new HashMap<>();
+    private HashMap<Date, Integer> doubleBedroomsBookedByDate=new HashMap<>();
+    private HashMap<Date, Integer> suiteRoomsBookedByDate=new HashMap<>();
+
+    public void updateHashMap(int noOfSingleBedRoomsBooked,int noOfDoubleBedRoomsBooked,int noOfSuiteRoomBooked,Date checkInDate,Date checkOutDate){
+        ArrayList<Date> datesInRange= InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate);
+        datesInRange.add(checkOutDate);
+        for(int i=0;i<datesInRange.size();i++){
+            if(singleBedroomsBookedByDate.containsKey(datesInRange.get(i))){
+               int value=singleBedroomsBookedByDate.get(datesInRange.get(i));
+               singleBedroomsBookedByDate.put(datesInRange.get(i),value+noOfSingleBedRoomsBooked);
+            }
+            else{
+                singleBedroomsBookedByDate.put(datesInRange.get(i),noOfSingleBedRoomsBooked);
+            }
+            if(doubleBedroomsBookedByDate.containsKey(datesInRange.get(i))){
+                int value=doubleBedroomsBookedByDate.get(datesInRange.get(i));
+                doubleBedroomsBookedByDate.put(datesInRange.get(i),value+noOfDoubleBedRoomsBooked);
+            }
+            else{
+                doubleBedroomsBookedByDate.put(datesInRange.get(i),noOfDoubleBedRoomsBooked);
+            }
+            if(suiteRoomsBookedByDate.containsKey(datesInRange.get(i))){
+                int value=suiteRoomsBookedByDate.get(datesInRange.get(i));
+                suiteRoomsBookedByDate.put(datesInRange.get(i),value+noOfSuiteRoomBooked);
+            }
+            else{
+                suiteRoomsBookedByDate.put(datesInRange.get(i),noOfSuiteRoomBooked);
+            }
+        }
+    }
+
 
     public Hotel(String hotelAdminName,long phoneNumber,String password,String hotelName,String address,String locality){
         this.hotelAdminName=hotelAdminName;
@@ -333,7 +362,7 @@ public class Hotel extends User {
 
     public int getNoOfSingleBedRoomsBookedByDate(Date date){
         if(singleBedroomsBookedByDate.containsKey(date)){
-            return singleBedroomsBookedByDate.get(date).size();
+            return singleBedroomsBookedByDate.get(date);
         }
         else{
             return 0;
@@ -342,7 +371,7 @@ public class Hotel extends User {
 
     public int getNoOfDoubleBedRoomsBookedByDate(Date date){
         if(doubleBedroomsBookedByDate.containsKey(date)){
-            return doubleBedroomsBookedByDate.get(date).size();
+            return doubleBedroomsBookedByDate.get(date);
         }
         else{
             return 0;
@@ -351,13 +380,30 @@ public class Hotel extends User {
 
     public int getNoOfSuiteRoomsBookedByDate(Date date){
         if(suiteRoomsBookedByDate.containsKey(date)){
-            return suiteRoomsBookedByDate.get(date).size();
+            return suiteRoomsBookedByDate.get(date);
         }
         else{
             return 0;
         }
     }
 
+    public void addBookingIDs(int ID){
+        bookingIDs.add(ID);
+    }
 
+    public ArrayList<Integer> getBookingIDs(){
+        return bookingIDs;
+    }
 
+    public HashMap<Date, Integer> getSingleBedroomsBooked() {
+        return singleBedroomsBookedByDate;
+    }
+
+    public HashMap<Date, Integer> getDoubleBedroomsBooked() {
+        return doubleBedroomsBookedByDate;
+    }
+
+    public HashMap<Date, Integer> getSuiteRoomsBooked() {
+        return suiteRoomsBookedByDate;
+    }
 }

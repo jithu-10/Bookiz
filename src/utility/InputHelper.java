@@ -187,8 +187,37 @@ public class InputHelper {
         return calendar;
     }
 
+    public static String getSimpleDateWithoutYear(Date date){
+        SimpleDateFormat dateFormat= new SimpleDateFormat("EEE,dd MMM");
+        String dateOnly = dateFormat.format(date);
+        return dateOnly;
+    }
 
+    public static void pressEnterToContinue()
+    {
+        System.out.println("Press Enter key to continue...");
+        try
+        {
+            System.in.read();
+            input.nextLine();
+        }
+        catch(Exception e)
+        {
 
+        }
+    }
+
+    public static String modifyString(String str){
+        String newStr="";
+        for(int i=0;i<str.length();i++){
+            if(str.charAt(i)==' '){
+                continue;
+            }
+            newStr+=str.charAt(i);
+        }
+        newStr=newStr.toUpperCase();
+        return newStr;
+    }
 
 
 }

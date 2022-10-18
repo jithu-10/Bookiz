@@ -2,6 +2,9 @@ package customer;
 
 import user.User;
 
+import java.util.ArrayList;
+
+
 public class Customer extends User {
 
     private String fullName;
@@ -9,12 +12,29 @@ public class Customer extends User {
     private int customerID;
     private String mailID;
     private String password;
-
+    private ArrayList<Integer> favoriteHotels=new ArrayList<>();
+    private ArrayList<Integer> bookingIDs=new ArrayList<>();
     public Customer(String fullName,long phoneNumber,String mailID,String password){
         this.fullName=fullName;
         this.phoneNumber=phoneNumber;
         this.mailID=mailID;
         this.password=password;
+    }
+
+    public void addFavoriteHotels(int ID){
+        favoriteHotels.add(ID);
+    }
+
+    public ArrayList<Integer> getFavoriteHotels(){
+        return favoriteHotels;
+    }
+
+    public void addBookingIDs(int ID){
+        bookingIDs.add(ID);
+    }
+
+    public ArrayList<Integer> getBookingIDs(){
+        return bookingIDs;
     }
 
     public void setCustomerID(int customerID){
@@ -23,6 +43,9 @@ public class Customer extends User {
 
     public int getCustomerID(){
         return customerID;
+    }
+    public String getFullName(){
+        return fullName;
     }
 
     public long getPhoneNumber(){

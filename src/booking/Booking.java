@@ -14,6 +14,10 @@ public class Booking {
     private int noOfDoubleBedroomsNeeded;
     private int noOfSuiteRoomNeeded;
     private int totalNoOfRoomsNeeded;
+    private int bookingID;
+    private double totalPrice;
+    private int noOfDays;
+    private int customerID;
     public Booking(Date checkInDate,Date checkOutDate,int noOfSingleBedroomsNeeded,int noOfDoubleBedroomsNeeded,int noOfSuiteRoomNeeded){
         this.checkInDate=checkInDate;
         this.checkOutDate=checkOutDate;
@@ -23,6 +27,12 @@ public class Booking {
         this.totalNoOfRoomsNeeded=noOfSingleBedroomsNeeded+noOfDoubleBedroomsNeeded+noOfSuiteRoomNeeded;
     }
 
+    public void setBookingID(int id){
+        bookingID=id;
+    }
+    public int getBookingID(){
+        return bookingID;
+    }
     public Date getCheckInDate(){
         return checkInDate;
     }
@@ -45,5 +55,25 @@ public class Booking {
 
     public int getTotalNoOfRoomsNeeded() {
         return totalNoOfRoomsNeeded;
+    }
+    public void setTotalPrice(double totalPrice){
+        this.totalPrice=totalPrice;
+    }
+    public double getTotalPrice(){
+        return totalPrice;
+    }
+    public void setNoOfDays(int noOfDays){
+        this.noOfDays=noOfDays;
+    }
+
+    public int getNoOfDays(){
+        return noOfDays;
+    }
+
+    public void setCustomerID(int customerID){
+        this.customerID=customerID;
+    }
+    public int getCustomerID(){
+        return customerID;
     }
 }
