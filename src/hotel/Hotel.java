@@ -391,6 +391,12 @@ public class Hotel extends User {
         bookingIDs.add(ID);
     }
 
+    public void removeBookingIDs(int ID){
+        Integer id=ID;
+        bookingIDs.remove(id);
+    }
+
+
     public ArrayList<Integer> getBookingIDs(){
         return bookingIDs;
     }
@@ -405,5 +411,28 @@ public class Hotel extends User {
 
     public HashMap<Date, Integer> getSuiteRoomsBooked() {
         return suiteRoomsBookedByDate;
+    }
+    public void cancelSingleBedRoomsBooked(Date date,int rooms){
+        if(singleBedroomsBookedByDate.containsKey(date)){
+            int value=singleBedroomsBookedByDate.get(date);
+            value-=rooms;
+            singleBedroomsBookedByDate.put(date,value);
+        }
+    }
+
+    public void cancelDoubleBedRoomsBooked(Date date,int rooms){
+        if(doubleBedroomsBookedByDate.containsKey(date)){
+            int value=doubleBedroomsBookedByDate.get(date);
+            value-=rooms;
+            doubleBedroomsBookedByDate.put(date,value);
+        }
+    }
+
+    public void cancelSuiteRoomsBooked(Date date,int rooms){
+        if(suiteRoomsBookedByDate.containsKey(date)){
+            int value=suiteRoomsBookedByDate.get(date);
+            value-=rooms;
+            suiteRoomsBookedByDate.put(date,value);
+        }
     }
 }

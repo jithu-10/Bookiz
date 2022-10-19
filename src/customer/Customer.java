@@ -25,12 +25,20 @@ public class Customer extends User {
         favoriteHotels.add(ID);
     }
 
+    public void removeFavoriteHotels(int ID){
+        favoriteHotels.remove(Integer.valueOf(ID));
+    }
+
     public ArrayList<Integer> getFavoriteHotels(){
         return favoriteHotels;
     }
 
     public void addBookingIDs(int ID){
         bookingIDs.add(ID);
+    }
+    public void removeBookingIDs(int ID){
+        Integer id=ID;
+        bookingIDs.remove(id);
     }
 
     public ArrayList<Integer> getBookingIDs(){

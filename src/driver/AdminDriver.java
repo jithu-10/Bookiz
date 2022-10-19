@@ -214,16 +214,13 @@ public class AdminDriver implements Driver{
     void removeRegisteredHotels(){
         System.out.println("Enter Hotel ID : ");
         int hotelId=InputHelper.getIntegerInput();
-        ArrayList<Hotel> registeredHotels=HotelDB.getRegisteredHotelList();
-        for(int i=0;i<registeredHotels.size();i++){
-            if(hotelId==registeredHotels.get(i).getHotelID()){
-                registeredHotels.remove(i);
-                AdminDB.removeHotelfromPriceUpdatedHotelList(hotelId);
-                System.out.println("Hotel Removed Successfully");
-                return;
-            }
+        if(HotelDB.removeHotels(hotelId)){
+            System.out.println("Hotel Removed Successfully");
         }
-        System.out.println("No Hotel Found with Id");
+        else{
+            System.out.println("No Hotel Found with Id");
+        }
+
     }
 
 //-------------------------------------------4.Set Terms and Conditions------------------------------------------------//

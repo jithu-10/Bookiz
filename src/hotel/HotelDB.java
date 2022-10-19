@@ -5,6 +5,7 @@ import customer.Customer;
 import utility.InputHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class HotelDB {
@@ -60,12 +61,11 @@ public class HotelDB {
 
     public static void addLocality(String locality){
         locality= InputHelper.modifyString(locality);
-        for(int i=0;i<availableLocalities.size();i++){
-            if(availableLocalities.get(i).equals(locality)){
-                return;
-            }
-        }
         availableLocalities.add(locality);
+    }
+    public static void removeLocality(String locality){
+        locality=InputHelper.modifyString(locality);
+        availableLocalities.remove(locality);
     }
 
     public static boolean isLocalityAvailable(String locality){
@@ -86,6 +86,20 @@ public class HotelDB {
             }
         }
         return false;
+    }
+
+    public static boolean removeHotels(int hotelID){
+        ArrayList<Hotel> registeredHotels=getRegisteredHotelList();
+        for(int i=0;i<registeredHotels.size();i++){
+            Hotel hotel=registeredHotels.get(i);
+            if(hotelID==hotel.getHotelID()){
+                HotelDB.removeLocality(hotel.getLocality());
+                registeredHotels.remove(i);
+                return true;
+            }
+        }
+        return false;
+
     }
 
 

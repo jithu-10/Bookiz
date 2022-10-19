@@ -17,6 +17,9 @@ public class Booking {
     private int totalNoOfRoomsNeeded;
     private int bookingID;
     private double totalPrice;
+    private double totalPriceOfSingleBedRooms;
+    private double totalPriceOfDoubleBedRooms;
+    private double totalPriceOfSuiteRooms;
     private int noOfDays;
     private int customerID;
     private boolean paid;
@@ -92,4 +95,17 @@ public class Booking {
     public Hotel getHotel(){
         return hotel;
     }
+
+    public void setTotalPriceOfSingleBedRooms(double totalPriceOfSingleBedRooms) {
+        this.totalPriceOfSingleBedRooms = totalPriceOfSingleBedRooms;
+    }
+
+    public void setTotalPriceOfDoubleBedRooms(double totalPriceOfDoubleBedRooms) {
+        this.totalPriceOfDoubleBedRooms = totalPriceOfDoubleBedRooms;
+    }
+
+    public void setTotalPriceOfSuiteRooms(double totalPriceOfSuiteRooms) {
+        this.totalPriceOfSuiteRooms = totalPriceOfSuiteRooms;
+    }
 }
+

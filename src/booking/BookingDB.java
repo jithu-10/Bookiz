@@ -26,4 +26,8 @@ public class BookingDB {
         return null;
     }
 
+    public static void removeBooking(Booking booking){
+        bookings.remove(booking);
+    }
+
 }

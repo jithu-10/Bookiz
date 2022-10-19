@@ -81,10 +81,11 @@ public class CustomerDriver implements Driver {
                     listBookings(customer);
                     break;
                 case 3:
-                    /*TODO Cancel Booking*/
+                    cancelBooking(customer);
                     break;
                 case 4:
                     listFavoriteHotels(customer);
+                    InputHelper.pressEnterToContinue();
                     break;
                 case 5:
                     System.out.println("Signing Out...");
@@ -352,6 +353,9 @@ public class CustomerDriver implements Driver {
             switch (choice){
                 case 1:
                     booking.setTotalPrice(totalPrice);
+                    booking.setTotalPriceOfSingleBedRooms(totalPriceOfSingleBedRooms);
+                    booking.setTotalPriceOfDoubleBedRooms(totalPriceOfDoubleBedRooms);
+                    booking.setTotalPriceOfSuiteRooms(totalPriceOfSuiteRooms);
                     boolean booked=bookHotel(booking,customer,hotel);
                     if(booked){
                         return true;
@@ -428,7 +432,6 @@ public class CustomerDriver implements Driver {
         ArrayList<Integer>bookingIDs=customer.getBookingIDs();
         if(bookingIDs.isEmpty()){
             System.out.println("No bookings available");
-            InputHelper.pressEnterToContinue();
             return ;
         }
         System.out.println("\nBooking List\n");
@@ -441,23 +444,59 @@ public class CustomerDriver implements Driver {
             System.out.println("  "+booking.getHotel().getLocality());
             System.out.println();
         }
-        InputHelper.pressEnterToContinue();
     }
 
     //------------------------------------------------3.Cancel Bookings------------------------------------------------//
+
+    void cancelBooking(Customer customer){
+        listBookings(customer);
+        System.out.println("1.Cancel Hotel");
+        System.out.println("2.Go Back");
+        System.out.println("Enter Input : ");
+        int choice=InputHelper.getInputWithinRange(2,null);
+        if(choice==1){
+            System.out.println("Enter S.No to Cancel Hotel : ");
+            int bookingIDIndex=InputHelper.getInputWithinRange(customer.getBookingIDs().size(),null);
+            int bookingID=customer.getBookingIDs().get(bookingIDIndex-1);
+            Booking booking=BookingDB.getBookingWithID(bookingID);
+            BookingDB.removeBooking(booking);
+            Hotel hotel=booking.getHotel();
+            hotel.removeBookingIDs(bookingID);
+            customer.removeBookingIDs(bookingID);
+            ArrayList<Date> datesInRange=InputHelper.getDatesBetweenTwoDates(booking.getCheckInDate(),booking.getCheckOutDate());
+            datesInRange.add(booking.getCheckOutDate());
+            for(int i=0;i<datesInRange.size();i++){
+                int noOfSingleBedRoomsBooked=booking.getNoOfSingleBedroomsNeeded();
+                int noOfDoubleBedRoomsBooked=booking.getNoOfDoubleBedroomsNeeded();
+                int noOfSuiteRoomsBooked=booking.getNoOfSuiteRoomNeeded();
+                hotel.cancelSingleBedRoomsBooked(datesInRange.get(i),noOfSingleBedRoomsBooked);
+                hotel.cancelDoubleBedRoomsBooked(datesInRange.get(i),noOfDoubleBedRoomsBooked);
+                hotel.cancelSuiteRoomsBooked(datesInRange.get(i),noOfSuiteRoomsBooked);
+            }
+            System.out.println("Booking Cancelled Successfully");
+        }
+    }
+
+
     //------------------------------------------------4.Favorite List----------------------------------------------------//
     void addToFavoriteList(Customer customer,Hotel hotel){
         customer.addFavoriteHotels(hotel.getHotelID());
     }
 
     void listFavoriteHotels(Customer customer){
-        if(customer.getFavoriteHotels().isEmpty()){
-            System.out.println("No Favorite Hotels ");
-            return;
-        }
+
         for(int i=0;i<customer.getFavoriteHotels().size();i++){
             Hotel hotel=HotelDB.getHotelByID(customer.getFavoriteHotels().get(i));
-            printHotelDetails(i,hotel);
+            if(hotel==null){
+                customer.removeFavoriteHotels(customer.getFavoriteHotels().get(i));
+            }
+            else{
+                printHotelDetails(i,hotel);
+            }
+
+        }
+        if(customer.getFavoriteHotels().isEmpty()){
+            System.out.println("No Favorite Hotels ");
         }
     }
 
