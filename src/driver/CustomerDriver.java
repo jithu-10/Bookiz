@@ -5,6 +5,7 @@ import booking.BookingDB;
 import customer.Customer;
 import customer.CustomerDB;
 import hotel.*;
+import hotel.subutil.AddressDB;
 import user.User;
 import utility.InputHelper;
 import utility.Printer;
@@ -15,7 +16,7 @@ import java.util.*;
 public class CustomerDriver implements Driver {
 
     static final CustomerDriver customerDriver=new CustomerDriver();
-
+    private static final AddressDB addressDB=AddressDB.getInstance();
 
     private CustomerDriver(){
 
@@ -143,11 +144,15 @@ public class CustomerDriver implements Driver {
 
     void bookHotel(Customer customer){
         System.out.println("Enter Locality : ");
-        String locality=InputHelper.getStringInput();
-        if(!HotelDB.isLocalityAvailable(locality)){
+        String locality=InputHelper.modifyString(InputHelper.getStringInput());
+        if(!addressDB.isLocalityAvailable(locality)){
             System.out.println("No hotels available in your locality");
             return;
         }
+//        if(!HotelDB.isLocalityAvailable(locality)){
+//            System.out.println("No hotels available in your locality");
+//            return;
+//        }
         System.out.println("Check In Date : ");
         Date checkInDate=compareAndCheckDate(InputHelper.setTime(new Date()),"You can't book hotel for previous dates",false,true);
         System.out.println("Check Out Date : ");
@@ -218,9 +223,13 @@ public class CustomerDriver implements Driver {
             ArrayList<Integer> availableHotelsID=new ArrayList<>();
             loop:for(int i=0;i<hotels.size();i++){
                 Hotel hotel=hotels.get(i);
-                if(!InputHelper.modifyString(hotel.getLocality()).equals(InputHelper.modifyString(locality))){
-                    continue ;
+//                if(!InputHelper.modifyString(hotel.getLocality()).equals(InputHelper.modifyString(locality))){
+//                    continue ;
+//                }
+                if(!InputHelper.modifyString(hotel.getAddress().getLocality()).equals(locality)&&!InputHelper.modifyString(hotel.getAddress().getCity()).equals(locality)){
+                    continue;
                 }
+
                 for(int j=0;j<datesInRange.size();j++){
                     int noOfRemSingleBedRoomsBookedByDate=hotel.getNumberofSingleBedRooms()-hotel.getNoOfSingleBedRoomsBookedByDate(datesInRange.get(j));
                     int noOfRemDoubleBedRoomsBookedByDate=hotel.getNumberofDoubleBedRooms()-hotel.getNoOfDoubleBedRoomsBookedByDate(datesInRange.get(j));
@@ -276,9 +285,11 @@ public class CustomerDriver implements Driver {
     void printHotelDetails(int sno,Hotel hotel){
         System.out.println((sno+1)+" . "+"BOOKIZ "+hotel.getHotelType()+" Hotel ID : "+hotel.getHotelID());
         System.out.println("\t"+hotel.getHotelName());
-        System.out.println("\t Ph.No : "+hotel.getPhoneNumber());
-        System.out.println("\t Address : "+hotel.getAddress());
-        System.out.println("\t Locality : "+hotel.getLocality()+"\n");
+        System.out.println("\tPh.No : "+hotel.getPhoneNumber());
+        System.out.println("\tAddress : No."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
+        System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
+        System.out.println("\t"+hotel.getAddress().getPostalCode());
+        System.out.println("\tLocality : "+hotel.getLocality()+"\n");
     }
     void printHotelDetailsWithBooking(int sno,Hotel hotel,Booking booking){
         printHotelDetails(sno,hotel);
@@ -311,7 +322,10 @@ public class CustomerDriver implements Driver {
 
     boolean expandedHotelDetails(Booking booking,Hotel hotel,Customer customer,int totalDays){
         System.out.println(hotel.getHotelType()+" "+hotel.getHotelID()+" "+hotel.getHotelName());
-        System.out.println(hotel.getAddress()+","+hotel.getLocality());
+        System.out.println("\tNo."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
+        System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
+        System.out.println("\t"+hotel.getAddress().getPostalCode());
+
         System.out.println();
         System.out.println("Your Booking Details");
         System.out.println("Dates : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+" - "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
@@ -396,7 +410,9 @@ public class CustomerDriver implements Driver {
         System.out.println("\nYour booking is confirmed\n");
         System.out.println("BOOKIZ "+hotel.getHotelType()+" "+hotel.getHotelID());
         System.out.println(hotel.getHotelName());
-        System.out.println(hotel.getAddress()+","+hotel.getLocality());
+        System.out.println("\tNo."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
+        System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
+        System.out.println("\t"+hotel.getAddress().getPostalCode());
         System.out.println("Contact : "+hotel.getPhoneNumber());
         System.out.println();
         System.out.println("Check-in                             Check-out");
@@ -440,7 +456,10 @@ public class CustomerDriver implements Driver {
             System.out.println((i+1)+".Booking ID : "+booking.getBookingID());
             System.out.println("  Check-in Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+"   Check-out Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
             System.out.println("  "+booking.getHotel().getHotelType()+" "+booking.getHotel().getHotelName());
-            System.out.println("  "+booking.getHotel().getAddress());
+            System.out.println("  No."+booking.getHotel().getAddress().getBuildingNo()+","+booking.getHotel().getAddress().getStreet());
+            System.out.println("  "+booking.getHotel().getAddress().getCity()+","+booking.getHotel().getAddress().getState());
+            System.out.println("  "+booking.getHotel().getAddress().getPostalCode());
+
             System.out.println("  "+booking.getHotel().getLocality());
             System.out.println();
         }

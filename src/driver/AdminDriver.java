@@ -9,8 +9,6 @@ import user.User;
 import utility.InputHelper;
 import utility.Printer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
@@ -112,7 +110,10 @@ public class AdminDriver implements Driver{
         for(int i=0;i<hotelsRequested.size();i++){
             Hotel hotel=hotelsRequested.get(i);
             System.out.println((i+1)+" . "+hotel.getHotelName());
-            System.out.println("\t"+hotel.getAddress());
+            System.out.println("\tNo."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
+            System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
+            System.out.println("\t"+hotel.getAddress().getPostalCode());
+            //System.out.println("\t"+hotel.getAddress());
             System.out.println("\t"+hotel.getLocality());
             System.out.println("Ph.No : "+hotel.getPhoneNumber());
             System.out.println("Total No of Rooms : "+hotel.getTotalNumberofRooms());
@@ -253,7 +254,9 @@ public class AdminDriver implements Driver{
         if(hotel!=null){
             System.out.println("Hotel ID : "+hotel.getHotelID());
             System.out.println("Hotel Name : "+hotel.getHotelName());
-            System.out.println("Hotel Address : "+hotel.getAddress());
+            System.out.println("Hotel Address : No."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
+            System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
+            System.out.println("Postal Code : "+hotel.getAddress().getPostalCode());
             System.out.println("Hotel Locality : "+hotel.getLocality());
             System.out.println("No of Rooms : "+hotel.getTotalNumberofRooms());
             System.out.println("Set Price for Rooms");

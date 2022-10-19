@@ -72,7 +72,6 @@ public class InputHelper {
         lastIntegerValue=true;
         long phoneNumber=0;
         try{
-            //validate phone number here
             phoneNumber=input.nextLong();
             if(String.valueOf(phoneNumber).length()!=10){
                 throw new ValidateException();
@@ -86,6 +85,25 @@ public class InputHelper {
             phoneNumber=getPhoneNumber();
         }
         return phoneNumber;
+    }
+
+    public static int getPostalCode(){
+        lastIntegerValue=true;
+        int postalCode=0;
+        try{
+            postalCode=input.nextInt();
+            if(String.valueOf(postalCode).length()!=6){
+                throw new ValidateException();
+            }
+        }catch (InputMismatchException e){
+            input.nextLine();
+            System.out.println("Enter Valid Postal Code");
+            postalCode=getPostalCode();
+        } catch (ValidateException e) {
+            System.out.println("Enter Valid Postal Code");
+            postalCode=getPostalCode();
+        }
+        return postalCode;
     }
 
     /*

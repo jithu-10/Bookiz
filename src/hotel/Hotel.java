@@ -1,14 +1,13 @@
 package hotel;
 
+import hotel.subutil.Address;
 import hotel.subutil.Price;
 import user.User;
 import utility.InputHelper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class Hotel extends User {
 
@@ -17,7 +16,7 @@ public class Hotel extends User {
     private long phoneNumber;
     private String password;
     private String hotelName;
-    private String address;
+    private Address address;
     private String locality;
     private HotelType hotelType;
     private ArrayList<Amenity> amenities=new ArrayList<>();
@@ -64,15 +63,20 @@ public class Hotel extends User {
     }
 
 
-    public Hotel(String hotelAdminName,long phoneNumber,String password,String hotelName,String address,String locality){
+    public Hotel(String hotelAdminName,long phoneNumber,String password,String hotelName,Address address,String locality){
         this.hotelAdminName=hotelAdminName;
         this.phoneNumber=phoneNumber;
         this.password=password;
         this.hotelName=hotelName;
-        this.address=address;
+        this.address =address;
         this.locality=locality;
     }
-
+    public void setAddress(Address address){
+        this.address = address;
+    }
+    public Address getAddress(){
+        return address;
+    }
     public void addSingleBedRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++){
 
@@ -184,11 +188,6 @@ public class Hotel extends User {
     public String getHotelName() {
         return hotelName;
     }
-
-    public String getAddress() {
-        return address;
-    }
-
     public String getLocality() {
         return locality;
     }

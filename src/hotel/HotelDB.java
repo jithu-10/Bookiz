@@ -1,15 +1,14 @@
 package hotel;
 
-
-import customer.Customer;
+import hotel.subutil.AddressDB;
 import utility.InputHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class HotelDB {
     private static int idHelper=0;
+    private static AddressDB addressDB =AddressDB.getInstance();
     private static LinkedList<Hotel> hotelsRegisteredForApproval=new LinkedList<>();
     private static ArrayList<Hotel> approvedHotelList=new ArrayList<>();
     private static ArrayList<String> availableLocalities=new ArrayList<>();
@@ -30,6 +29,8 @@ public class HotelDB {
         hotel.approve();
         hotel.setHotelId(generateID());
         addLocality(hotel.getLocality());
+        addressDB.addLocality(hotel.getAddress().getLocality());
+        addressDB.addCity(hotel.getAddress().getCity());
     }
 
     private static int generateID(){
@@ -93,7 +94,9 @@ public class HotelDB {
         for(int i=0;i<registeredHotels.size();i++){
             Hotel hotel=registeredHotels.get(i);
             if(hotelID==hotel.getHotelID()){
-                HotelDB.removeLocality(hotel.getLocality());
+                removeLocality(hotel.getLocality());
+                addressDB.removeLocality(hotel.getAddress().getLocality());
+                addressDB.removeCity(hotel.getAddress().getCity());
                 registeredHotels.remove(i);
                 return true;
             }

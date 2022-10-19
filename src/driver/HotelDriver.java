@@ -6,6 +6,7 @@ import booking.BookingDB;
 import customer.Customer;
 import customer.CustomerDB;
 import hotel.*;
+import hotel.subutil.Address;
 import user.User;
 import utility.InputHelper;
 import utility.Printer;
@@ -163,11 +164,26 @@ public class HotelDriver implements Driver{
 
         System.out.println("Hotel Name : ");
         String hotelName=InputHelper.getStringInput();
-        System.out.println("Address : ");
-        String address=InputHelper.getStringInput();
+        Address address=getHotelAddress();
         System.out.println("Locality (City) : ");
         String locality=InputHelper.getStringInput();
         return new Hotel(hotelAdminName,phoneNumber,password,hotelName,address,locality);
+    }
+
+    public Address getHotelAddress(){
+        System.out.println("Enter Building No : ");
+        int buildingNo=InputHelper.getIntegerInput();
+        System.out.println("Enter Street : ");
+        String street=InputHelper.getStringInput();
+        System.out.println("Enter Locality : ");
+        String locality=InputHelper.getStringInput();
+        System.out.println("Enter City  : ");
+        String city=InputHelper.getStringInput();
+        System.out.println("Enter State : ");
+        String state=InputHelper.getStringInput();
+        System.out.println("Enter Postal Code : ");
+        int postalCode=InputHelper.getPostalCode();
+        return new Address(buildingNo,street,locality,city,state,postalCode);
     }
 
     public void roomDetails(Hotel hotel){
