@@ -1,5 +1,6 @@
 package driver;
 
+import admin.AdminDB;
 import booking.Booking;
 import booking.BookingDB;
 import customer.Customer;
@@ -16,8 +17,12 @@ import java.util.*;
 
 public class CustomerDriver implements Driver {
 
-    static final CustomerDriver customerDriver=new CustomerDriver();
-    private static final AddressDB addressDB=AddressDB.getInstance();
+    private static final CustomerDriver customerDriver=new CustomerDriver();
+    private final AdminDB adminDB=AdminDB.getInstance();
+    private final HotelDB hotelDB=HotelDB.getInstance();
+    private final CustomerDB customerDB=CustomerDB.getInstance();
+    private final AddressDB addressDB=AddressDB.getInstance();
+    private final BookingDB bookingDB=BookingDB.getInstance();
     private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
     private CustomerDriver(){
 
@@ -62,7 +67,7 @@ public class CustomerDriver implements Driver {
         String passWord= InputHelper.getStringInput();
         User user= null;
         if(userAuthenticationDB.authenticateCustomer(phoneNumber,passWord)){
-            user=CustomerDB.getCustomerByPhoneNumber(phoneNumber);
+            user=customerDB.getCustomerByPhoneNumber(phoneNumber);
         }
         return user;
     }
@@ -112,7 +117,7 @@ public class CustomerDriver implements Driver {
         if(customer==null){
             return;
         }
-        CustomerDB.addCustomer(customer);
+        customerDB.addCustomer(customer);
         System.out.println("Sign Up Completed . You can Sign in Now");
     }
 
@@ -187,7 +192,7 @@ public class CustomerDriver implements Driver {
             }
 
         }
-        Booking booking=new Booking(checkInDate,checkOutDate,noOfSingleBedroomsNeeded,noOfDoubleBedroomsNeeded,noOfSuiteRoomNeeded);
+        Booking booking=new Booking(checkInDate,checkOutDate,InputHelper.getSimpleDateWithoutYear(checkInDate),InputHelper.getSimpleDateWithoutYear(checkOutDate),noOfSingleBedroomsNeeded,noOfDoubleBedroomsNeeded,noOfSuiteRoomNeeded);
         findAvailableHotels(customer,booking,locality);
     }
 
@@ -224,7 +229,7 @@ public class CustomerDriver implements Driver {
             ArrayList<Date> datesInRange=InputHelper.getDatesBetweenTwoDates(booking.getCheckInDate(),booking.getCheckOutDate());
             booking.setNoOfDays(datesInRange.size());
             datesInRange.add(booking.getCheckOutDate());
-            ArrayList<Hotel> hotels=HotelDB.getRegisteredHotelList();
+            ArrayList<Hotel> hotels=hotelDB.getRegisteredHotelList();
             ArrayList<Integer> availableHotelsID=new ArrayList<>();
             loop:for(int i=0;i<hotels.size();i++){
                 Hotel hotel=hotels.get(i);
@@ -263,7 +268,7 @@ public class CustomerDriver implements Driver {
             }
 
             for(int i=0;i<availableHotelsID.size();i++){
-                printHotelDetailsWithBooking(i,HotelDB.getHotelByID(availableHotelsID.get(i)),booking);
+                printHotelDetailsWithBooking(i,hotelDB.getHotelByID(availableHotelsID.get(i)),booking);
             }
 
             System.out.println("1.Select Hotel");
@@ -273,7 +278,7 @@ public class CustomerDriver implements Driver {
                 System.out.println("Enter S.NO to Select Hotel");
                 int choice=InputHelper.getInputWithinRange(availableHotelsID.size(),null);
                 System.out.println("\n\n");
-                boolean booked=expandedHotelDetails(booking,HotelDB.getHotelByID(availableHotelsID.get(choice-1)),customer,booking.getNoOfDays());
+                boolean booked=expandedHotelDetails(booking,hotelDB.getHotelByID(availableHotelsID.get(choice-1)),customer,booking.getNoOfDays());
                 if(booked){
                     return;
                 }
@@ -332,7 +337,7 @@ public class CustomerDriver implements Driver {
 
         System.out.println();
         System.out.println("Your Booking Details");
-        System.out.println("Dates : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+" - "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
+        System.out.println("Dates : "+booking.getCheckInDateString()+" - "+booking.getCheckOutDateString());
         System.out.println("Rooms : "+booking.getTotalNoOfRoomsNeeded());
         System.out.println("Booking for : "+customer.getFullName());
         System.out.println();
@@ -420,11 +425,11 @@ public class CustomerDriver implements Driver {
         System.out.println("Contact : "+hotel.getPhoneNumber());
         System.out.println();
         System.out.println("Check-in                             Check-out");
-        System.out.println(InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+"        "+booking.getNoOfDays()+"N             "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
+        System.out.println(booking.getCheckInDateString()+"        "+booking.getNoOfDays()+"N             "+booking.getCheckOutDateString());
         System.out.println("12:00PM onwards                   Before 11:00AM\n");
-        BookingDB.addBooking(booking);
+        bookingDB.addBooking(booking);
         hotel.addBookingIDs(booking.getBookingID());
-        booking.setHotel(hotel);
+        booking.setHotelID(hotel.getHotelID());
         customer.addBookingIDs(booking.getBookingID());
         System.out.println("BOOKING ID");
         System.out.println(" --> "+booking.getBookingID()+"\n");
@@ -456,13 +461,14 @@ public class CustomerDriver implements Driver {
         }
         System.out.println("\nBooking List\n");
         for(int i=0;i<bookingIDs.size();i++){
-            Booking booking=BookingDB.getBookingWithID(bookingIDs.get(i));
+            Booking booking=bookingDB.getBookingWithID(bookingIDs.get(i));
+            Hotel hotel=hotelDB.getHotelByID(booking.getHotelID());
             System.out.println((i+1)+".Booking ID : "+booking.getBookingID());
-            System.out.println("  Check-in Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+"   Check-out Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
-            System.out.println("  "+booking.getHotel().getHotelType()+" "+booking.getHotel().getHotelName());
-            System.out.println("  No."+booking.getHotel().getAddress().getBuildingNo()+","+booking.getHotel().getAddress().getStreet());
-            System.out.println("  "+booking.getHotel().getAddress().getLocality()+","+booking.getHotel().getAddress().getCity());
-            System.out.println("  "+booking.getHotel().getAddress().getState()+"-"+booking.getHotel().getAddress().getPostalCode());
+            System.out.println("  Check-in Date : "+booking.getCheckInDateString()+"   Check-out Date : "+booking.getCheckOutDateString());
+            System.out.println("  "+hotel.getHotelType()+" "+hotel.getHotelName());
+            System.out.println("  No."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
+            System.out.println("  "+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
+            System.out.println("  "+hotel.getAddress().getState()+"-"+hotel.getAddress().getPostalCode());
             System.out.println();
         }
     }
@@ -479,9 +485,9 @@ public class CustomerDriver implements Driver {
             System.out.println("Enter S.No to Cancel Hotel : ");
             int bookingIDIndex=InputHelper.getInputWithinRange(customer.getBookingIDs().size(),null);
             int bookingID=customer.getBookingIDs().get(bookingIDIndex-1);
-            Booking booking=BookingDB.getBookingWithID(bookingID);
-            BookingDB.removeBooking(booking);
-            Hotel hotel=booking.getHotel();
+            Booking booking=bookingDB.getBookingWithID(bookingID);
+            bookingDB.removeBooking(booking);
+            Hotel hotel=hotelDB.getHotelByID(booking.getHotelID());
             hotel.removeBookingIDs(bookingID);
             customer.removeBookingIDs(bookingID);
             ArrayList<Date> datesInRange=InputHelper.getDatesBetweenTwoDates(booking.getCheckInDate(),booking.getCheckOutDate());
@@ -507,7 +513,7 @@ public class CustomerDriver implements Driver {
     void listFavoriteHotels(Customer customer){
 
         for(int i=0;i<customer.getFavoriteHotels().size();i++){
-            Hotel hotel=HotelDB.getHotelByID(customer.getFavoriteHotels().get(i));
+            Hotel hotel=hotelDB.getHotelByID(customer.getFavoriteHotels().get(i));
             if(hotel==null){
                 customer.removeFavoriteHotels(customer.getFavoriteHotels().get(i));
             }

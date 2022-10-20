@@ -20,7 +20,11 @@ public class HotelDriver implements Driver{
 
     static final HotelDriver hotelDriver=new HotelDriver();
     private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
-
+    private final AdminDB adminDB=AdminDB.getInstance();
+    private final HotelDB hotelDB=HotelDB.getInstance();
+    private final CustomerDB customerDB=CustomerDB.getInstance();
+    private final AmenityDB amenityDB=AmenityDB.getInstance();
+    private final BookingDB bookingDB=BookingDB.getInstance();
     private HotelDriver(){
 
     }
@@ -72,7 +76,7 @@ public class HotelDriver implements Driver{
         /*TODO change with new User Authentication*/
         User user=null;
         if(userAuthenticationDB.authenticateHotel(phoneNumber,password)){
-            user=HotelDB.getHotelByPhoneNumber(phoneNumber);
+            user=hotelDB.getHotelByPhoneNumber(phoneNumber);
         }
 
         return user;
@@ -141,7 +145,7 @@ public class HotelDriver implements Driver{
         }
         roomDetails(hotel);
         addHotelAmenities(hotel);
-        HotelDB.registerHotel(hotel);
+        hotelDB.registerHotel(hotel);
         System.out.println("Hotel Successfully Registered");
     }
 
@@ -284,7 +288,7 @@ public class HotelDriver implements Driver{
 
     void addHotelAmenities(Hotel hotel){
         System.out.println("Add Hotel Amenities");
-        ArrayList<Amenity>totalAmenities=AmenityDB.getAmenities();
+        ArrayList<Amenity>totalAmenities=amenityDB.getAmenities();
         ArrayList<Amenity>hotelAmenities=hotel.getAmenities();
         for(Amenity amenity: totalAmenities){
             if(!hotelAmenities.contains(amenity)){
@@ -367,7 +371,7 @@ public class HotelDriver implements Driver{
                 return;
         }
         System.out.println("Room Prices Changed Successfully");
-        AdminDB.addPriceUpdatedHotelList(hotel.getHotelID());
+        adminDB.addPriceUpdatedHotelList(hotel.getHotelID());
     }
 
     double setBaseRoomPrice(String str){
@@ -401,12 +405,12 @@ public class HotelDriver implements Driver{
         }
         System.out.println();
         for(int i=0;i<bookingIDs.size();i++){
-            Booking booking= BookingDB.getBookingWithID(bookingIDs.get(i));
-            Customer customer= CustomerDB.getCustomerByID(booking.getCustomerID());
+            Booking booking= bookingDB.getBookingWithID(bookingIDs.get(i));
+            Customer customer= customerDB.getCustomerByID(booking.getCustomerID());
             System.out.println((i+1)+".Customer Name : "+customer.getFullName());
             System.out.println("  Booking ID : "+booking.getBookingID());
-            System.out.println("  Check In Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate()));
-            System.out.println("  Check Out Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
+            System.out.println("  Check In Date : "+booking.getCheckInDateString());
+            System.out.println("  Check Out Date : "+booking.getCheckOutDateString());
             System.out.println("  No of Rooms Booked : ");
             System.out.println("     1."+RoomType.SINGLEBEDROOM+" - "+booking.getNoOfSingleBedroomsNeeded());
             System.out.println("     2."+RoomType.DOUBLEBEDROOM+" - "+booking.getNoOfDoubleBedroomsNeeded());

@@ -1,20 +1,18 @@
 package booking;
 
-import hotel.Hotel;
-import hotel.Room;
-import hotel.RoomType;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+
 
 public class Booking {
 
-    private Date checkInDate;
-    private Date checkOutDate;
-    private int noOfSingleBedroomsNeeded;
-    private int noOfDoubleBedroomsNeeded;
-    private int noOfSuiteRoomNeeded;
-    private int totalNoOfRoomsNeeded;
+    private final Date checkInDate;
+    private final Date checkOutDate;
+    private final String checkInDateString;
+    private final String checkOutDateString;
+    private final int noOfSingleBedroomsNeeded;
+    private final int noOfDoubleBedroomsNeeded;
+    private final int noOfSuiteRoomNeeded;
+    private final int totalNoOfRoomsNeeded;
     private int bookingID;
     private double totalPrice;
     private double totalPriceOfSingleBedRooms;
@@ -23,14 +21,16 @@ public class Booking {
     private int noOfDays;
     private int customerID;
     private boolean paid;
-    private Hotel hotel;
-    public Booking(Date checkInDate,Date checkOutDate,int noOfSingleBedroomsNeeded,int noOfDoubleBedroomsNeeded,int noOfSuiteRoomNeeded){
+    private int hotelID;
+    public Booking(Date checkInDate,Date checkOutDate,String checkInDateString,String checkOutDateString,int noOfSingleBedroomsNeeded,int noOfDoubleBedroomsNeeded,int noOfSuiteRoomNeeded){
         this.checkInDate=checkInDate;
         this.checkOutDate=checkOutDate;
         this.noOfSingleBedroomsNeeded=noOfSingleBedroomsNeeded;
         this.noOfDoubleBedroomsNeeded=noOfDoubleBedroomsNeeded;
         this.noOfSuiteRoomNeeded=noOfSuiteRoomNeeded;
         this.totalNoOfRoomsNeeded=noOfSingleBedroomsNeeded+noOfDoubleBedroomsNeeded+noOfSuiteRoomNeeded;
+        this.checkInDateString=checkInDateString;
+        this.checkOutDateString=checkOutDateString;
     }
 
     public void setBookingID(int id){
@@ -39,12 +39,21 @@ public class Booking {
     public int getBookingID(){
         return bookingID;
     }
+
     public Date getCheckInDate(){
         return checkInDate;
     }
 
     public Date getCheckOutDate(){
         return checkOutDate;
+    }
+
+    public String getCheckInDateString(){
+        return checkInDateString;
+    }
+
+    public String getCheckOutDateString(){
+        return checkOutDateString;
     }
 
     public int getNoOfSingleBedroomsNeeded() {
@@ -89,11 +98,12 @@ public class Booking {
         return paid;
     }
 
-    public void setHotel(Hotel hotel){
-        this.hotel=hotel;
+    public void setHotelID(int hotelID){
+        this.hotelID=hotelID;
     }
-    public Hotel getHotel(){
-        return hotel;
+
+    public int getHotelID(){
+        return hotelID;
     }
 
     public void setTotalPriceOfSingleBedRooms(double totalPriceOfSingleBedRooms) {

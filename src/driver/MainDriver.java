@@ -14,7 +14,7 @@ public class MainDriver {
 
             switch (choice){
                 case 1:
-                    d=AdminDriver.getInstance();
+                    d= AdminDriver.getInstance();
                     break;
                 case 2:
                     d=HotelDriver.getInstance();

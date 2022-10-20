@@ -31,10 +31,16 @@ public class InputHelper {
         lastIntegerValue=false;
         try{
             value=input.nextLine();
+            if(value.equals("")){
+                throw new ValidateException();
+            }
         }
         catch(InputMismatchException e){
             System.out.println(Printer.ENTER_VALUE_IN_STRING_FORMAT);
             value=getStringInput();
+        }
+        catch(ValidateException e){
+
         }
         return value;
     }

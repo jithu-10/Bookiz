@@ -3,18 +3,20 @@ package hotel;
 import java.util.ArrayList;
 
 public class AmenityDB {
-    private static final Amenity TV = new Amenity("TV",20);
-    private static final Amenity AC = new Amenity("AC",20);
-    private static final Amenity FRIDGE=new Amenity("FRIDGE",10);
-    private static final Amenity WASHING_MACHINE=new Amenity("WASHING MACHINE",10);
-    private static final Amenity MODERN_WARDROBE=new Amenity("MODERN WARDROBE",5);
-    private static final Amenity HIGH_SPEED_WIFI=new Amenity("HIGH SPEED WIFI",20);
-    private static final Amenity STUDY_LAMP_TABLE=new Amenity("STUDY LAMP AND TABLE",5);
-    private static final Amenity GEYSER=new Amenity("GEYSER",10);
 
-    private static final ArrayList<Amenity> AMENITIES=new ArrayList<>();
+    private static final AmenityDB amenityDB=new AmenityDB();
+    private final Amenity TV = new Amenity("TV",20);
+    private final Amenity AC = new Amenity("AC",20);
+    private final Amenity FRIDGE=new Amenity("FRIDGE",10);
+    private final Amenity WASHING_MACHINE=new Amenity("WASHING MACHINE",10);
+    private final Amenity MODERN_WARDROBE=new Amenity("MODERN WARDROBE",5);
+    private final Amenity HIGH_SPEED_WIFI=new Amenity("HIGH SPEED WIFI",20);
+    private final Amenity STUDY_LAMP_TABLE=new Amenity("STUDY LAMP AND TABLE",5);
+    private final Amenity GEYSER=new Amenity("GEYSER",10);
 
-    static{
+    private final ArrayList<Amenity> AMENITIES=new ArrayList<>();
+
+    {
         AMENITIES.add(TV);
         AMENITIES.add(AC);
         AMENITIES.add(FRIDGE);
@@ -25,39 +27,47 @@ public class AmenityDB {
         AMENITIES.add(GEYSER);
     }
 
-    public static Amenity getTV() {
+    private AmenityDB(){
+
+    }
+
+    public static AmenityDB getInstance(){
+        return amenityDB;
+    }
+
+    public Amenity getTV() {
         return TV;
     }
 
-    public static Amenity getAC() {
+    public Amenity getAC() {
         return AC;
     }
 
-    public static Amenity getFRIDGE() {
+    public Amenity getFRIDGE() {
         return FRIDGE;
     }
 
-    public static Amenity getGEYSER() {
+    public Amenity getGEYSER() {
         return GEYSER;
     }
 
-    public static Amenity getHighSpeedWifi() {
+    public Amenity getHighSpeedWifi() {
         return HIGH_SPEED_WIFI;
     }
 
-    public static Amenity getModernWardrobe() {
+    public Amenity getModernWardrobe() {
         return MODERN_WARDROBE;
     }
 
-    public static Amenity getStudyLampTable() {
+    public Amenity getStudyLampTable() {
         return STUDY_LAMP_TABLE;
     }
 
-    public static Amenity getWashingMachine() {
+    public Amenity getWashingMachine() {
         return WASHING_MACHINE;
     }
 
-    public static ArrayList<Amenity> getAmenities(){
+    public ArrayList<Amenity> getAmenities(){
         return AMENITIES;
     }
 
