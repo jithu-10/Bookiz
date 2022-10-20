@@ -14,10 +14,8 @@ public class Hotel extends User {
     private String hotelAdminName;
     private int hotelID;
     private long phoneNumber;
-    private String password;
     private String hotelName;
     private Address address;
-    private String locality;
     private HotelType hotelType;
     private ArrayList<Amenity> amenities=new ArrayList<>();
     private ArrayList<Room> rooms=new ArrayList<>();
@@ -63,13 +61,11 @@ public class Hotel extends User {
     }
 
 
-    public Hotel(String hotelAdminName,long phoneNumber,String password,String hotelName,Address address,String locality){
+    public Hotel(String hotelAdminName,long phoneNumber,String hotelName,Address address){
         this.hotelAdminName=hotelAdminName;
         this.phoneNumber=phoneNumber;
-        this.password=password;
         this.hotelName=hotelName;
         this.address =address;
-        this.locality=locality;
     }
     public void setAddress(Address address){
         this.address = address;
@@ -183,13 +179,9 @@ public class Hotel extends User {
     public long getPhoneNumber() {
         return phoneNumber;
     }
-    public String getPassword(){return password;}
 
     public String getHotelName() {
         return hotelName;
-    }
-    public String getLocality() {
-        return locality;
     }
 
     public int getTotalNumberofRooms(){

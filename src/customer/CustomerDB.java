@@ -17,16 +17,6 @@ public class CustomerDB {
         customer.setCustomerID(generateId());
     }
 
-    public static Customer checkAuthentication(long phoneNumber, String password){
-
-        for(Customer customer:customerList){
-            if(customer.getPhoneNumber()==phoneNumber&&customer.getPassword().equals(password)){
-                return customer;
-            }
-        }
-        return null;
-    }
-
     public static Customer getCustomerByID(int ID){
         for(int i=0;i<customerList.size();i++){
             if(customerList.get(i).getCustomerID()==ID){
@@ -44,6 +34,17 @@ public class CustomerDB {
             }
         }
         return false;
+    }
+
+    public static Customer getCustomerByPhoneNumber(long phoneNumber){
+        for(Customer customer: customerList){
+            if(customer.getPhoneNumber()==phoneNumber){
+                return customer;
+            }
+        }
+
+        return null;
+
     }
 
 }

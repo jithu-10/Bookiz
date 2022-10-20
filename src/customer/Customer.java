@@ -11,14 +11,12 @@ public class Customer extends User {
     private long phoneNumber;
     private int customerID;
     private String mailID;
-    private String password;
     private ArrayList<Integer> favoriteHotels=new ArrayList<>();
     private ArrayList<Integer> bookingIDs=new ArrayList<>();
-    public Customer(String fullName,long phoneNumber,String mailID,String password){
+    public Customer(String fullName,long phoneNumber,String mailID){
         this.fullName=fullName;
         this.phoneNumber=phoneNumber;
         this.mailID=mailID;
-        this.password=password;
     }
 
     public void addFavoriteHotels(int ID){
@@ -58,10 +56,6 @@ public class Customer extends User {
 
     public long getPhoneNumber(){
         return phoneNumber;
-    }
-
-    public String getPassword(){
-        return password;
     }
 
 }

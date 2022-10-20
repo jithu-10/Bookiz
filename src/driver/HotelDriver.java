@@ -8,6 +8,7 @@ import customer.CustomerDB;
 import hotel.*;
 import hotel.subutil.Address;
 import user.User;
+import user.UserAuthenticationDB;
 import utility.InputHelper;
 import utility.Printer;
 import utility.Validator;
@@ -18,7 +19,7 @@ import java.util.Date;
 public class HotelDriver implements Driver{
 
     static final HotelDriver hotelDriver=new HotelDriver();
-
+    private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
 
     private HotelDriver(){
 
@@ -67,8 +68,13 @@ public class HotelDriver implements Driver{
         System.out.println(Printer.ENTER_PHONE_NUMBER);
         long phoneNumber= InputHelper.getPhoneNumber();
         System.out.println(Printer.ENTER_PASSWORD);
-        String passWord= InputHelper.getStringInput();
-        User user=HotelDB.checkAuthentication(phoneNumber,passWord);
+        String password= InputHelper.getStringInput();
+        /*TODO change with new User Authentication*/
+        User user=null;
+        if(userAuthenticationDB.authenticateHotel(phoneNumber,password)){
+            user=HotelDB.getHotelByPhoneNumber(phoneNumber);
+        }
+
         return user;
     }
 
@@ -144,7 +150,7 @@ public class HotelDriver implements Driver{
         String hotelAdminName=InputHelper.getStringInput();
         System.out.println("Enter Phone Number : ");
         long phoneNumber=InputHelper.getPhoneNumber();
-        if(HotelDB.isPhoneNumberExist(phoneNumber)){
+        if(userAuthenticationDB.isHotelPhoneNumberExist(phoneNumber)){
             System.out.println("Phone Number already exist");
             return null;
         }
@@ -161,13 +167,11 @@ public class HotelDriver implements Driver{
             }
             System.out.println("Password Not Matching Try Again ");
         }
-
+        userAuthenticationDB.addHotelAuth(phoneNumber,password);
         System.out.println("Hotel Name : ");
         String hotelName=InputHelper.getStringInput();
         Address address=getHotelAddress();
-        System.out.println("Locality (City) : ");
-        String locality=InputHelper.getStringInput();
-        return new Hotel(hotelAdminName,phoneNumber,password,hotelName,address,locality);
+        return new Hotel(hotelAdminName,phoneNumber,hotelName,address);
     }
 
     public Address getHotelAddress(){

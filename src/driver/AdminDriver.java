@@ -111,10 +111,9 @@ public class AdminDriver implements Driver{
             Hotel hotel=hotelsRequested.get(i);
             System.out.println((i+1)+" . "+hotel.getHotelName());
             System.out.println("\tNo."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
-            System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
-            System.out.println("\t"+hotel.getAddress().getPostalCode());
-            //System.out.println("\t"+hotel.getAddress());
-            System.out.println("\t"+hotel.getLocality());
+            System.out.println("\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
+            System.out.println("\t"+hotel.getAddress().getState()+","+hotel.getAddress().getPostalCode());
+
             System.out.println("Ph.No : "+hotel.getPhoneNumber());
             System.out.println("Total No of Rooms : "+hotel.getTotalNumberofRooms());
             System.out.println("Single Bed Rooms : "+hotel.getNumberofSingleBedRooms());
@@ -207,7 +206,7 @@ public class AdminDriver implements Driver{
         }
         System.out.println("ID\t  Hotel Name  \t Locality \t TotalRooms \t TypeofRoom\n");
         for(Hotel hotel:HotelDB.getRegisteredHotelList()){
-            System.out.println(hotel.getHotelID()+"\t"+hotel.getHotelName()+"\t"+hotel.getLocality()+"\t"+hotel.getTotalNumberofRooms()+"\t"+hotel.getHotelType());
+            System.out.println(hotel.getHotelID()+"\t"+hotel.getHotelName()+"\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity()+"\t"+hotel.getTotalNumberofRooms()+"\t"+hotel.getHotelType());
         }
     }
 //--------------------------------------------3.Remove Registered Hotels-----------------------------------------------//
@@ -254,10 +253,9 @@ public class AdminDriver implements Driver{
         if(hotel!=null){
             System.out.println("Hotel ID : "+hotel.getHotelID());
             System.out.println("Hotel Name : "+hotel.getHotelName());
-            System.out.println("Hotel Address : No."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
+            System.out.println("Hotel Address : No."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet()+","+hotel.getAddress().getLocality());
             System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
             System.out.println("Postal Code : "+hotel.getAddress().getPostalCode());
-            System.out.println("Hotel Locality : "+hotel.getLocality());
             System.out.println("No of Rooms : "+hotel.getTotalNumberofRooms());
             System.out.println("Set Price for Rooms");
             System.out.println("SingleBed Rooms -> Base Price : "+hotel.getSingleBedRoomBasePrice()+" Max Price : "+hotel.getSingleBedRoomMaxPrice()+" Current List Price : "+hotel.getSingleBedRoomListPrice());
@@ -304,7 +302,7 @@ public class AdminDriver implements Driver{
         System.out.println("HOTEL ID |       HOTEL DETAILS     |    HOTEL TYPE ");
         for(Integer id:hotelList){
             Hotel hotel=HotelDB.getHotelByID(id);
-            System.out.println("  "+hotel.getHotelID()+"  "+hotel.getHotelName()+" , "+hotel.getLocality()+"  "+hotel.getHotelType());
+            System.out.println("  "+hotel.getHotelID()+"  "+hotel.getHotelName()+" , "+hotel.getAddress().getCity()+"  "+hotel.getHotelType());
         }
         System.out.println("\n\n"+"Enter Hotel Id : ");
         int hotelId=InputHelper.getInputWithinRange(Integer.MAX_VALUE,"There is no hotel with Negative ID's");

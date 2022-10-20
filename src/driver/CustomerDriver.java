@@ -7,6 +7,7 @@ import customer.CustomerDB;
 import hotel.*;
 import hotel.subutil.AddressDB;
 import user.User;
+import user.UserAuthenticationDB;
 import utility.InputHelper;
 import utility.Printer;
 import utility.Validator;
@@ -17,7 +18,7 @@ public class CustomerDriver implements Driver {
 
     static final CustomerDriver customerDriver=new CustomerDriver();
     private static final AddressDB addressDB=AddressDB.getInstance();
-
+    private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
     private CustomerDriver(){
 
     }
@@ -59,7 +60,10 @@ public class CustomerDriver implements Driver {
         long phoneNumber= InputHelper.getPhoneNumber();
         System.out.println(Printer.ENTER_PASSWORD);
         String passWord= InputHelper.getStringInput();
-        User user= CustomerDB.checkAuthentication(phoneNumber,passWord);
+        User user= null;
+        if(userAuthenticationDB.authenticateCustomer(phoneNumber,passWord)){
+            user=CustomerDB.getCustomerByPhoneNumber(phoneNumber);
+        }
         return user;
     }
 
@@ -117,7 +121,7 @@ public class CustomerDriver implements Driver {
 
         System.out.println("Enter Phone Number : ");
         long phoneNumber=InputHelper.getPhoneNumber();
-        if(CustomerDB.isPhoneNumberExist(phoneNumber)){
+        if(userAuthenticationDB.isCustomerPhoneNumberExist(phoneNumber)){
             System.out.println("Phone Number already exist");
             return null;
         }
@@ -133,11 +137,12 @@ public class CustomerDriver implements Driver {
             }
             System.out.println("Password Not Matching Try Again ");
         }
+        userAuthenticationDB.addCustomerAuth(phoneNumber,password);
         System.out.println("Full Name : ");
         String fullName=InputHelper.getStringInput();
         System.out.println("E-Mail ID : ");
         String mailID=InputHelper.getEmailInput();
-        return new Customer(fullName,phoneNumber,mailID,password);
+        return new Customer(fullName,phoneNumber,mailID);
     }
 
     //------------------------------------------------1.Book Hotel----------------------------------------------------//
@@ -287,9 +292,8 @@ public class CustomerDriver implements Driver {
         System.out.println("\t"+hotel.getHotelName());
         System.out.println("\tPh.No : "+hotel.getPhoneNumber());
         System.out.println("\tAddress : No."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
-        System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
-        System.out.println("\t"+hotel.getAddress().getPostalCode());
-        System.out.println("\tLocality : "+hotel.getLocality()+"\n");
+        System.out.println("\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
+        System.out.println("\t"+hotel.getAddress().getState()+"-"+hotel.getAddress().getPostalCode());
     }
     void printHotelDetailsWithBooking(int sno,Hotel hotel,Booking booking){
         printHotelDetails(sno,hotel);
@@ -323,8 +327,8 @@ public class CustomerDriver implements Driver {
     boolean expandedHotelDetails(Booking booking,Hotel hotel,Customer customer,int totalDays){
         System.out.println(hotel.getHotelType()+" "+hotel.getHotelID()+" "+hotel.getHotelName());
         System.out.println("\tNo."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
-        System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
-        System.out.println("\t"+hotel.getAddress().getPostalCode());
+        System.out.println("\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
+        System.out.println("\t"+hotel.getAddress().getState()+hotel.getAddress().getPostalCode());
 
         System.out.println();
         System.out.println("Your Booking Details");
@@ -411,8 +415,8 @@ public class CustomerDriver implements Driver {
         System.out.println("BOOKIZ "+hotel.getHotelType()+" "+hotel.getHotelID());
         System.out.println(hotel.getHotelName());
         System.out.println("\tNo."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
-        System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
-        System.out.println("\t"+hotel.getAddress().getPostalCode());
+        System.out.println("\t   "+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
+        System.out.println("\t   "+hotel.getAddress().getState()+","+hotel.getAddress().getPostalCode());
         System.out.println("Contact : "+hotel.getPhoneNumber());
         System.out.println();
         System.out.println("Check-in                             Check-out");
@@ -457,10 +461,8 @@ public class CustomerDriver implements Driver {
             System.out.println("  Check-in Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckInDate())+"   Check-out Date : "+InputHelper.getSimpleDateWithoutYear(booking.getCheckOutDate()));
             System.out.println("  "+booking.getHotel().getHotelType()+" "+booking.getHotel().getHotelName());
             System.out.println("  No."+booking.getHotel().getAddress().getBuildingNo()+","+booking.getHotel().getAddress().getStreet());
-            System.out.println("  "+booking.getHotel().getAddress().getCity()+","+booking.getHotel().getAddress().getState());
-            System.out.println("  "+booking.getHotel().getAddress().getPostalCode());
-
-            System.out.println("  "+booking.getHotel().getLocality());
+            System.out.println("  "+booking.getHotel().getAddress().getLocality()+","+booking.getHotel().getAddress().getCity());
+            System.out.println("  "+booking.getHotel().getAddress().getState()+"-"+booking.getHotel().getAddress().getPostalCode());
             System.out.println();
         }
     }
