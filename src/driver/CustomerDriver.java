@@ -192,7 +192,7 @@ public class CustomerDriver implements Driver {
             }
 
         }
-        Booking booking=new Booking(checkInDate,checkOutDate,InputHelper.getSimpleDateWithoutYear(checkInDate),InputHelper.getSimpleDateWithoutYear(checkOutDate),noOfSingleBedroomsNeeded,noOfDoubleBedroomsNeeded,noOfSuiteRoomNeeded);
+        Booking booking=new Booking(checkInDate,checkOutDate,noOfSingleBedroomsNeeded,noOfDoubleBedroomsNeeded,noOfSuiteRoomNeeded);
         findAvailableHotels(customer,booking,locality);
     }
 
@@ -375,7 +375,6 @@ public class CustomerDriver implements Driver {
         loop:do{
             switch (choice){
                 case 1:
-                    booking.setTotalPrice(totalPrice);
                     booking.setTotalPriceOfSingleBedRooms(totalPriceOfSingleBedRooms);
                     booking.setTotalPriceOfDoubleBedRooms(totalPriceOfDoubleBedRooms);
                     booking.setTotalPriceOfSuiteRooms(totalPriceOfSuiteRooms);

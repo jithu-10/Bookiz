@@ -1,5 +1,7 @@
 package booking;
 
+import utility.InputHelper;
+
 import java.util.Date;
 
 
@@ -7,14 +9,10 @@ public class Booking {
 
     private final Date checkInDate;
     private final Date checkOutDate;
-    private final String checkInDateString;
-    private final String checkOutDateString;
     private final int noOfSingleBedroomsNeeded;
     private final int noOfDoubleBedroomsNeeded;
     private final int noOfSuiteRoomNeeded;
-    private final int totalNoOfRoomsNeeded;
     private int bookingID;
-    private double totalPrice;
     private double totalPriceOfSingleBedRooms;
     private double totalPriceOfDoubleBedRooms;
     private double totalPriceOfSuiteRooms;
@@ -22,15 +20,12 @@ public class Booking {
     private int customerID;
     private boolean paid;
     private int hotelID;
-    public Booking(Date checkInDate,Date checkOutDate,String checkInDateString,String checkOutDateString,int noOfSingleBedroomsNeeded,int noOfDoubleBedroomsNeeded,int noOfSuiteRoomNeeded){
+    public Booking(Date checkInDate,Date checkOutDate,int noOfSingleBedroomsNeeded,int noOfDoubleBedroomsNeeded,int noOfSuiteRoomNeeded){
         this.checkInDate=checkInDate;
         this.checkOutDate=checkOutDate;
         this.noOfSingleBedroomsNeeded=noOfSingleBedroomsNeeded;
         this.noOfDoubleBedroomsNeeded=noOfDoubleBedroomsNeeded;
         this.noOfSuiteRoomNeeded=noOfSuiteRoomNeeded;
-        this.totalNoOfRoomsNeeded=noOfSingleBedroomsNeeded+noOfDoubleBedroomsNeeded+noOfSuiteRoomNeeded;
-        this.checkInDateString=checkInDateString;
-        this.checkOutDateString=checkOutDateString;
     }
 
     public void setBookingID(int id){
@@ -49,11 +44,11 @@ public class Booking {
     }
 
     public String getCheckInDateString(){
-        return checkInDateString;
+        return InputHelper.getSimpleDateWithoutYear(checkInDate);
     }
 
     public String getCheckOutDateString(){
-        return checkOutDateString;
+        return InputHelper.getSimpleDateWithoutYear(checkOutDate);
     }
 
     public int getNoOfSingleBedroomsNeeded() {
@@ -69,13 +64,11 @@ public class Booking {
     }
 
     public int getTotalNoOfRoomsNeeded() {
-        return totalNoOfRoomsNeeded;
+        return noOfSingleBedroomsNeeded+noOfDoubleBedroomsNeeded+noOfSuiteRoomNeeded;
     }
-    public void setTotalPrice(double totalPrice){
-        this.totalPrice=totalPrice;
-    }
+
     public double getTotalPrice(){
-        return totalPrice;
+        return totalPriceOfSingleBedRooms+totalPriceOfDoubleBedRooms+totalPriceOfSuiteRooms;
     }
     public void setNoOfDays(int noOfDays){
         this.noOfDays=noOfDays;

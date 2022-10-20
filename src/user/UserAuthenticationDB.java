@@ -10,15 +10,11 @@ public class UserAuthenticationDB {
     private static UserAuthenticationDB userAuthenticationDB=new UserAuthenticationDB();
 
     private UserAuthenticationDB(){
-
+        adminAuthentication.put("admin","pass");
     }
 
     public static UserAuthenticationDB getInstance(){
         return userAuthenticationDB;
-    }
-
-    public void addAdminAuth(){
-
     }
 
     public void addHotelAuth(Long phoneNumber,String password){
@@ -27,6 +23,14 @@ public class UserAuthenticationDB {
 
     public void addCustomerAuth(Long phoneNumber,String password){
         customerAuthentication.put(phoneNumber,password);
+    }
+
+    public boolean authenticateAdmin(String userName,String password){
+        if(adminAuthentication.containsKey(userName)){
+            String orgPassword=adminAuthentication.get(userName);
+            return orgPassword.equals(password);
+        }
+        return false;
     }
 
     public boolean authenticateHotel(Long phoneNumber,String password){

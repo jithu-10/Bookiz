@@ -10,6 +10,7 @@ import hotel.Hotel;
 import hotel.HotelDB;
 import hotel.RoomType;
 import user.User;
+import user.UserAuthenticationDB;
 import utility.InputHelper;
 import utility.Printer;
 
@@ -19,7 +20,8 @@ import java.util.LinkedList;
 
 public class AdminDriver implements Driver {
 
-    static final AdminDriver adminDriver=new AdminDriver();
+    private static final AdminDriver adminDriver=new AdminDriver();
+    private final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
     private final AdminDB adminDB=AdminDB.getInstance();
     private final HotelDB hotelDB=HotelDB.getInstance();
     private final CustomerDB customerDB= CustomerDB.getInstance();
@@ -54,7 +56,7 @@ public class AdminDriver implements Driver {
         String userName= InputHelper.getStringInput();
         System.out.println(Printer.ENTER_PASSWORD);
         String passWord= InputHelper.getStringInput();
-        if(Admin.checkAuthentication(userName,passWord)){
+        if(userAuthenticationDB.authenticateAdmin(userName,passWord)){
             return Admin.getInstance();
         }
         return null;
