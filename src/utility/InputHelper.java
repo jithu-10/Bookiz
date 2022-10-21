@@ -1,5 +1,7 @@
 package utility;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -111,17 +113,6 @@ public class InputHelper {
         }
         return postalCode;
     }
-
-    /*
-    public static int getTwoOptionsInput(){
-        int value=InputHelper.getIntegerInput();
-        if(value<1||value>2){
-            System.out.println("Please enter input only from the options : ");
-            return getTwoOptionsInput();
-        }
-        return value;
-    }
-     */
 
     public static int getInputWithinRange(int end,String str){
         if(str==null){
@@ -255,6 +246,42 @@ public class InputHelper {
         }
         newStr=newStr.toUpperCase();
         return newStr;
+    }
+
+    public static ArrayList<String> getFileInput(){
+        ArrayList<String> textFile=new ArrayList<>();
+        try {
+            System.out.println("Enter File Path : ");
+            String filePath=InputHelper.getStringInput();
+            File file = new File(filePath);
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                int j=0;
+                String separatedData="";
+                for(int i=0;i<data.length();i++){
+                    j++;
+                    separatedData+=data.charAt(i);
+                    if(j==100){
+                        j=0;
+                        textFile.add(separatedData);
+                        separatedData="";
+                    }
+                }
+                textFile.add(separatedData);
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Exist");
+        }
+        return textFile;
+    }
+
+    public static void printFile(ArrayList<String> files){
+        for(int i=0;i<files.size();i++){
+            System.out.println(files.get(i));
+        }
     }
 
 

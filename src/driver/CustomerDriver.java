@@ -18,7 +18,6 @@ import java.util.*;
 public class CustomerDriver implements Driver {
 
     private static final CustomerDriver customerDriver=new CustomerDriver();
-    private final AdminDB adminDB=AdminDB.getInstance();
     private final HotelDB hotelDB=HotelDB.getInstance();
     private final CustomerDB customerDB=CustomerDB.getInstance();
     private final AddressDB addressDB=AddressDB.getInstance();

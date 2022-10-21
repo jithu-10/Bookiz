@@ -58,12 +58,16 @@ public class HotelDriver implements Driver{
                 }
                 break;
             case 2:
-                register();
+                if(acceptTermsAndConditions()){
+                    register();
+                }
+
                 break;
 
         }
 
     }
+
 
     //------------------------------------------------ Hotel Login ---------------------------------------------------//
     @Override
@@ -73,10 +77,12 @@ public class HotelDriver implements Driver{
         long phoneNumber= InputHelper.getPhoneNumber();
         System.out.println(Printer.ENTER_PASSWORD);
         String password= InputHelper.getStringInput();
-        /*TODO change with new User Authentication*/
         User user=null;
         if(userAuthenticationDB.authenticateHotel(phoneNumber,password)){
             user=hotelDB.getHotelByPhoneNumber(phoneNumber);
+            if(user==null){
+                user= adminDB.getHotelByPhoneNumber(phoneNumber);
+            }
         }
 
         return user;
@@ -111,6 +117,7 @@ public class HotelDriver implements Driver{
                     break;
                 case 5:
                     showRoomsBookedNonBooked(hotel);
+                    InputHelper.pressEnterToContinue();
                     break;
                 case 6:
                     changeRoomPrices(hotel);
@@ -138,6 +145,21 @@ public class HotelDriver implements Driver{
 
 
     //------------------------------------------------Hotel Registration----------------------------------------------//
+
+    public boolean acceptTermsAndConditions(){
+        if(adminDB.getTermsAndConditions().isEmpty()){
+            return true;
+        }
+        InputHelper.printFile(adminDB.getTermsAndConditions());
+        System.out.println("1.Accept \n2.Decline");
+        int choice=InputHelper.getInputWithinRange(2,null);
+        if(choice==1){
+            return true;
+        }
+        return false;
+    }
+
+
     public void register(){
         Hotel hotel=hotelDetails();
         if(hotel==null){
@@ -145,7 +167,7 @@ public class HotelDriver implements Driver{
         }
         roomDetails(hotel);
         addHotelAmenities(hotel);
-        hotelDB.registerHotel(hotel);
+        adminDB.registerHotel(hotel);
         System.out.println("Hotel Successfully Registered");
     }
 
@@ -203,7 +225,6 @@ public class HotelDriver implements Driver{
         double basePrice=setBaseRoomPrice(null);
         double maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addSingleBedRooms(singleBedCount,basePrice,maxPrice);
-
         System.out.println("Double Bed Count : ");
         int doubleBedCount=InputHelper.getIntegerInput();
         basePrice=setBaseRoomPrice(null);
@@ -236,13 +257,13 @@ public class HotelDriver implements Driver{
 
         switch (choice){
             case 1:
-                hotel.addSingleBedRooms(count);
+                hotel.addRooms(count,RoomType.SINGLEBEDROOM);
                 break;
             case 2:
-                hotel.addDoubleBedRooms(count);
+                hotel.addRooms(count,RoomType.DOUBLEBEDROOM);
                 break;
             case 3:
-                hotel.addSuiteRooms(count);
+                hotel.addRooms(count,RoomType.SUITEROOM);
                 break;
             case 4:
                 System.out.println("Back to Main Menu");
@@ -324,6 +345,12 @@ public class HotelDriver implements Driver{
     void showRoomsBookedNonBooked(Hotel hotel){
         System.out.println("Enter Date : ");
         Date date=InputHelper.getDate();
+        Date currentDate=InputHelper.setTime(new Date());
+        if(currentDate.compareTo(date)==1){
+            System.out.println("Cant Show Booked rooms before current date");
+            return;
+        }
+        
         int noOfSingleBedRoomsBookedByDate=hotel.getNoOfSingleBedRoomsBookedByDate(date);
         int noOfDoubleBedRoomsBookedByDate=hotel.getNoOfDoubleBedRoomsBookedByDate(date);
         int noOfSuiteRoomsBookedByDate=hotel.getNoOfSuiteRoomsBookedByDate(date);
@@ -332,7 +359,7 @@ public class HotelDriver implements Driver{
         System.out.println(RoomType.SINGLEBEDROOM+"        "+noOfSingleBedRoomsBookedByDate+"        "+(hotel.getNumberofSingleBedRooms()-noOfSingleBedRoomsBookedByDate));
         System.out.println(RoomType.DOUBLEBEDROOM+"        "+noOfDoubleBedRoomsBookedByDate+"        "+(hotel.getNumberofDoubleBedRooms()-noOfDoubleBedRoomsBookedByDate));
         System.out.println(RoomType.SUITEROOM+"            "+noOfSuiteRoomsBookedByDate+"        "+(hotel.getNumberofSuiteRooms()-noOfSuiteRoomsBookedByDate));
-        InputHelper.pressEnterToContinue();
+
     }
 
     //----------------------------------------------6.Change Price of Rooms--------------------------------------------//

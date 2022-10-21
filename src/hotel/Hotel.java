@@ -83,13 +83,6 @@ public class Hotel extends User {
         setSingleBedRoomPrice(basePrice,maxPrice);
     }
 
-    public void addSingleBedRooms(int count){
-        for(int i=0;i<count;i++){
-            Room room=new Room(RoomType.SINGLEBEDROOM);
-            rooms.add(room);
-            totalSingleBedRooms++;
-        }
-    }
 
     public void addDoubleBedRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++){
@@ -100,14 +93,6 @@ public class Hotel extends User {
         setDoubleBedRoomPrice(basePrice,maxPrice);
     }
 
-    public void addDoubleBedRooms(int count){
-        for(int i=0;i<count;i++){
-            Room room=new Room(RoomType.DOUBLEBEDROOM);
-            rooms.add(room);
-            totalDoubleBedRooms++;
-        }
-
-    }
 
     public void addSuiteRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++) {
@@ -119,16 +104,23 @@ public class Hotel extends User {
         setSuiteRoomPrice(basePrice,maxPrice);
     }
 
-    public void addSuiteRooms(int count){
-        for(int i=0;i<count;i++) {
 
-            Room room=new Room(RoomType.SUITEROOM);
+
+    public void addRooms(int count,RoomType roomType){
+        for(int i=0;i<count;i++){
+            Room room=new Room(roomType);
             rooms.add(room);
-            totalSuiteRooms++;
+            if(roomType==RoomType.SINGLEBEDROOM){
+                totalSingleBedRooms++;
+            }
+            else if(roomType==RoomType.DOUBLEBEDROOM){
+                totalDoubleBedRooms++;
+            }
+            else if(roomType==RoomType.SUITEROOM){
+                totalSuiteRooms++;
+            }
         }
-
     }
-    /*TODO make a common add rooms like remove rooms method below*/
     public void removeRooms(int count,RoomType roomType){
         int value=count;
         ArrayList<Room>rooms=this.rooms;
@@ -283,6 +275,7 @@ public class Hotel extends User {
             singleBedRoomPrice.setListPrice(basePrice);
         }
     }
+
 
     public void setDoubleBedRoomPrice(double basePrice,double maxPrice){
         if(doubleBedRoomPrice==null){

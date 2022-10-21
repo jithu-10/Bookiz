@@ -19,7 +19,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 public class AdminDriver implements Driver {
-
     private static final AdminDriver adminDriver=new AdminDriver();
     private final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
     private final AdminDB adminDB=AdminDB.getInstance();
@@ -86,6 +85,7 @@ public class AdminDriver implements Driver {
                     removeRegisteredHotels();
                     break;
                 case 4:
+                    setTermsAndConditions();
                     /*TODO Set Terms and Conditions*/
                     break;
                 case 5:
@@ -116,7 +116,7 @@ public class AdminDriver implements Driver {
     }
     
     void listHotelsRequestedforApproval(){
-        LinkedList<Hotel> hotelsRequested= hotelDB.getHotelsRegisteredForApproval();
+        LinkedList<Hotel> hotelsRequested= adminDB.getHotelsRegisteredForApproval();
         if(hotelsRequested.size()==0){
             System.out.println("No Such Requests available now..");
             return;
@@ -148,7 +148,6 @@ public class AdminDriver implements Driver {
             hotelDB.addApprovedHotelList(hotel);
             setPriceforHotelRooms(hotel);
             hotel.setHotelType();
-            //hotel.setHotelId(HotelDB.generateID()); NO NEED
             hotelsRequested.remove(choice-1);
         }
         else{
@@ -238,7 +237,35 @@ public class AdminDriver implements Driver {
     }
 
 //-------------------------------------------4.Set Terms and Conditions------------------------------------------------//
-    /*TODO Space for creating file base setting terms and conditions*/
+
+    void setTermsAndConditions(){
+        loop:do{
+            System.out.println("1.Update Terms and Conditions");
+            System.out.println("2.View Terms and Conditions");
+            System.out.println("3.Go Back");
+            System.out.println("Enter the Input : ");
+            int choice=InputHelper.getInputWithinRange(3,null);
+
+            switch (choice){
+                case 1:
+                    ///Users/jithin-15752/Java Programs/Notes.txt
+                    adminDB.addTermsAndConditions(InputHelper.getFileInput());
+                    break;
+                case 2:
+                    if(adminDB.getTermsAndConditions().isEmpty()){
+                        System.out.println("Not available");
+                        break;
+                    }
+                    System.out.println("\n");
+                    InputHelper.printFile(adminDB.getTermsAndConditions());
+                    break;
+                case 3:
+                    break loop;
+            }
+        }while(true);
+
+    }
+
 
 //-------------------------------------------5.List All Bookings-------------------------------------------------------//
 
