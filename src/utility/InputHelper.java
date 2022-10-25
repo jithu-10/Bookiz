@@ -228,7 +228,7 @@ public class InputHelper {
         try
         {
             System.in.read();
-            input.nextLine();
+            //input.nextLine();
         }
         catch(Exception e)
         {

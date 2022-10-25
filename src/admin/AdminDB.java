@@ -2,6 +2,7 @@ package admin;
 
 
 import hotel.Hotel;
+import utility.QA;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -12,6 +13,8 @@ public class AdminDB {
     private LinkedList<Hotel> hotelsRegisteredForApproval=new LinkedList<>();
     private LinkedHashSet<Integer> priceUpdatedHotelList=new LinkedHashSet<>();
     private ArrayList<String> termsAndConditions=new ArrayList<>();
+    private ArrayList<QA> faq=new ArrayList<QA>();
+    private ArrayList<QA> newQuestions=new ArrayList<QA>();
     private static AdminDB adminDB=new AdminDB();
     private AdminDB(){
 
@@ -54,6 +57,7 @@ public class AdminDB {
         return null;
 
     }
+    
 
     public void addTermsAndConditions(ArrayList<String> termsAndConditions){
         this.termsAndConditions=termsAndConditions;
@@ -61,6 +65,26 @@ public class AdminDB {
 
     public ArrayList<String> getTermsAndConditions(){
         return this.termsAndConditions;
+    }
+
+    public ArrayList<QA> getFaq(){
+        return faq;
+    }
+
+    public ArrayList<QA> getNewQuestions(){
+        return newQuestions;
+    }
+
+    public void addNewQuestion(QA question){
+        this.newQuestions.add(question);
+    }
+
+    public void removeNewQuestion(QA question){
+        newQuestions.remove(question);
+    }
+
+    public void addFaqQuestion(QA question){
+        faq.add(question);
     }
 
 

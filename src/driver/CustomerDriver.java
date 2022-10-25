@@ -9,6 +9,7 @@ import hotel.*;
 import hotel.subutil.AddressDB;
 import user.User;
 import user.UserAuthenticationDB;
+import utility.QA;
 import utility.InputHelper;
 import utility.Printer;
 import utility.Validator;
@@ -20,6 +21,7 @@ public class CustomerDriver implements Driver {
     private static final CustomerDriver customerDriver=new CustomerDriver();
     private final HotelDB hotelDB=HotelDB.getInstance();
     private final CustomerDB customerDB=CustomerDB.getInstance();
+    private final AdminDB adminDB=AdminDB.getInstance();
     private final AddressDB addressDB=AddressDB.getInstance();
     private final BookingDB bookingDB=BookingDB.getInstance();
     private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
@@ -50,7 +52,9 @@ public class CustomerDriver implements Driver {
                 }
                 break;
             case 2:
-                register();
+                if(acceptTermsAndConditions()){
+                    register();
+                }
                 break;
 
         }
@@ -79,9 +83,10 @@ public class CustomerDriver implements Driver {
             System.out.println("2.List Bookings");
             System.out.println("3.Cancel Booking");
             System.out.println("4.Favorite List");
-            System.out.println("5.Log Out");
+            System.out.println("5.Help");
+            System.out.println("6.Log Out");
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
-            int choice = InputHelper.getInputWithinRange(5,null);
+            int choice = InputHelper.getInputWithinRange(6,null);
             switch (choice){
                 case 1:
                     bookHotel(customer);
@@ -97,6 +102,9 @@ public class CustomerDriver implements Driver {
                     InputHelper.pressEnterToContinue();
                     break;
                 case 5:
+                    help(customer);
+                    break;
+                case 6:
                     System.out.println("Signing Out...");
                     return;
                 default:
@@ -110,6 +118,18 @@ public class CustomerDriver implements Driver {
 
     //------------------------------------------------Customer Registration--------------------------------------------//
 
+    public boolean acceptTermsAndConditions(){
+        if(adminDB.getTermsAndConditions().isEmpty()){
+            return true;
+        }
+        InputHelper.printFile(adminDB.getTermsAndConditions());
+        System.out.println("1.Accept \n2.Decline");
+        int choice=InputHelper.getInputWithinRange(2,null);
+        if(choice==1){
+            return true;
+        }
+        return false;
+    }
     @Override
     public void register() {
         Customer customer=customerDetails();
@@ -523,6 +543,49 @@ public class CustomerDriver implements Driver {
         if(customer.getFavoriteHotels().isEmpty()){
             System.out.println("No Favorite Hotels ");
         }
+    }
+
+    //------------------------------------------------4.Help-----------------------------------------------------------//
+
+
+    void help(Customer customer){
+        System.out.println(" Help Section ");
+        System.out.println("1.Frequently Asked Questions(FAQ) ");
+        System.out.println("2.Ask Question ?");
+        System.out.println("3.Go Back");
+        int choice=InputHelper.getInputWithinRange(3,null);
+
+        switch (choice){
+            case 1:
+                listFaq();
+                break;
+            case 2:
+                askQuestion();
+                break;
+            case 3:
+
+        }
+    }
+
+    void listFaq(){
+        ArrayList<QA> faq=adminDB.getFaq();
+        if(faq.isEmpty()){
+            System.out.println("There is no frequently asked questions");
+            return;
+        }
+        System.out.println("Frequently Asked Questions ... \n");
+        for(int i=0;i<faq.size();i++){
+            QA qa=faq.get(i);
+            System.out.println((i+1)+". "+qa.getQuestion());
+            System.out.println("   "+qa.getAnswer()+"\n");
+        }
+    }
+
+    void askQuestion(){
+        System.out.println("Type your Questions : ");
+        QA question=new QA(InputHelper.getStringInput());
+        adminDB.addNewQuestion(question);
+        System.out.println("Your question will be answered if it is a valid question and will be added to FAQ");
     }
 
 }

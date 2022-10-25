@@ -92,14 +92,7 @@ public class HotelDriver implements Driver{
     public void menu(User user) {
         Hotel hotel=(Hotel)user;
         do{
-            System.out.println("1.Add Rooms");
-            System.out.println("2.Remove Rooms");
-            System.out.println("3.Add Amenities");
-            System.out.println("4.Remove Amenities");
-            System.out.println("5.Show Rooms which are booked and non booked by Date");
-            System.out.println("6.Change Room Prices");
-            System.out.println("7.List of Customers who booked rooms in their hotel");
-            System.out.println("8.Sign Out");
+            System.out.println(Printer.HOTEL_MENU);
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
             int choice = InputHelper.getInputWithinRange(8,null);
             switch (choice){
@@ -126,7 +119,7 @@ public class HotelDriver implements Driver{
                     bookedCustomersList(hotel);
                     break;
                 case 8:
-                    System.out.println("Signing Out...");
+                    System.out.println(Printer.SIGNED_OUT);
                     return;
                 default:
                     //NO NEED
@@ -168,7 +161,7 @@ public class HotelDriver implements Driver{
         roomDetails(hotel);
         addHotelAmenities(hotel);
         adminDB.registerHotel(hotel);
-        System.out.println("Hotel Successfully Registered");
+        System.out.println(Printer.HOTEL_REGISTERED);
     }
 
     public Hotel hotelDetails(){
@@ -177,21 +170,21 @@ public class HotelDriver implements Driver{
         System.out.println("Enter Phone Number : ");
         long phoneNumber=InputHelper.getPhoneNumber();
         if(userAuthenticationDB.isHotelPhoneNumberExist(phoneNumber)){
-            System.out.println("Phone Number already exist");
+            System.out.println(Printer.PHONE_NUMBER_ALREADY_EXIST);
             return null;
         }
         String password,confirmPassword;
         while(true){
-            System.out.println("Enter Password : ");
+            System.out.println(Printer.ENTER_PASSWORD);
             password=InputHelper.getStringInput();
-            System.out.println("Confirm Password : ");
+            System.out.println(Printer.CONFIRM_PASSWORD);
             confirmPassword=InputHelper.getStringInput();
 
 
             if(Validator.confirmPasswordValidatator(password,confirmPassword)){
                 break;
             }
-            System.out.println("Password Not Matching Try Again ");
+            System.out.println(Printer.PASSWORD_NOT_MATCH);
         }
         userAuthenticationDB.addHotelAuth(phoneNumber,password);
         System.out.println("Hotel Name : ");
@@ -250,7 +243,7 @@ public class HotelDriver implements Driver{
         System.out.println("2."+RoomType.DOUBLEBEDROOM);
         System.out.println("3."+RoomType.SUITEROOM);
         System.out.println("4.Go Back");
-        System.out.println("Enter Input : ");
+        System.out.println(Printer.ENTER_INPUT);
         int choice=InputHelper.getInputWithinRange(4,null);
         System.out.println("Enter No of Rooms to add : ");
         int count=InputHelper.getInputWithinRange(10,"Only 1 to 10 rooms can add at a time");
@@ -266,7 +259,7 @@ public class HotelDriver implements Driver{
                 hotel.addRooms(count,RoomType.SUITEROOM);
                 break;
             case 4:
-                System.out.println("Back to Main Menu");
+                System.out.println(Printer.BACK_TO_MAIN);
                 return;
         }
         System.out.println("Rooms Successfully Added");

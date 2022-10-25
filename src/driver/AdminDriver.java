@@ -13,6 +13,7 @@ import user.User;
 import user.UserAuthenticationDB;
 import utility.InputHelper;
 import utility.Printer;
+import utility.QA;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -71,7 +72,8 @@ public class AdminDriver implements Driver {
             System.out.println("4.Set Terms and Conditions");
             System.out.println("5.Set Price for hotel rooms");
             System.out.println("6.List All Bookings");
-            System.out.println("7.Sign Out");
+            System.out.println("7.Give Solutions");
+            System.out.println("8.Sign Out");
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
             int choice =InputHelper.getIntegerInput();
             switch (choice){
@@ -86,7 +88,6 @@ public class AdminDriver implements Driver {
                     break;
                 case 4:
                     setTermsAndConditions();
-                    /*TODO Set Terms and Conditions*/
                     break;
                 case 5:
                     setPriceforRooms();
@@ -95,6 +96,9 @@ public class AdminDriver implements Driver {
                     listAllBookings();
                     break;
                 case 7:
+                    giveSolution();
+                    break;
+                case 8:
                     System.out.println("Signing Out....");
                     return;
                 default:
@@ -248,7 +252,7 @@ public class AdminDriver implements Driver {
 
             switch (choice){
                 case 1:
-                    ///Users/jithin-15752/Java Programs/Notes.txt
+                    //  Path : /Users/jithin-15752/Java Programs/Notes.txt
                     adminDB.addTermsAndConditions(InputHelper.getFileInput());
                     break;
                 case 2:
@@ -378,6 +382,56 @@ public class AdminDriver implements Driver {
         }
         Hotel hotel=hotelDB.getHotelByID(hotelId);
         setPrice(hotel);
+    }
+
+    //-----------------------------------------------7.Give Solutions--------------------------------------------------//
+
+    void giveSolution(){
+        ArrayList<QA> newQuestions= adminDB.getNewQuestions();
+        if(newQuestions.isEmpty()){
+            System.out.println("No new question asked");
+            return;
+        }
+        System.out.println("Questions : \n");
+        for(int i=0;i< newQuestions.size();i++){
+            QA question=newQuestions.get(i);
+            System.out.println((i+1)+". "+question.getQuestion()+"\n");
+        }
+        System.out.println("1.Select Question");
+        System.out.println("2.Go Back");
+        int choice=InputHelper.getInputWithinRange(2,null);
+        if(choice==1){
+            System.out.println("Enter Question Number : ");
+            int qNo=InputHelper.getInputWithinRange(newQuestions.size(),null);
+            QA question=newQuestions.get(qNo-1);
+            answerOrDeleteQuestion(question);
+        }
+
+    }
+
+    void answerOrDeleteQuestion(QA question){
+        System.out.println("1.Answer Question");
+        System.out.println("2.Remove Question");
+        System.out.println("3.Go Back");
+        int choice=InputHelper.getInputWithinRange(3,null);
+        switch (choice){
+            case 1:
+                answerQuestion(question);
+                break;
+            case 2:
+                adminDB.removeNewQuestion(question);
+                break;
+            case 3:
+                break;
+        }
+    }
+
+    void answerQuestion(QA question){
+        System.out.println("Answer : ");
+        String answer=InputHelper.getStringInput();
+        question.setAnswer(answer);
+        adminDB.addFaqQuestion(question);
+        adminDB.removeNewQuestion(question);
     }
 
 

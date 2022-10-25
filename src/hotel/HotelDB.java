@@ -67,5 +67,13 @@ public class HotelDB {
 
     }
 
+//    public Hotel getUnapprovedHotelByPhoneNumber(long phoneNumber){
+//        return AdminDB.getInstance().getUnapprovedHotelByPhoneNumber(phoneNumber);
+//    }
+//
+//    public ArrayList<String> getTermsAndConditions(){
+//        return AdminDB.getInstance().getTermsAndConditions();
+//    }
+
 
 }
