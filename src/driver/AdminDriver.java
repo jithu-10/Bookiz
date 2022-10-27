@@ -37,7 +37,7 @@ public class AdminDriver implements Driver {
 
     @Override
     public void startDriver() {
-        System.out.println("Admin Driver");
+        System.out.println("Admin");
         Admin admin;
         if((admin=(Admin)signIn())!=null){
             System.out.println(Printer.SIGNED_IN);
@@ -57,7 +57,7 @@ public class AdminDriver implements Driver {
         System.out.println(Printer.ENTER_PASSWORD);
         String passWord= InputHelper.getStringInput();
         if(userAuthenticationDB.authenticateAdmin(userName,passWord)){
-            return Admin.getInstance();
+            return new Admin();
         }
         return null;
     }
@@ -221,9 +221,11 @@ public class AdminDriver implements Driver {
             System.out.println("No Hotels Available Now");
             return;
         }
-        System.out.println("ID\t  Hotel Name  \t Locality \t TotalRooms \t TypeofRoom\n");
+        System.out.println("ID\t Hotel Name\t\t\t\tLocality \t\t\t\tRooms\tTypeofRoom\n");
         for(Hotel hotel:hotelDB.getRegisteredHotelList()){
-            System.out.println(hotel.getHotelID()+"\t"+hotel.getHotelName()+"\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity()+"\t"+hotel.getTotalNumberofRooms()+"\t"+hotel.getHotelType());
+            System.out.printf("%-4s %-20s %-25s %-7s %-7s",hotel.getHotelID(),hotel.getHotelName(),hotel.getAddress().getLocality()+","+hotel.getAddress().getCity(),hotel.getTotalNumberofRooms(),hotel.getHotelType());
+            System.out.println();
+
         }
     }
 //--------------------------------------------3.Remove Registered Hotels-----------------------------------------------//
@@ -289,7 +291,7 @@ public class AdminDriver implements Driver {
             System.out.println((i+1)+". Booking ID : "+booking.getBookingID());
             System.out.println("Check-in Date : "+booking.getCheckInDateString());
             System.out.println("Check-out Date : "+booking.getCheckOutDateString());
-            System.out.println("Customer Name : "+customer.getFullName());
+            System.out.println("Customer Name : "+customer.getUserName());
             System.out.println("Contact : "+customer.getPhoneNumber());
             System.out.println("Hotel Name : "+hotel.getHotelName()+" ID :"+hotel.getHotelID());
             System.out.println();
@@ -303,14 +305,14 @@ public class AdminDriver implements Driver {
         System.out.println("Enter Input : ");
         int choice=InputHelper.getInputWithinRange(2,null);
         if(choice==1){
-            getHotelID();
+            changeHotelPriceByID();
         }
         else if(choice==2){
             listHotelsWhichChangedPrice();
         }
     }
 
-    void getHotelID(){
+    void changeHotelPriceByID(){
         System.out.println("\n"+"Enter Hotel Id : ");
         int hotelID=InputHelper.getInputWithinRange(Integer.MAX_VALUE,"There is no hotel with Negative ID's");
         Hotel hotel=hotelDB.getHotelByID(hotelID);

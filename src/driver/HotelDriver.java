@@ -35,7 +35,7 @@ public class HotelDriver implements Driver{
 
     @Override
     public void startDriver() {
-        System.out.println(" Hotel Driver ");
+        System.out.println(" Bookiz for Hotel ");
         System.out.println("1. Login");
         System.out.println("2. Register");
         System.out.println("Enter Input : ");
@@ -91,10 +91,11 @@ public class HotelDriver implements Driver{
     @Override
     public void menu(User user) {
         Hotel hotel=(Hotel)user;
+        System.out.println("Welcome "+hotel.getHotelAdminName()+" :)");
         do{
             System.out.println(Printer.HOTEL_MENU);
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
-            int choice = InputHelper.getInputWithinRange(8,null);
+            int choice = InputHelper.getInputWithinRange(9,null);
             switch (choice){
                 case 1:
                     addRooms(hotel);
@@ -119,6 +120,9 @@ public class HotelDriver implements Driver{
                     bookedCustomersList(hotel);
                     break;
                 case 8:
+                    verifyCustomer(hotel);
+                    break;
+                case 9:
                     System.out.println(Printer.SIGNED_OUT);
                     return;
                 default:
@@ -214,18 +218,18 @@ public class HotelDriver implements Driver{
         System.out.println("Room Details");
 
         System.out.println("Single Bed Count : ");
-        int singleBedCount=InputHelper.getIntegerInput();
+        int singleBedCount=InputHelper.getWholeNumberIntegerInput();
         double basePrice=setBaseRoomPrice(null);
         double maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addSingleBedRooms(singleBedCount,basePrice,maxPrice);
         System.out.println("Double Bed Count : ");
-        int doubleBedCount=InputHelper.getIntegerInput();
+        int doubleBedCount=InputHelper.getWholeNumberIntegerInput();
         basePrice=setBaseRoomPrice(null);
         maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addDoubleBedRooms(doubleBedCount,basePrice,maxPrice);
 
         System.out.println("Suite Room Count : ");
-        int suiteRoomCount=InputHelper.getIntegerInput();
+        int suiteRoomCount=InputHelper.getWholeNumberIntegerInput();
         basePrice=setBaseRoomPrice(null);
         maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addSuiteRooms(suiteRoomCount,basePrice,maxPrice);
@@ -301,9 +305,14 @@ public class HotelDriver implements Driver{
     //-----------------------------------------------3.Add Amenities---------------------------------------------------//
 
     void addHotelAmenities(Hotel hotel){
-        System.out.println("Add Hotel Amenities");
+
         ArrayList<Amenity>totalAmenities=amenityDB.getAmenities();
         ArrayList<Amenity>hotelAmenities=hotel.getAmenities();
+        if(totalAmenities.size()==hotelAmenities.size()){
+            System.out.println("All Amenities already added");
+            return;
+        }
+        System.out.println("Add Hotel Amenities");
         for(Amenity amenity: totalAmenities){
             if(!hotelAmenities.contains(amenity)){
                 System.out.println("Does your hotel have "+amenity.getName()+" ?");
@@ -397,7 +406,16 @@ public class HotelDriver implements Driver{
     double setBaseRoomPrice(String str){
         System.out.println((str==null?"":str+" ")+"Base Price : ");
         double basePrice=InputHelper.getDoubleInput();
-        return basePrice;
+        do{
+            if(basePrice<1){
+                System.out.println("Base Price should be greater than 1");
+                return setBaseRoomPrice(str);
+            }
+            else{
+                return basePrice;
+            }
+        }while(true);
+
     }
 
     double setMaxRoomPrice(double basePrice,String str){
@@ -419,7 +437,7 @@ public class HotelDriver implements Driver{
     void bookedCustomersList(Hotel hotel){
         ArrayList<Integer> bookingIDs=hotel.getBookingIDs();
         if(bookingIDs.isEmpty()){
-            System.out.println("No Customers Booked rooms on this date");
+            System.out.println("No Customers Booked rooms");
             InputHelper.pressEnterToContinue();
             return;
         }
@@ -427,19 +445,56 @@ public class HotelDriver implements Driver{
         for(int i=0;i<bookingIDs.size();i++){
             Booking booking= bookingDB.getBookingWithID(bookingIDs.get(i));
             Customer customer= customerDB.getCustomerByID(booking.getCustomerID());
-            System.out.println((i+1)+".Customer Name : "+customer.getFullName());
-            System.out.println("  Booking ID : "+booking.getBookingID());
-            System.out.println("  Check In Date : "+booking.getCheckInDateString());
-            System.out.println("  Check Out Date : "+booking.getCheckOutDateString());
-            System.out.println("  No of Rooms Booked : ");
-            System.out.println("     1."+RoomType.SINGLEBEDROOM+" - "+booking.getNoOfSingleBedroomsNeeded());
-            System.out.println("     2."+RoomType.DOUBLEBEDROOM+" - "+booking.getNoOfDoubleBedroomsNeeded());
-            System.out.println("     3."+RoomType.SUITEROOM+" - "+booking.getNoOfSuiteRoomNeeded());
-            System.out.println("  Paid : "+(booking.getPaid()?"YES":"NO"));
-            System.out.println("\n");
+            customerDetails(i,booking,customer);
+//            System.out.println((i+1)+".Customer Name : "+customer.getUserName());
+//            System.out.println("  Booking ID : "+booking.getBookingID());
+//            System.out.println("  Check In Date : "+booking.getCheckInDateString());
+//            System.out.println("  Check Out Date : "+booking.getCheckOutDateString());
+//            System.out.println("  No of Rooms Booked : ");
+//            System.out.println("     1."+RoomType.SINGLEBEDROOM+" - "+booking.getNoOfSingleBedroomsNeeded());
+//            System.out.println("     2."+RoomType.DOUBLEBEDROOM+" - "+booking.getNoOfDoubleBedroomsNeeded());
+//            System.out.println("     3."+RoomType.SUITEROOM+" - "+booking.getNoOfSuiteRoomNeeded());
+//            System.out.println("  Paid : "+(booking.getPaid()?"YES":"NO"));
+//            System.out.println("\n");
         }
         InputHelper.pressEnterToContinue();
     }
 
+    void customerDetails(int sno,Booking booking,Customer customer){
+        System.out.println((sno!=-1?((sno+1)+"."):"")+"Customer Name : "+customer.getUserName());
+        System.out.println("  Booking ID : "+booking.getBookingID());
+        System.out.println("  Check In Date : "+booking.getCheckInDateString());
+        System.out.println("  Check Out Date : "+booking.getCheckOutDateString());
+        System.out.println("  No of Rooms Booked : ");
+        System.out.println("     1."+RoomType.SINGLEBEDROOM+" - "+booking.getNoOfSingleBedroomsNeeded());
+        System.out.println("     2."+RoomType.DOUBLEBEDROOM+" - "+booking.getNoOfDoubleBedroomsNeeded());
+        System.out.println("     3."+RoomType.SUITEROOM+" - "+booking.getNoOfSuiteRoomNeeded());
+        System.out.println("  Paid : "+(booking.getPaid()?"YES":"NO"));
+        System.out.println("\n");
+    }
+
+    //------------------------------------------------------Verify Customer--------------------------------------------//
+
+    void verifyCustomer(Hotel hotel){
+        ArrayList<Integer> bookingIDs=hotel.getBookingIDs();
+        if(bookingIDs.isEmpty()){
+            System.out.println("No Customers Booked rooms");
+            InputHelper.pressEnterToContinue();
+            return;
+        }
+        System.out.println("Enter Booking ID : ");
+        int bookingID=InputHelper.getIntegerInput();
+        for(int i=0;i<bookingIDs.size();i++){
+            if(bookingIDs.get(i)==bookingID){
+                Booking booking=bookingDB.getBookingWithID(bookingID);
+                Customer customer= customerDB.getCustomerByID(booking.getCustomerID());
+                customerDetails(-1,booking,customer);
+                return;
+            }
+        }
+
+        System.out.println("No Customer booked in your hotel with following ID");
+
+    }
 
 }

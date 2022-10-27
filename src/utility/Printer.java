@@ -25,6 +25,6 @@ public class Printer {
 
     //------------Hotel-----------//
 
-    public static final String HOTEL_MENU="1.Add Rooms\n2.Remove Rooms\n3.Add Amenities\n4.Remove Amenities\n5.Show Rooms which are booked and non booked by Date\n6.Change Room Prices\n7.List of Customers who booked rooms in their hotel\n8.Sign Out";
+    public static final String HOTEL_MENU="1.Add Rooms\n2.Remove Rooms\n3.Add Amenities\n4.Remove Amenities\n5.Show Rooms which are booked and non booked by Date\n6.Change Room Prices\n7.List of Customers who booked rooms in their hotel\n8.Verify Customer\n9.Sign Out";
     public static final String HOTEL_REGISTERED="Hotel Successfully Registered";
 }

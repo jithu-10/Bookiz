@@ -10,13 +10,16 @@ public class UserAuthenticationDB {
     private static UserAuthenticationDB userAuthenticationDB=new UserAuthenticationDB();
 
     private UserAuthenticationDB(){
-        adminAuthentication.put("admin","pass");
+        addAdminAuth("admin","pass");
     }
 
     public static UserAuthenticationDB getInstance(){
         return userAuthenticationDB;
     }
 
+    public void addAdminAuth(String userName,String password){
+        adminAuthentication.put(userName,password);
+    }
     public void addHotelAuth(Long phoneNumber,String password){
         hotelAuthentication.put(phoneNumber,password);
     }

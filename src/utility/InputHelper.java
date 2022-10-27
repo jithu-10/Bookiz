@@ -8,11 +8,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InputHelper {
-    private static Scanner input=new Scanner(System.in);
+    private static final Scanner input=new Scanner(System.in);
     private static boolean lastIntegerValue=false;
     public static int getIntegerInput(){
         lastIntegerValue=true;
-        int value=0;
+        int value;
         try{
             value=input.nextInt();
         }
@@ -24,6 +24,48 @@ public class InputHelper {
         return value;
 
     }
+
+    public static int getWholeNumberIntegerInput(){
+        lastIntegerValue=true;
+        int value;
+        try{
+            value=input.nextInt();
+            if(value<0){
+                throw new ValidateException();
+            }
+        }
+        catch (InputMismatchException e){
+            input.nextLine();
+            System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
+            value=getWholeNumberIntegerInput();
+        } catch (ValidateException e) {
+            System.out.println("Value Should be 0 or greater");
+            value=getWholeNumberIntegerInput();
+        }
+        return value;
+    }
+
+    public static int getPositiveInput(){
+        lastIntegerValue=true;
+        int value;
+        try{
+            value=input.nextInt();
+            if(value<1){
+                throw new ValidateException();
+            }
+        }
+        catch (InputMismatchException e){
+            input.nextLine();
+            System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
+            value=getWholeNumberIntegerInput();
+        } catch (ValidateException e) {
+            System.out.println("Value Should be 1 or greater");
+            value=getWholeNumberIntegerInput();
+        }
+        return value;
+    }
+
+
 
     public static String getStringInput(){
         String value=null;
@@ -63,7 +105,7 @@ public class InputHelper {
 
     public static double getDoubleInput(){
         lastIntegerValue=true;
-        double value=0;
+        double value;
         try{
             value=input.nextDouble();
         }
@@ -78,7 +120,7 @@ public class InputHelper {
 
     public static long getPhoneNumber(){
         lastIntegerValue=true;
-        long phoneNumber=0;
+        long phoneNumber;
         try{
             phoneNumber=input.nextLong();
             if(String.valueOf(phoneNumber).length()!=10){
@@ -97,7 +139,7 @@ public class InputHelper {
 
     public static int getPostalCode(){
         lastIntegerValue=true;
-        int postalCode=0;
+        int postalCode;
         try{
             postalCode=input.nextInt();
             if(String.valueOf(postalCode).length()!=6){
@@ -130,7 +172,16 @@ public class InputHelper {
     public static Date getDate(){
         System.out.println("Enter Date in dd-mm-yyyy format");
         String dateStr=getStringInput();
-        Pattern p = Pattern.compile("^\\d{2}-\\d{2}-\\d{4}$");
+
+//       Pattern p = Pattern.compile(
+//      "^(29-02-(2000|2400|2800|(19|2[0-9])(0[48]|[2468][048]|[13579][26])))$"
+//      + "|^((0[1-9]|1[0-9]|2[0-8])-02-((19|2[0-9])[0-9]{2}))$"
+//      + "|^((0[1-9]|[12][0-9]|3[01])-(0[13578]|10|12)-((19|2[0-9])[0-9]{2}))$"
+//      + "|^((0[1-9]|[12][0-9]|30)-(0[469]|11)-((19|2[0-9])[0-9]{2}))$");
+
+
+        //Pattern p = Pattern.compile("^\\d{2}-\\d{2}-\\d{4}$");
+        Pattern p = Pattern.compile("^(0[1-9]|[1-2][0-9]|3[0-1]|)-(0[1-9]|1[0-2])-\\d{4}$");
         Matcher m = p.matcher(dateStr);
         if(!m.matches()){
             System.out.println("Please enter date in exact format");

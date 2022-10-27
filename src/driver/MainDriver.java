@@ -10,7 +10,7 @@ public class MainDriver {
             System.out.println(Printer.WELCOME_MESSAGE);
             System.out.println(Printer.STARTUP_MENU);
             System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
-            int choice = InputHelper.getIntegerInput();
+            int choice = InputHelper.getInputWithinRange(4,null);
 
             switch (choice){
                 case 1:

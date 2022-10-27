@@ -7,16 +7,12 @@ import java.util.ArrayList;
 
 public class Customer extends User {
 
-    private String fullName;
-    private long phoneNumber;
-    private int customerID;
-    private String mailID;
     private ArrayList<Integer> favoriteHotels=new ArrayList<>();
     private ArrayList<Integer> bookingIDs=new ArrayList<>();
-    public Customer(String fullName,long phoneNumber,String mailID){
-        this.fullName=fullName;
-        this.phoneNumber=phoneNumber;
-        this.mailID=mailID;
+    public Customer(String userName,long phoneNumber,String mailID){
+        setUserName(userName);
+        setMailID(mailID);
+        setPhoneNumber(phoneNumber);
     }
 
     public void addFavoriteHotels(int ID){
@@ -44,18 +40,25 @@ public class Customer extends User {
     }
 
     public void setCustomerID(int customerID){
-        this.customerID=customerID;
+        setUserID(customerID);
     }
 
     public int getCustomerID(){
-        return customerID;
+        return getUserID();
     }
-    public String getFullName(){
-        return fullName;
+
+
+
+    public String getUserName(){
+        return super.getUserName();
     }
 
     public long getPhoneNumber(){
-        return phoneNumber;
+        return super.getPhoneNumber();
+    }
+
+    public String getMailID(){
+        return super.getMailID();
     }
 
 }

@@ -35,7 +35,7 @@ public class CustomerDriver implements Driver {
 
     @Override
     public void startDriver() {
-        System.out.println(" Customer Driver ");
+        System.out.println(" Bookiz for Customers ");
         System.out.println("1. Login");
         System.out.println("2. Register");
         System.out.println("Enter Input : ");
@@ -78,6 +78,7 @@ public class CustomerDriver implements Driver {
     @Override
     public void menu(User user) {
         Customer customer=(Customer) user;
+        System.out.println("Welcome "+customer.getUserName()+" :)");
         do{
             System.out.println("1.Book Hotel");
             System.out.println("2.List Bookings");
@@ -178,39 +179,44 @@ public class CustomerDriver implements Driver {
             System.out.println("No hotels available in your locality");
             return;
         }
-//        if(!HotelDB.isLocalityAvailable(locality)){
-//            System.out.println("No hotels available in your locality");
-//            return;
-//        }
+
         System.out.println("Check In Date : ");
         Date checkInDate=compareAndCheckDate(InputHelper.setTime(new Date()),"You can't book hotel for previous dates",false,true);
         System.out.println("Check Out Date : ");
         Date checkOutDate=compareAndCheckDate(checkInDate,"Check out Date will be greater than Check In Date",true,false);
-        System.out.println("Enter No of Rooms Needed : ");
-        int noOfRoomsNeeded=InputHelper.getInputWithinRange(50,"Only 50 rooms can be booked at a time");
+//        System.out.println("Enter No of Rooms Needed : ");
+//        int noOfRoomsNeeded=InputHelper.getInputWithinRange(50,"Only 50 rooms can be booked at a time");
         int noOfSingleBedroomsNeeded=0;
         int noOfDoubleBedroomsNeeded=0;
         int noOfSuiteRoomNeeded=0;
-        for(int i=0;i<noOfRoomsNeeded;i++){
-            System.out.println("Room no."+(i+1));
-            System.out.println("Enter Type of Room Needed ");
-            System.out.println("1."+ RoomType.SINGLEBEDROOM);
-            System.out.println("2."+ RoomType.DOUBLEBEDROOM);
-            System.out.println("3."+RoomType.SUITEROOM);
-            int choice=InputHelper.getInputWithinRange(3,null);
-            switch (choice){
-                case 1:
-                    noOfSingleBedroomsNeeded++;
-                    break;
-                case 2:
-                    noOfDoubleBedroomsNeeded++;
-                    break;
-                case 3:
-                    noOfSuiteRoomNeeded++;
-                    break;
-            }
 
-        }
+        System.out.println("Enter No of "+RoomType.SINGLEBEDROOM+" needed : ");
+        noOfSingleBedroomsNeeded=InputHelper.getWholeNumberIntegerInput();
+        System.out.println("Enter No of "+RoomType.DOUBLEBEDROOM+" needed : ");
+        noOfDoubleBedroomsNeeded=InputHelper.getWholeNumberIntegerInput();
+        System.out.println("Enter No of "+RoomType.SUITEROOM+" needed : ");
+        noOfSuiteRoomNeeded=InputHelper.getWholeNumberIntegerInput();
+
+//        for(int i=0;i<noOfRoomsNeeded;i++){
+//            System.out.println("Room no."+(i+1));
+//            System.out.println("Enter Type of Room Needed ");
+//            System.out.println("1."+ RoomType.SINGLEBEDROOM);
+//            System.out.println("2."+ RoomType.DOUBLEBEDROOM);
+//            System.out.println("3."+RoomType.SUITEROOM);
+//            int choice=InputHelper.getInputWithinRange(3,null);
+//            switch (choice){
+//                case 1:
+//                    noOfSingleBedroomsNeeded++;
+//                    break;
+//                case 2:
+//                    noOfDoubleBedroomsNeeded++;
+//                    break;
+//                case 3:
+//                    noOfSuiteRoomNeeded++;
+//                    break;
+//            }
+//
+//        }
         Booking booking=new Booking(checkInDate,checkOutDate,noOfSingleBedroomsNeeded,noOfDoubleBedroomsNeeded,noOfSuiteRoomNeeded);
         findAvailableHotels(customer,booking,locality);
     }
@@ -358,7 +364,7 @@ public class CustomerDriver implements Driver {
         System.out.println("Your Booking Details");
         System.out.println("Dates : "+booking.getCheckInDateString()+" - "+booking.getCheckOutDateString());
         System.out.println("Rooms : "+booking.getTotalNoOfRoomsNeeded());
-        System.out.println("Booking for : "+customer.getFullName());
+        System.out.println("Booking for : "+customer.getUserName());
         System.out.println();
         System.out.println("Amenities : ");
         ArrayList<Amenity> amenitiesList=hotel.getAmenities();
@@ -452,7 +458,7 @@ public class CustomerDriver implements Driver {
         System.out.println("BOOKING ID");
         System.out.println(" --> "+booking.getBookingID()+"\n");
         System.out.println("RESERVED FOR");
-        System.out.println(" --> "+customer.getFullName()+"\n");
+        System.out.println(" --> "+customer.getUserName()+"\n");
         System.out.println("ROOMS & TYPE");
         if(booking.getNoOfSingleBedroomsNeeded()>0){
             System.out.println(" --> "+booking.getNoOfSingleBedroomsNeeded()+" "+RoomType.SINGLEBEDROOM);
@@ -471,11 +477,11 @@ public class CustomerDriver implements Driver {
 
     //------------------------------------------------2.List Bookings--------------------------------------------------//
 
-    void listBookings(Customer customer){
+    boolean listBookings(Customer customer){
         ArrayList<Integer>bookingIDs=customer.getBookingIDs();
         if(bookingIDs.isEmpty()){
             System.out.println("No bookings available");
-            return ;
+            return false;
         }
         System.out.println("\nBooking List\n");
         for(int i=0;i<bookingIDs.size();i++){
@@ -489,18 +495,21 @@ public class CustomerDriver implements Driver {
             System.out.println("  "+hotel.getAddress().getState()+"-"+hotel.getAddress().getPostalCode());
             System.out.println();
         }
+        return true;
     }
 
     //------------------------------------------------3.Cancel Bookings------------------------------------------------//
 
     void cancelBooking(Customer customer){
-        listBookings(customer);
+        if(!listBookings(customer)){
+            return;
+        }
         System.out.println("1.Cancel Hotel");
         System.out.println("2.Go Back");
         System.out.println("Enter Input : ");
         int choice=InputHelper.getInputWithinRange(2,null);
         if(choice==1){
-            System.out.println("Enter S.No to Cancel Hotel : ");
+            System.out.println("Enter S.No to Cancel Booking : ");
             int bookingIDIndex=InputHelper.getInputWithinRange(customer.getBookingIDs().size(),null);
             int bookingID=customer.getBookingIDs().get(bookingIDIndex-1);
             Booking booking=bookingDB.getBookingWithID(bookingID);

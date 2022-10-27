@@ -10,10 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Hotel extends User {
-
-    private String hotelAdminName;
-    private int hotelID;
-    private long phoneNumber;
     private String hotelName;
     private Address address;
     private HotelType hotelType;
@@ -62,8 +58,8 @@ public class Hotel extends User {
 
 
     public Hotel(String hotelAdminName,long phoneNumber,String hotelName,Address address){
-        this.hotelAdminName=hotelAdminName;
-        this.phoneNumber=phoneNumber;
+        setUserName(hotelAdminName);
+        setPhoneNumber(phoneNumber);
         this.hotelName=hotelName;
         this.address =address;
     }
@@ -72,6 +68,9 @@ public class Hotel extends User {
     }
     public Address getAddress(){
         return address;
+    }
+    public long getPhoneNumber(){
+        return super.getPhoneNumber();
     }
     public void addSingleBedRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++){
@@ -160,17 +159,15 @@ public class Hotel extends User {
     }
 
     public void setHotelId(int hotelID){
-        this.hotelID=hotelID;
+        setUserID(hotelID);
     }
     public int getHotelID(){
-        return this.hotelID;
+        return getUserID();
     }
     public String getHotelAdminName(){
-        return this.hotelAdminName;
+        return getUserName();
     }
-    public long getPhoneNumber() {
-        return phoneNumber;
-    }
+
 
     public String getHotelName() {
         return hotelName;
@@ -419,4 +416,5 @@ public class Hotel extends User {
             suiteRoomsBookedByDate.put(date,value);
         }
     }
+
 }

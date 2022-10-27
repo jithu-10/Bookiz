@@ -4,10 +4,6 @@ public class QA {
     private String question;
     private String answer;
 
-    public QA(){
-        this(null,null);
-    }
-
     public QA(String question){
         this(question,null);
     }
