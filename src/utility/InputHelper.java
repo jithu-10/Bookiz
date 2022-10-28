@@ -31,7 +31,7 @@ public class InputHelper {
         try{
             value=input.nextInt();
             if(value<0){
-                throw new ValidateException();
+                throw new ValidateException("Value Should be greater than or equal to 0");
             }
         }
         catch (InputMismatchException e){
@@ -39,7 +39,6 @@ public class InputHelper {
             System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
             value=getWholeNumberIntegerInput();
         } catch (ValidateException e) {
-            System.out.println("Value Should be 0 or greater");
             value=getWholeNumberIntegerInput();
         }
         return value;
@@ -51,7 +50,7 @@ public class InputHelper {
         try{
             value=input.nextInt();
             if(value<1){
-                throw new ValidateException();
+                throw new ValidateException("Value Should be 1 or greater");
             }
         }
         catch (InputMismatchException e){
@@ -59,7 +58,6 @@ public class InputHelper {
             System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
             value=getWholeNumberIntegerInput();
         } catch (ValidateException e) {
-            System.out.println("Value Should be 1 or greater");
             value=getWholeNumberIntegerInput();
         }
         return value;
@@ -68,7 +66,7 @@ public class InputHelper {
 
 
     public static String getStringInput(){
-        String value=null;
+        String value;
         if(lastIntegerValue){
             input.nextLine();
         }
@@ -76,7 +74,7 @@ public class InputHelper {
         try{
             value=input.nextLine();
             if(value.equals("")){
-                throw new ValidateException();
+                throw new ValidateException(Printer.FIELD_CANT_BE_EMPTY);
             }
         }
         catch(InputMismatchException e){
@@ -84,7 +82,7 @@ public class InputHelper {
             value=getStringInput();
         }
         catch(ValidateException e){
-
+            value=getStringInput();
         }
         return value;
     }
@@ -124,14 +122,13 @@ public class InputHelper {
         try{
             phoneNumber=input.nextLong();
             if(String.valueOf(phoneNumber).length()!=10){
-                throw new ValidateException();
+                throw new ValidateException(Printer.ENTER_VALID_PHONE_NUMBER);
             }
         }catch (InputMismatchException e){
             input.nextLine();
-            System.out.println("Enter Valid Phone Number");
+            System.out.println(Printer.ENTER_VALID_PHONE_NUMBER);
             phoneNumber=getPhoneNumber();
         } catch (ValidateException e) {
-            System.out.println("Enter Valid Phone Number");
             phoneNumber=getPhoneNumber();
         }
         return phoneNumber;
@@ -143,14 +140,13 @@ public class InputHelper {
         try{
             postalCode=input.nextInt();
             if(String.valueOf(postalCode).length()!=6){
-                throw new ValidateException();
+                throw new ValidateException(Printer.ENTER_VALID_POSTAL_CODE);
             }
         }catch (InputMismatchException e){
             input.nextLine();
-            System.out.println("Enter Valid Postal Code");
+            System.out.println(Printer.ENTER_VALID_POSTAL_CODE);
             postalCode=getPostalCode();
         } catch (ValidateException e) {
-            System.out.println("Enter Valid Postal Code");
             postalCode=getPostalCode();
         }
         return postalCode;
@@ -158,7 +154,7 @@ public class InputHelper {
 
     public static int getInputWithinRange(int end,String str){
         if(str==null){
-            str="Please enter input only from the options : ";
+            str=Printer.ENTER_INPUT_FROM_GIVEN_OPTION;
         }
         int start=1;
         int value=InputHelper.getIntegerInput();
@@ -269,8 +265,7 @@ public class InputHelper {
 
     public static String getSimpleDateWithoutYear(Date date){
         SimpleDateFormat dateFormat= new SimpleDateFormat("EEE,dd MMM");
-        String dateOnly = dateFormat.format(date);
-        return dateOnly;
+        return dateFormat.format(date);
     }
 
     public static void pressEnterToContinue()
@@ -288,15 +283,15 @@ public class InputHelper {
     }
 
     public static String modifyString(String str){
-        String newStr="";
+        StringBuilder newStr= new StringBuilder();
         for(int i=0;i<str.length();i++){
             if(str.charAt(i)==' '){
                 continue;
             }
-            newStr+=str.charAt(i);
+            newStr.append(str.charAt(i));
         }
-        newStr=newStr.toUpperCase();
-        return newStr;
+        newStr = new StringBuilder(newStr.toString().toUpperCase());
+        return newStr.toString();
     }
 
     public static ArrayList<String> getFileInput(){
@@ -309,17 +304,17 @@ public class InputHelper {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 int j=0;
-                String separatedData="";
+                StringBuilder separatedData= new StringBuilder();
                 for(int i=0;i<data.length();i++){
                     j++;
-                    separatedData+=data.charAt(i);
+                    separatedData.append(data.charAt(i));
                     if(j==100){
                         j=0;
-                        textFile.add(separatedData);
-                        separatedData="";
+                        textFile.add(separatedData.toString());
+                        separatedData = new StringBuilder();
                     }
                 }
-                textFile.add(separatedData);
+                textFile.add(separatedData.toString());
 
             }
             myReader.close();
@@ -330,8 +325,8 @@ public class InputHelper {
     }
 
     public static void printFile(ArrayList<String> files){
-        for(int i=0;i<files.size();i++){
-            System.out.println(files.get(i));
+        for (String file : files) {
+            System.out.println(file);
         }
     }
 

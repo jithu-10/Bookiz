@@ -103,14 +103,11 @@ public class CustomerDriver implements Driver {
                     InputHelper.pressEnterToContinue();
                     break;
                 case 5:
-                    help(customer);
+                    help();
                     break;
                 case 6:
                     System.out.println("Signing Out...");
                     return;
-                default:
-                    //NO NEED
-                    System.out.println("Enter Input only from given options");
             }
 
         }while(true);
@@ -118,6 +115,15 @@ public class CustomerDriver implements Driver {
 
 
     //------------------------------------------------Customer Registration--------------------------------------------//
+    @Override
+    public void register() {
+        Customer customer=customerDetails();
+        if(customer==null){
+            return;
+        }
+        customerDB.addCustomer(customer);
+        System.out.println("Sign Up Completed . You can Sign in Now");
+    }
 
     public boolean acceptTermsAndConditions(){
         if(adminDB.getTermsAndConditions().isEmpty()){
@@ -131,25 +137,29 @@ public class CustomerDriver implements Driver {
         }
         return false;
     }
-    @Override
-    public void register() {
-        Customer customer=customerDetails();
-        if(customer==null){
-            return;
-        }
-        customerDB.addCustomer(customer);
-        System.out.println("Sign Up Completed . You can Sign in Now");
-    }
-
 
     public Customer customerDetails(){
 
-        System.out.println("Enter Phone Number : ");
-        long phoneNumber=InputHelper.getPhoneNumber();
-        if(userAuthenticationDB.isCustomerPhoneNumberExist(phoneNumber)){
-            System.out.println("Phone Number already exist");
-            return null;
-        }
+        long phoneNumber;
+        do{
+            System.out.println(Printer.ENTER_PHONE_NUMBER);
+            phoneNumber=InputHelper.getPhoneNumber();
+            if(userAuthenticationDB.isCustomerPhoneNumberExist(phoneNumber)){
+                System.out.println(Printer.PHONE_NUMBER_ALREADY_EXIST);
+                System.out.println("1."+Printer.TRY_AGAIN);
+                System.out.println("2."+Printer.GO_BACK);
+                System.out.println(Printer.ENTER_INPUT);
+                int choice=InputHelper.getInputWithinRange(2,null);
+                if(choice==2){
+                    return null;
+                }
+            }
+            else{
+                break;
+            }
+        }while(true);
+
+
         String password,confirmPassword;
         while(true){
             System.out.println("Enter Password : ");
@@ -258,9 +268,6 @@ public class CustomerDriver implements Driver {
             ArrayList<Integer> availableHotelsID=new ArrayList<>();
             loop:for(int i=0;i<hotels.size();i++){
                 Hotel hotel=hotels.get(i);
-//                if(!InputHelper.modifyString(hotel.getLocality()).equals(InputHelper.modifyString(locality))){
-//                    continue ;
-//                }
                 if(!InputHelper.modifyString(hotel.getAddress().getLocality()).equals(locality)&&!InputHelper.modifyString(hotel.getAddress().getCity()).equals(locality)){
                     continue;
                 }
@@ -349,8 +356,7 @@ public class CustomerDriver implements Driver {
 
     double getDiscountPercent(double listPrice,double maxPrice){
         double discount=maxPrice-listPrice;
-        double rateOfDiscount=(discount/maxPrice)*100;
-        return rateOfDiscount;
+        return (discount/maxPrice)*100;
     }
 
 
@@ -557,7 +563,7 @@ public class CustomerDriver implements Driver {
     //------------------------------------------------4.Help-----------------------------------------------------------//
 
 
-    void help(Customer customer){
+    void help(){
         System.out.println(" Help Section ");
         System.out.println("1.Frequently Asked Questions(FAQ) ");
         System.out.println("2.Ask Question ?");
