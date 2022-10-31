@@ -1,7 +1,7 @@
 package hotel;
 
 public enum RoomType {
-    SINGLEBEDROOM,
-    DOUBLEBEDROOM,
-    SUITEROOM
+    SINGLE_BED_ROOM,
+    DOUBLE_BED_ROOM,
+    SUITE_ROOM
 }

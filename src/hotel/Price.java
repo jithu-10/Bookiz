@@ -1,4 +1,4 @@
-package hotel.subutil;
+package hotel;
 
 public class Price {
     private double basePrice;

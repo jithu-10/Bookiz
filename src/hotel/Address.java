@@ -1,4 +1,4 @@
-package hotel.subutil;
+package hotel;
 
 public class Address {
     private int buildingNo;
@@ -16,7 +16,6 @@ public class Address {
         this.state=(state==null)?"":state;
         this.postalCode=postalCode;
     }
-
 
     public int getBuildingNo() {
         return buildingNo;

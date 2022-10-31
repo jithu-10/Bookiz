@@ -1,4 +1,4 @@
-package hotel.subutil;
+package hotel;
 
 import utility.InputHelper;
 

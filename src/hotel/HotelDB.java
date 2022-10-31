@@ -1,11 +1,10 @@
 package hotel;
 
-import hotel.subutil.AddressDB;
 import java.util.ArrayList;
 
 
 public class HotelDB {
-    private int idHelper=0;
+    private int idHelper=999999;
     private static HotelDB hotelDB=new HotelDB();
     private AddressDB addressDB =AddressDB.getInstance();
     private ArrayList<Hotel> hotelList =new ArrayList<>();

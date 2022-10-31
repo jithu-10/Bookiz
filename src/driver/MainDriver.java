@@ -24,8 +24,6 @@ public class MainDriver {
                     break;
                 case 4:
                     break loop;
-                default:
-                    System.out.println(Printer.ENTER_CORRECT_OPTION);
             }
 
             if(d!=null){

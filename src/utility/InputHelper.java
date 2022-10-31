@@ -31,7 +31,7 @@ public class InputHelper {
         try{
             value=input.nextInt();
             if(value<0){
-                throw new ValidateException("Value Should be greater than or equal to 0");
+                throw new ValidateException(Printer.WHOLE_NUMBER_CONDITION);
             }
         }
         catch (InputMismatchException e){
@@ -50,7 +50,7 @@ public class InputHelper {
         try{
             value=input.nextInt();
             if(value<1){
-                throw new ValidateException("Value Should be 1 or greater");
+                throw new ValidateException(Printer.POSITIVE_NUMBER_CONDITION);
             }
         }
         catch (InputMismatchException e){
@@ -89,10 +89,9 @@ public class InputHelper {
 
     public static String getEmailInput(){
         String email=getStringInput();
-        Pattern p = Pattern.compile("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
-        Matcher m = p.matcher(email);
-        if(!m.matches()){
-            System.out.println("Please Enter Valid Email ID");
+
+        if(!Validator.emailValidator(email)){
+            System.out.println(Printer.ENTER_VALID_EMAIL);
             return getEmailInput();
         }
         else{
@@ -166,21 +165,11 @@ public class InputHelper {
     }
 
     public static Date getDate(){
-        System.out.println("Enter Date in dd-mm-yyyy format");
+        System.out.println(Printer.ENTER_DATE_IN_FORMAT);
         String dateStr=getStringInput();
 
-//       Pattern p = Pattern.compile(
-//      "^(29-02-(2000|2400|2800|(19|2[0-9])(0[48]|[2468][048]|[13579][26])))$"
-//      + "|^((0[1-9]|1[0-9]|2[0-8])-02-((19|2[0-9])[0-9]{2}))$"
-//      + "|^((0[1-9]|[12][0-9]|3[01])-(0[13578]|10|12)-((19|2[0-9])[0-9]{2}))$"
-//      + "|^((0[1-9]|[12][0-9]|30)-(0[469]|11)-((19|2[0-9])[0-9]{2}))$");
-
-
-        //Pattern p = Pattern.compile("^\\d{2}-\\d{2}-\\d{4}$");
-        Pattern p = Pattern.compile("^(0[1-9]|[1-2][0-9]|3[0-1]|)-(0[1-9]|1[0-2])-\\d{4}$");
-        Matcher m = p.matcher(dateStr);
-        if(!m.matches()){
-            System.out.println("Please enter date in exact format");
+        if(!Validator.dateValidator(dateStr)){
+            System.out.println(Printer.ENTER_VALID_DATE);
             return getDate();
         }
         else{
@@ -270,7 +259,7 @@ public class InputHelper {
 
     public static void pressEnterToContinue()
     {
-        System.out.println("Press Enter key to continue...");
+        System.out.println(Printer.PRESS_ENTER_TO_CONTINUE);
         try
         {
             System.in.read();
@@ -297,7 +286,7 @@ public class InputHelper {
     public static ArrayList<String> getFileInput(){
         ArrayList<String> textFile=new ArrayList<>();
         try {
-            System.out.println("Enter File Path : ");
+            System.out.println(Printer.ENTER_FILE_PATH);
             String filePath=InputHelper.getStringInput();
             File file = new File(filePath);
             Scanner myReader = new Scanner(file);
@@ -319,7 +308,7 @@ public class InputHelper {
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File Not Exist");
+            System.out.println(Printer.FILE_NOT_EXIST);
         }
         return textFile;
     }

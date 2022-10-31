@@ -3,8 +3,8 @@ package booking;
 import java.util.ArrayList;
 
 public class BookingDB {
-    private int idHelper=99999;
     private static BookingDB bookingDB=new BookingDB();
+    private int idHelper=99999;
     private ArrayList<Booking> bookings=new ArrayList<>();
 
     private BookingDB(){

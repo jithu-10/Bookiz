@@ -1,7 +1,5 @@
 package hotel;
 
-import hotel.subutil.Address;
-import hotel.subutil.Price;
 import user.User;
 import utility.InputHelper;
 
@@ -75,7 +73,7 @@ public class Hotel extends User {
     public void addSingleBedRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++){
 
-            Room room=new Room(RoomType.SINGLEBEDROOM);
+            Room room=new Room(RoomType.SINGLE_BED_ROOM);
             rooms.add(room);
             totalSingleBedRooms++;
         }
@@ -85,7 +83,7 @@ public class Hotel extends User {
 
     public void addDoubleBedRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++){
-            Room room=new Room(RoomType.DOUBLEBEDROOM);
+            Room room=new Room(RoomType.DOUBLE_BED_ROOM);
             rooms.add(room);
             totalDoubleBedRooms++;
         }
@@ -96,7 +94,7 @@ public class Hotel extends User {
     public void addSuiteRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++) {
 
-            Room room=new Room(RoomType.SUITEROOM);
+            Room room=new Room(RoomType.SUITE_ROOM);
             rooms.add(room);
             totalSuiteRooms++;
         }
@@ -109,13 +107,13 @@ public class Hotel extends User {
         for(int i=0;i<count;i++){
             Room room=new Room(roomType);
             rooms.add(room);
-            if(roomType==RoomType.SINGLEBEDROOM){
+            if(roomType==RoomType.SINGLE_BED_ROOM){
                 totalSingleBedRooms++;
             }
-            else if(roomType==RoomType.DOUBLEBEDROOM){
+            else if(roomType==RoomType.DOUBLE_BED_ROOM){
                 totalDoubleBedRooms++;
             }
-            else if(roomType==RoomType.SUITEROOM){
+            else if(roomType==RoomType.SUITE_ROOM){
                 totalSuiteRooms++;
             }
         }
@@ -133,13 +131,13 @@ public class Hotel extends User {
             }
         }
         switch(roomType){
-            case SINGLEBEDROOM:
+            case SINGLE_BED_ROOM:
                 totalSingleBedRooms-=value;
                 break;
-            case DOUBLEBEDROOM:
+            case DOUBLE_BED_ROOM:
                 totalDoubleBedRooms-=value;
                 break;
-            case SUITEROOM:
+            case SUITE_ROOM:
                 totalSuiteRooms-=value;
                 break;
         }

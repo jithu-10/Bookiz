@@ -29,15 +29,3 @@ public class Room {
 
 
 
-//    private static class SimpleBed{
-//        String name="SimpleBed";
-//
-//    }
-//
-//    private static class DoubleBed{
-//        String name="DoubleBed";
-//    }
-//
-//    private static class SuiteRoom{
-//        String name="SuiteRoom";
-//    }

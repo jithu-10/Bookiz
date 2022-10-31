@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 public class UserAuthenticationDB {
 
-    private HashMap<String,String> adminAuthentication=new HashMap<>();
-    private HashMap<Long,String> hotelAuthentication=new HashMap<>();
-    private HashMap<Long,String> customerAuthentication=new HashMap<>();
-    private static UserAuthenticationDB userAuthenticationDB=new UserAuthenticationDB();
+    private final HashMap<String,String> adminAuthentication=new HashMap<>();
+    private final HashMap<Long,String> hotelAuthentication=new HashMap<>();
+    private final HashMap<Long,String> customerAuthentication=new HashMap<>();
+    private static final UserAuthenticationDB userAuthenticationDB=new UserAuthenticationDB();
 
     private UserAuthenticationDB(){
         addAdminAuth("admin","pass");
@@ -65,4 +65,5 @@ public class UserAuthenticationDB {
         }
         return false;
     }
+
 }
