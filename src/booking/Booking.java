@@ -7,25 +7,18 @@ import java.util.Date;
 
 public class Booking {
 
-    private final Date checkInDate;
-    private final Date checkOutDate;
-    private final int noOfSingleBedroomsNeeded;
-    private final int noOfDoubleBedroomsNeeded;
-    private final int noOfSuiteRoomNeeded;
     private int bookingID;
-    private double totalPriceOfSingleBedRooms;
-    private double totalPriceOfDoubleBedRooms;
-    private double totalPriceOfSuiteRooms;
-    private int noOfDays;
+    private Date checkInDate;
+    private Date checkOutDate;
     private int customerID;
-    private boolean paid;
     private int hotelID;
-    public Booking(Date checkInDate,Date checkOutDate,int noOfSingleBedroomsNeeded,int noOfDoubleBedroomsNeeded,int noOfSuiteRoomNeeded){
+
+    public void setCheckInDate(Date checkInDate){
         this.checkInDate=checkInDate;
+    }
+
+    public void setCheckOutDate(Date checkOutDate){
         this.checkOutDate=checkOutDate;
-        this.noOfSingleBedroomsNeeded=noOfSingleBedroomsNeeded;
-        this.noOfDoubleBedroomsNeeded=noOfDoubleBedroomsNeeded;
-        this.noOfSuiteRoomNeeded=noOfSuiteRoomNeeded;
     }
 
     public void setBookingID(int id){
@@ -51,31 +44,9 @@ public class Booking {
         return InputHelper.getSimpleDateWithoutYear(checkOutDate);
     }
 
-    public int getNoOfSingleBedroomsNeeded() {
-        return noOfSingleBedroomsNeeded;
-    }
-
-    public int getNoOfDoubleBedroomsNeeded() {
-        return noOfDoubleBedroomsNeeded;
-    }
-
-    public int getNoOfSuiteRoomNeeded() {
-        return noOfSuiteRoomNeeded;
-    }
-
-    public int getTotalNoOfRoomsNeeded() {
-        return noOfSingleBedroomsNeeded+noOfDoubleBedroomsNeeded+noOfSuiteRoomNeeded;
-    }
-
-    public double getTotalPrice(){
-        return totalPriceOfSingleBedRooms+totalPriceOfDoubleBedRooms+totalPriceOfSuiteRooms;
-    }
-    public void setNoOfDays(int noOfDays){
-        this.noOfDays=noOfDays;
-    }
 
     public int getNoOfDays(){
-        return noOfDays;
+        return InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate).size();
     }
 
     public void setCustomerID(int customerID){
@@ -83,12 +54,6 @@ public class Booking {
     }
     public int getCustomerID(){
         return customerID;
-    }
-    public void setPaid(){
-        paid=true;
-    }
-    public boolean getPaid(){
-        return paid;
     }
 
     public void setHotelID(int hotelID){
@@ -99,16 +64,6 @@ public class Booking {
         return hotelID;
     }
 
-    public void setTotalPriceOfSingleBedRooms(double totalPriceOfSingleBedRooms) {
-        this.totalPriceOfSingleBedRooms = totalPriceOfSingleBedRooms;
-    }
 
-    public void setTotalPriceOfDoubleBedRooms(double totalPriceOfDoubleBedRooms) {
-        this.totalPriceOfDoubleBedRooms = totalPriceOfDoubleBedRooms;
-    }
-
-    public void setTotalPriceOfSuiteRooms(double totalPriceOfSuiteRooms) {
-        this.totalPriceOfSuiteRooms = totalPriceOfSuiteRooms;
-    }
 }
 

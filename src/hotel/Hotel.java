@@ -1,66 +1,78 @@
 package hotel;
 
 import user.User;
-import utility.InputHelper;
+import user.UserDB;
+import user.UserType;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
-public class Hotel extends User {
+public class Hotel{
+    private int hotelOwnerID;
+    private int hotelID;
     private String hotelName;
     private Address address;
     private HotelType hotelType;
-    private ArrayList<Amenity> amenities=new ArrayList<>();
+    private HotelStatus hotelApproveStatus;
+    private ArrayList<Integer> amenities=new ArrayList<>();
     private ArrayList<Room> rooms=new ArrayList<>();
-    private ArrayList<Integer> bookingIDs=new ArrayList<>();
     private Price singleBedRoomPrice;
     private Price doubleBedRoomPrice;
     private Price suiteRoomPrice;
-    private int totalAmenityPoints;
-    private int totalSingleBedRooms;
-    private int totalDoubleBedRooms;
-    private int totalSuiteRooms;
-    private boolean approved;
-    private HashMap<Date, Integer> singleBedroomsBookedByDate=new HashMap<>();
-    private HashMap<Date, Integer> doubleBedroomsBookedByDate=new HashMap<>();
-    private HashMap<Date, Integer> suiteRoomsBookedByDate=new HashMap<>();
+    private AmenityDB amenityDB=AmenityDB.getInstance();
 
-    public void updateHashMap(int noOfSingleBedRoomsBooked,int noOfDoubleBedRoomsBooked,int noOfSuiteRoomBooked,Date checkInDate,Date checkOutDate){
-        ArrayList<Date> datesInRange= InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate);
-        datesInRange.add(checkOutDate);
-        for(int i=0;i<datesInRange.size();i++){
-            if(singleBedroomsBookedByDate.containsKey(datesInRange.get(i))){
-               int value=singleBedroomsBookedByDate.get(datesInRange.get(i));
-               singleBedroomsBookedByDate.put(datesInRange.get(i),value+noOfSingleBedRoomsBooked);
+    public Hotel(int hotelOwnerID,String hotelName,Address address){
+        this.hotelOwnerID=hotelOwnerID;
+        this.hotelName=hotelName;
+        this.address=address;
+    }
+
+    public Hotel(int hotelOwnerID,String hotelName,Address address,HotelType hotelType,HotelStatus hotelApproveStatus,ArrayList<Integer> amenities,ArrayList<Room> rooms,Price singleBedRoomPrice,Price doubleBedRoomPrice,Price suiteRoomPrice){
+        this.hotelOwnerID=hotelOwnerID;
+        this.hotelName=hotelName;
+        this.address=address;
+        this.hotelType=hotelType;
+        this.hotelApproveStatus=hotelApproveStatus;
+        this.amenities=amenities;
+        this.rooms=rooms;
+        this.singleBedRoomPrice=singleBedRoomPrice;
+        this.setSingleBedRoomPrice(singleBedRoomPrice.getBasePrice(),singleBedRoomPrice.getMaxPrice());
+        this.doubleBedRoomPrice=doubleBedRoomPrice;
+        this.setDoubleBedRoomPrice(doubleBedRoomPrice.getBasePrice(),doubleBedRoomPrice.getMaxPrice());
+        this.suiteRoomPrice=suiteRoomPrice;
+        this.setSuiteRoomPrice(suiteRoomPrice.getBasePrice(),suiteRoomPrice.getMaxPrice());
+    }
+
+    public int getHotelOwnerID() {
+        return hotelOwnerID;
+    }
+
+    public void setHotelOwnerID(int hotelOwnerID) {
+        this.hotelOwnerID = hotelOwnerID;
+    }
+
+    public User getHotelOwnerDetails(){
+        return UserDB.getInstance().getUserByID(hotelOwnerID, UserType.HOTEL_OWNER);
+    }
+
+    public void updateRoomBooking(int noOfSingleBedRoomsBooked,int noOfDoubleBedRoomsBooked,int noOfSuiteRoomBooked,Date checkInDate,Date checkOutDate,boolean book){
+        for(Room room: rooms){
+            if(room.getRoomType()==RoomType.SINGLE_BED_ROOM&&noOfSingleBedRoomsBooked!=0){
+                room.updateBookings2(checkInDate,checkOutDate,book);
+                noOfSingleBedRoomsBooked--;
             }
-            else{
-                singleBedroomsBookedByDate.put(datesInRange.get(i),noOfSingleBedRoomsBooked);
+            else if(room.getRoomType()==RoomType.DOUBLE_BED_ROOM&&noOfDoubleBedRoomsBooked!=0){
+                room.updateBookings2(checkInDate,checkOutDate,book);
+                noOfDoubleBedRoomsBooked--;
             }
-            if(doubleBedroomsBookedByDate.containsKey(datesInRange.get(i))){
-                int value=doubleBedroomsBookedByDate.get(datesInRange.get(i));
-                doubleBedroomsBookedByDate.put(datesInRange.get(i),value+noOfDoubleBedRoomsBooked);
+            else if(room.getRoomType()==RoomType.SUITE_ROOM&&noOfSuiteRoomBooked!=0){
+                room.updateBookings2(checkInDate,checkOutDate,book);
+                noOfSuiteRoomBooked--;
             }
-            else{
-                doubleBedroomsBookedByDate.put(datesInRange.get(i),noOfDoubleBedRoomsBooked);
-            }
-            if(suiteRoomsBookedByDate.containsKey(datesInRange.get(i))){
-                int value=suiteRoomsBookedByDate.get(datesInRange.get(i));
-                suiteRoomsBookedByDate.put(datesInRange.get(i),value+noOfSuiteRoomBooked);
-            }
-            else{
-                suiteRoomsBookedByDate.put(datesInRange.get(i),noOfSuiteRoomBooked);
-            }
+
         }
     }
 
-
-    public Hotel(String hotelAdminName,long phoneNumber,String hotelName,Address address){
-        setUserName(hotelAdminName);
-        setPhoneNumber(phoneNumber);
-        this.hotelName=hotelName;
-        this.address =address;
-    }
     public void setAddress(Address address){
         this.address = address;
     }
@@ -68,14 +80,13 @@ public class Hotel extends User {
         return address;
     }
     public long getPhoneNumber(){
-        return super.getPhoneNumber();
+        return getHotelOwnerDetails().getPhoneNumber();
     }
     public void addSingleBedRooms(int count,double basePrice,double maxPrice){
         for(int i=0;i<count;i++){
 
             Room room=new Room(RoomType.SINGLE_BED_ROOM);
             rooms.add(room);
-            totalSingleBedRooms++;
         }
         setSingleBedRoomPrice(basePrice,maxPrice);
     }
@@ -85,7 +96,6 @@ public class Hotel extends User {
         for(int i=0;i<count;i++){
             Room room=new Room(RoomType.DOUBLE_BED_ROOM);
             rooms.add(room);
-            totalDoubleBedRooms++;
         }
         setDoubleBedRoomPrice(basePrice,maxPrice);
     }
@@ -96,7 +106,7 @@ public class Hotel extends User {
 
             Room room=new Room(RoomType.SUITE_ROOM);
             rooms.add(room);
-            totalSuiteRooms++;
+
         }
         setSuiteRoomPrice(basePrice,maxPrice);
     }
@@ -107,19 +117,9 @@ public class Hotel extends User {
         for(int i=0;i<count;i++){
             Room room=new Room(roomType);
             rooms.add(room);
-            if(roomType==RoomType.SINGLE_BED_ROOM){
-                totalSingleBedRooms++;
-            }
-            else if(roomType==RoomType.DOUBLE_BED_ROOM){
-                totalDoubleBedRooms++;
-            }
-            else if(roomType==RoomType.SUITE_ROOM){
-                totalSuiteRooms++;
-            }
         }
     }
     public void removeRooms(int count,RoomType roomType){
-        int value=count;
         ArrayList<Room>rooms=this.rooms;
         for(int i=0;i<rooms.size();i++) {
             if(rooms.get(i).getRoomType()==roomType){
@@ -130,68 +130,65 @@ public class Hotel extends User {
                 break;
             }
         }
-        switch(roomType){
-            case SINGLE_BED_ROOM:
-                totalSingleBedRooms-=value;
-                break;
-            case DOUBLE_BED_ROOM:
-                totalDoubleBedRooms-=value;
-                break;
-            case SUITE_ROOM:
-                totalSuiteRooms-=value;
-                break;
-        }
     }
 
-    public void addAmenity(Amenity amenity){
-        totalAmenityPoints+=amenity.getPoints();
-        amenities.add(amenity);
-        setHotelType();
+    public void addAmenity(Amenity amenity){;
+        amenities.add(amenity.getAmenityID());
     }
 
-    public void removeAmenity(int index){
-        Amenity amenity=amenities.get(index);
-        totalAmenityPoints-=amenity.getPoints();
-        amenities.remove(amenity);
-        setHotelType();
+    public void removeAmenity(Amenity amenity){
+        amenities.remove((Integer)amenity.getAmenityID());
     }
 
     public void setHotelId(int hotelID){
-        setUserID(hotelID);
+        this.hotelID=hotelID;
     }
     public int getHotelID(){
-        return getUserID();
+        return this.hotelID;
     }
-    public String getHotelAdminName(){
-        return getUserName();
-    }
-
 
     public String getHotelName() {
         return hotelName;
     }
 
-    public int getTotalNumberofRooms(){
+    public int getTotalNumberOfRooms(){
         return rooms.size();
     }
 
-    public int getNumberofSingleBedRooms(){
-        return totalSingleBedRooms;
-    }
-
-    public int getNumberofDoubleBedRooms(){
-        return totalDoubleBedRooms;
-    }
-
-    public int getNumberofSuiteRooms(){
-        return totalSuiteRooms;
+    public int getTotalNumberOfRooms(RoomType roomType){
+        int count=0;
+        for(Room room: rooms){
+            if(room.getRoomType()==roomType){
+                count++;
+            }
+        }
+        return count;
     }
 
     public int getTotalAmenityPoints() {
+        int totalAmenityPoints=0;
+
+        for(int amenityID: amenities){
+            totalAmenityPoints+=amenityDB.getAmenityPointsByID(amenityID);
+        }
         return totalAmenityPoints;
     }
+
+    public double getTotalAmenityPercent(){
+        double totalAmenityPoints=AmenityDB.getInstance().getTotalAmenityPoints();
+        double totalHotelAmenityPoints=getTotalAmenityPoints();
+        return (totalHotelAmenityPoints/totalAmenityPoints)*100;
+
+    }
     public ArrayList<Amenity> getAmenities(){
-        return amenities;
+        ArrayList<Amenity> hotelAmenities=new ArrayList<>();
+        for(int amenityId: amenities){
+            Amenity amenity=amenityDB.getAmenityByID(amenityId);
+            if(amenity!=null){
+                hotelAmenities.add(amenityDB.getAmenityByID(amenityId));
+            }
+        }
+        return hotelAmenities;
     }
 
     public double getSingleBedRoomBasePrice(){
@@ -311,108 +308,48 @@ public class Hotel extends User {
         this.suiteRoomPrice.setListPrice(currentPrice);
     }
 
-    public void setHotelType() {
-        if(totalAmenityPoints>=90){
+
+
+    public void setHotelType(){
+
+        int amenityPercent=(int)getTotalAmenityPercent();
+        if(amenityPercent>=90){
             this.hotelType=HotelType.TOWNHOUSE;
         }
-        else if(totalAmenityPoints>=70){
-            this.hotelType=HotelType.SPOTZ;
-        }
-        else {
+        else if (amenityPercent>=50){
             this.hotelType=HotelType.COLLECTIONZ;
         }
+        else{
+            this.hotelType=HotelType.SPOTZ;
+        }
 
+    }
+
+    public void setHotelType(HotelType hotelType){
+        this.hotelType=hotelType;
     }
 
     public HotelType getHotelType(){
         return this.hotelType;
     }
-    public void approve(){
-        this.approved=true;
+
+    public void setHotelApproveStatus(HotelStatus hotelApproveStatus){
+        this.hotelApproveStatus=hotelApproveStatus;
     }
 
-    public void cancelApprove(){
-        this.approved=false;
+    public HotelStatus getHotelApproveStatus() {
+        return hotelApproveStatus;
     }
 
-    public boolean isApproved(){
-        return approved;
-    }
-
-    public int getNoOfSingleBedRoomsBookedByDate(Date date){
-        if(singleBedroomsBookedByDate.containsKey(date)){
-            return singleBedroomsBookedByDate.get(date);
+    public int getNoOfRoomsBookedByDate(Date date,RoomType roomType){
+        int value=0;
+        for(Room room: rooms){
+            if(room.getRoomType()==roomType&& room.checkBookedByDate2(date)){
+                value++;
+            }
         }
-        else{
-            return 0;
-        }
+        return value;
     }
 
-    public int getNoOfDoubleBedRoomsBookedByDate(Date date){
-        if(doubleBedroomsBookedByDate.containsKey(date)){
-            return doubleBedroomsBookedByDate.get(date);
-        }
-        else{
-            return 0;
-        }
-    }
-
-    public int getNoOfSuiteRoomsBookedByDate(Date date){
-        if(suiteRoomsBookedByDate.containsKey(date)){
-            return suiteRoomsBookedByDate.get(date);
-        }
-        else{
-            return 0;
-        }
-    }
-
-    public void addBookingIDs(int ID){
-        bookingIDs.add(ID);
-    }
-
-    public void removeBookingIDs(int ID){
-        Integer id=ID;
-        bookingIDs.remove(id);
-    }
-
-
-    public ArrayList<Integer> getBookingIDs(){
-        return bookingIDs;
-    }
-
-    public HashMap<Date, Integer> getSingleBedroomsBooked() {
-        return singleBedroomsBookedByDate;
-    }
-
-    public HashMap<Date, Integer> getDoubleBedroomsBooked() {
-        return doubleBedroomsBookedByDate;
-    }
-
-    public HashMap<Date, Integer> getSuiteRoomsBooked() {
-        return suiteRoomsBookedByDate;
-    }
-    public void cancelSingleBedRoomsBooked(Date date,int rooms){
-        if(singleBedroomsBookedByDate.containsKey(date)){
-            int value=singleBedroomsBookedByDate.get(date);
-            value-=rooms;
-            singleBedroomsBookedByDate.put(date,value);
-        }
-    }
-
-    public void cancelDoubleBedRoomsBooked(Date date,int rooms){
-        if(doubleBedroomsBookedByDate.containsKey(date)){
-            int value=doubleBedroomsBookedByDate.get(date);
-            value-=rooms;
-            doubleBedroomsBookedByDate.put(date,value);
-        }
-    }
-
-    public void cancelSuiteRoomsBooked(Date date,int rooms){
-        if(suiteRoomsBookedByDate.containsKey(date)){
-            int value=suiteRoomsBookedByDate.get(date);
-            value-=rooms;
-            suiteRoomsBookedByDate.put(date,value);
-        }
-    }
 
 }

@@ -2,6 +2,9 @@ package admin;
 
 
 import hotel.Hotel;
+import user.User;
+import user.UserAuthenticationDB;
+import user.UserType;
 import utility.QA;
 
 import java.util.ArrayList;
@@ -10,27 +13,25 @@ import java.util.LinkedList;
 
 public class AdminDB {
 
-    private LinkedList<Hotel> hotelsRegisteredForApproval=new LinkedList<>();
     private LinkedHashSet<Integer> priceUpdatedHotelList=new LinkedHashSet<>();
     private ArrayList<String> termsAndConditions=new ArrayList<>();
     private ArrayList<QA> faq=new ArrayList<QA>();
     private ArrayList<QA> newQuestions=new ArrayList<QA>();
     private static AdminDB adminDB=new AdminDB();
+    private User admin = new User();
     private AdminDB(){
-
+        admin.setUserName("admin");
+        admin.setUserType(UserType.ADMIN);
+        UserAuthenticationDB.getInstance().addAdminAuth(admin.getUserName(),"pass");
     }
 
     public static AdminDB getInstance(){
         return adminDB;
     }
-
-    public void registerHotel(Hotel hotel){
-        hotelsRegisteredForApproval.add(hotel);
+    public User getAdmin(){
+        return admin;
     }
 
-    public LinkedList<Hotel> getHotelsRegisteredForApproval(){
-        return hotelsRegisteredForApproval;
-    }
 
 
     public void addPriceUpdatedHotelList(int id){
@@ -46,18 +47,6 @@ public class AdminDB {
             priceUpdatedHotelList.remove(id);
         }
     }
-
-    public Hotel getHotelByPhoneNumber(long phoneNumber){
-
-        for(Hotel hotel: hotelsRegisteredForApproval){
-            if(hotel.getPhoneNumber()==phoneNumber){
-                return hotel;
-            }
-        }
-        return null;
-
-    }
-    
 
     public void addTermsAndConditions(ArrayList<String> termsAndConditions){
         this.termsAndConditions=termsAndConditions;
@@ -86,7 +75,5 @@ public class AdminDB {
     public void addFaqQuestion(QA question){
         faq.add(question);
     }
-
-
 
 }

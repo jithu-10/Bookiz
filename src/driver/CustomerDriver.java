@@ -3,12 +3,13 @@ package driver;
 import admin.AdminDB;
 import booking.Booking;
 import booking.BookingDB;
-import customer.Customer;
-import customer.CustomerDB;
+import booking.CustomerBooking;
 import hotel.*;
 import hotel.AddressDB;
 import user.User;
 import user.UserAuthenticationDB;
+import user.UserDB;
+import user.UserType;
 import utility.QA;
 import utility.InputHelper;
 import utility.Printer;
@@ -19,8 +20,8 @@ import java.util.*;
 public class CustomerDriver implements Driver {
 
     private static final CustomerDriver customerDriver=new CustomerDriver();
+    private final UserDB userDB=UserDB.getInstance();
     private final HotelDB hotelDB=HotelDB.getInstance();
-    private final CustomerDB customerDB=CustomerDB.getInstance();
     private final AdminDB adminDB=AdminDB.getInstance();
     private final AddressDB addressDB=AddressDB.getInstance();
     private final BookingDB bookingDB=BookingDB.getInstance();
@@ -41,15 +42,16 @@ public class CustomerDriver implements Driver {
         int choice = InputHelper.getInputWithinRange(2,null);
         switch (choice){
             case 1:
-                Customer customer;
-                if((customer=(Customer) signIn())!=null){
+                User user;
+                if((user=signIn())!=null){
                     System.out.println(Printer.SIGNED_IN);
-                    menu(customer);
+                    menu(user);
                 }
                 else{
                     System.out.println(Printer.INVALID_CREDENTIALS);
                 }
                 break;
+
             case 2:
                 if(acceptTermsAndConditions()){
                     register();
@@ -69,14 +71,15 @@ public class CustomerDriver implements Driver {
         String passWord= InputHelper.getStringInput();
         User user= null;
         if(userAuthenticationDB.authenticateCustomer(phoneNumber,passWord)){
-            user=customerDB.getCustomerByPhoneNumber(phoneNumber);
+            //user=customerDB.getCustomerByPhoneNumber(phoneNumber);
+            user=userDB.getUserByPhoneNumber(phoneNumber,UserType.CUSTOMER);
         }
         return user;
     }
 
     @Override
-    public void menu(User user) {
-        Customer customer=(Customer) user;
+    public void menu(User customer) {
+
         System.out.println(Printer.WELCOME+customer.getUserName()+Printer.SMILE);
         do{
             System.out.println(Printer.CUSTOMER_MENU);
@@ -111,11 +114,12 @@ public class CustomerDriver implements Driver {
     //------------------------------------------------Customer Registration--------------------------------------------//
     @Override
     public void register() {
-        Customer customer=customerDetails();
-        if(customer==null){
+
+        User user=userDetails();
+        if(user==null){
             return;
         }
-        customerDB.addCustomer(customer);
+        userDB.addUser(user);
         System.out.println(Printer.SIGN_UP_COMPLETED);
     }
 
@@ -132,8 +136,7 @@ public class CustomerDriver implements Driver {
         return false;
     }
 
-    public Customer customerDetails(){
-
+    public User userDetails(){
         long phoneNumber;
         do{
             System.out.println(Printer.ENTER_PHONE_NUMBER);
@@ -171,12 +174,19 @@ public class CustomerDriver implements Driver {
         String fullName=InputHelper.getStringInput();
         System.out.println(Printer.ENTER_EMAIL);
         String mailID=InputHelper.getEmailInput();
-        return new Customer(fullName,phoneNumber,mailID);
+
+        User user=new User();
+        user.setUserType(UserType.CUSTOMER);
+        user.setUserName(fullName);
+        user.setPhoneNumber(phoneNumber);
+        user.setMailID(mailID);
+        return user;
     }
+
 
     //------------------------------------------------1.Book Hotel----------------------------------------------------//
 
-    void bookHotel(Customer customer){
+    void bookHotel(User customer){
         System.out.println(Printer.ENTER_LOCALITY);
         String locality=InputHelper.modifyString(InputHelper.getStringInput());
         if(!addressDB.isLocalityAvailable(locality)){
@@ -189,41 +199,42 @@ public class CustomerDriver implements Driver {
         Date checkInDate=compareAndCheckDate(InputHelper.setTime(new Date()),"You can't book hotel for previous dates",false,true);
         System.out.println(Printer.CHECK_OUT_DATE);
         Date checkOutDate=compareAndCheckDate(checkInDate,"Check out Date will be greater than Check In Date",true,false);
-//        System.out.println("Enter No of Rooms Needed : ");
-//        int noOfRoomsNeeded=InputHelper.getInputWithinRange(50,"Only 50 rooms can be booked at a time");
+
         int noOfSingleBedroomsNeeded=0;
         int noOfDoubleBedroomsNeeded=0;
         int noOfSuiteRoomNeeded=0;
 
-        System.out.println(Printer.ENTER_NO_OF+RoomType.SINGLE_BED_ROOM +Printer.NEEDED);
-        noOfSingleBedroomsNeeded=InputHelper.getWholeNumberIntegerInput();
-        System.out.println(Printer.ENTER_NO_OF+RoomType.DOUBLE_BED_ROOM +Printer.NEEDED);
-        noOfDoubleBedroomsNeeded=InputHelper.getWholeNumberIntegerInput();
-        System.out.println(Printer.ENTER_NO_OF+RoomType.SUITE_ROOM +Printer.NEEDED);
-        noOfSuiteRoomNeeded=InputHelper.getWholeNumberIntegerInput();
+        do{
+            System.out.println(Printer.ENTER_NO_OF+RoomType.SINGLE_BED_ROOM +Printer.NEEDED);
+            noOfSingleBedroomsNeeded=InputHelper.getWholeNumberIntegerInput();
+            System.out.println(Printer.ENTER_NO_OF+RoomType.DOUBLE_BED_ROOM +Printer.NEEDED);
+            noOfDoubleBedroomsNeeded=InputHelper.getWholeNumberIntegerInput();
+            System.out.println(Printer.ENTER_NO_OF+RoomType.SUITE_ROOM +Printer.NEEDED);
+            noOfSuiteRoomNeeded=InputHelper.getWholeNumberIntegerInput();
 
-//        for(int i=0;i<noOfRoomsNeeded;i++){
-//            System.out.println("Room no."+(i+1));
-//            System.out.println("Enter Type of Room Needed ");
-//            System.out.println("1."+ RoomType.SINGLEBEDROOM);
-//            System.out.println("2."+ RoomType.DOUBLEBEDROOM);
-//            System.out.println("3."+RoomType.SUITEROOM);
-//            int choice=InputHelper.getInputWithinRange(3,null);
-//            switch (choice){
-//                case 1:
-//                    noOfSingleBedroomsNeeded++;
-//                    break;
-//                case 2:
-//                    noOfDoubleBedroomsNeeded++;
-//                    break;
-//                case 3:
-//                    noOfSuiteRoomNeeded++;
-//                    break;
-//            }
-//
-//        }
-        Booking booking=new Booking(checkInDate,checkOutDate,noOfSingleBedroomsNeeded,noOfDoubleBedroomsNeeded,noOfSuiteRoomNeeded);
-        findAvailableHotels(customer,booking,locality);
+            if(noOfSingleBedroomsNeeded+noOfDoubleBedroomsNeeded+noOfSuiteRoomNeeded==0){
+                System.out.println("At least 1 room should be given");
+                System.out.println("1."+Printer.TRY_AGAIN);
+                System.out.println("2."+Printer.GO_BACK);
+                if(InputHelper.getInputWithinRange(2,null)==2){
+                    break;
+                }
+            }
+            else{
+                break;
+            }
+        }while(true);
+
+
+        CustomerBooking customerBooking=new CustomerBooking();
+        customerBooking.setNoOfSingleBedroomsBooked(noOfSingleBedroomsNeeded);
+        customerBooking.setNoOfDoubleBedRoomsBooked(noOfDoubleBedroomsNeeded);
+        customerBooking.setNoOfSuiteRoomsBooked(noOfSuiteRoomNeeded);
+        customerBooking.setCheckInDate(checkInDate);
+        customerBooking.setCheckOutDate(checkOutDate);
+
+
+        findAvailableHotels(customer,customerBooking,locality);
     }
 
     Date compareAndCheckDate(Date date,String str,boolean currentDateCheck,boolean checkIn){
@@ -254,12 +265,11 @@ public class CustomerDriver implements Driver {
         }
     }
 
-    void findAvailableHotels(Customer customer,Booking booking,String locality){
+    void findAvailableHotels(User customer, CustomerBooking customerBooking, String locality){
         do{
-            ArrayList<Date> datesInRange=InputHelper.getDatesBetweenTwoDates(booking.getCheckInDate(),booking.getCheckOutDate());
-            booking.setNoOfDays(datesInRange.size());
-            datesInRange.add(booking.getCheckOutDate());
-            ArrayList<Hotel> hotels=hotelDB.getRegisteredHotelList();
+            ArrayList<Date> datesInRange=InputHelper.getDatesBetweenTwoDates(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate());
+            datesInRange.add(customerBooking.getCheckOutDate());
+            ArrayList<Hotel> hotels=hotelDB.getHotelListByStatus(HotelStatus.APPROVED);
             ArrayList<Integer> availableHotelsID=new ArrayList<>();
             loop:for(int i=0;i<hotels.size();i++){
                 Hotel hotel=hotels.get(i);
@@ -268,20 +278,22 @@ public class CustomerDriver implements Driver {
                 }
 
                 for(int j=0;j<datesInRange.size();j++){
-                    int noOfRemSingleBedRoomsBookedByDate=hotel.getNumberofSingleBedRooms()-hotel.getNoOfSingleBedRoomsBookedByDate(datesInRange.get(j));
-                    int noOfRemDoubleBedRoomsBookedByDate=hotel.getNumberofDoubleBedRooms()-hotel.getNoOfDoubleBedRoomsBookedByDate(datesInRange.get(j));
-                    int noOfRemSuiteRoomsBookedByDate=hotel.getNumberofSuiteRooms()-hotel.getNoOfSuiteRoomsBookedByDate(datesInRange.get(j));
+
+
+                    int noOfRemSingleBedRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.SINGLE_BED_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.SINGLE_BED_ROOM);
+                    int noOfRemDoubleBedRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.DOUBLE_BED_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.DOUBLE_BED_ROOM);
+                    int noOfRemSuiteRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.SUITE_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.SUITE_ROOM);
                     int totalNoOfRemRoomsBookedByDate=noOfRemSuiteRoomsBookedByDate+noOfRemDoubleBedRoomsBookedByDate+noOfRemSingleBedRoomsBookedByDate;
-                    if(booking.getTotalNoOfRoomsNeeded()>totalNoOfRemRoomsBookedByDate){
+                    if(customerBooking.getTotalNoOfRoomsBooked()>totalNoOfRemRoomsBookedByDate){
                         continue loop;
                     }
-                    else if(booking.getNoOfSingleBedroomsNeeded()>noOfRemSingleBedRoomsBookedByDate){
+                    else if(customerBooking.getNoOfSingleBedroomsBooked()>noOfRemSingleBedRoomsBookedByDate){
                         continue loop;
                     }
-                    else if(booking.getNoOfDoubleBedroomsNeeded()>noOfRemDoubleBedRoomsBookedByDate){
+                    else if(customerBooking.getNoOfDoubleBedRoomsBooked()>noOfRemDoubleBedRoomsBookedByDate){
                         continue loop;
                     }
-                    else if(booking.getNoOfSuiteRoomNeeded()>noOfRemSuiteRoomsBookedByDate){
+                    else if(customerBooking.getNoOfSuiteRoomsBooked()>noOfRemSuiteRoomsBookedByDate){
                         continue loop;
                     }
 
@@ -295,7 +307,7 @@ public class CustomerDriver implements Driver {
             }
 
             for(int i=0;i<availableHotelsID.size();i++){
-                printHotelDetailsWithBooking(i,hotelDB.getHotelByID(availableHotelsID.get(i)),booking);
+                printHotelDetailsWithBooking(i,hotelDB.getHotelByID(availableHotelsID.get(i)),customerBooking);
             }
 
             System.out.println("1."+Printer.SELECT_HOTEl);
@@ -305,7 +317,7 @@ public class CustomerDriver implements Driver {
                 System.out.println(Printer.ENTER_SNO_TO_SELECT_HOTEL);
                 int choice=InputHelper.getInputWithinRange(availableHotelsID.size(),null);
                 System.out.println("\n\n");
-                boolean booked=expandedHotelDetails(booking,hotelDB.getHotelByID(availableHotelsID.get(choice-1)),customer,booking.getNoOfDays());
+                boolean booked=expandedHotelDetails(customerBooking,hotelDB.getHotelByID(availableHotelsID.get(choice-1)),customer,customerBooking.getNoOfDays());
                 if(booked){
                     return;
                 }
@@ -315,7 +327,6 @@ public class CustomerDriver implements Driver {
             }
 
         }while(true);
-
     }
 
 
@@ -327,7 +338,7 @@ public class CustomerDriver implements Driver {
         System.out.println("\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
         System.out.println("\t"+hotel.getAddress().getState()+"-"+hotel.getAddress().getPostalCode());
     }
-    void printHotelDetailsWithBooking(int sno,Hotel hotel,Booking booking){
+    void printHotelDetailsWithBooking(int sno,Hotel hotel,CustomerBooking booking){
         printHotelDetails(sno,hotel);
         double listPrice=getListPrice(booking,hotel);
         double maxPrice=getMaxPrice(booking,hotel);
@@ -335,17 +346,17 @@ public class CustomerDriver implements Driver {
         System.out.println("Price(per night) : ₹"+listPrice+" Actual Price(per night) : ₹"+maxPrice+"  "+discount+"%off\n\n");
     }
 
-    double getListPrice(Booking booking,Hotel hotel){
-        double singleBedRoomPrice=booking.getNoOfSingleBedroomsNeeded()*hotel.getSingleBedRoomListPrice();
-        double doubleBedRoomPrice=booking.getNoOfDoubleBedroomsNeeded()*hotel.getDoubleBedRoomListPrice();
-        double suiteRoomPrice=booking.getNoOfSuiteRoomNeeded()*hotel.getSuiteRoomListPrice();
+    double getListPrice(CustomerBooking booking,Hotel hotel){
+        double singleBedRoomPrice=booking.getNoOfSingleBedroomsBooked()*hotel.getSingleBedRoomListPrice();
+        double doubleBedRoomPrice=booking.getNoOfDoubleBedRoomsBooked()*hotel.getDoubleBedRoomListPrice();
+        double suiteRoomPrice=booking.getNoOfSuiteRoomsBooked()*hotel.getSuiteRoomListPrice();
         return singleBedRoomPrice+doubleBedRoomPrice+suiteRoomPrice;
     }
 
-    double getMaxPrice(Booking booking,Hotel hotel){
-        double singleBedRoomPrice=booking.getNoOfSingleBedroomsNeeded()*hotel.getSingleBedRoomMaxPrice();
-        double doubleBedRoomPrice=booking.getNoOfDoubleBedroomsNeeded()*hotel.getDoubleBedRoomMaxPrice();
-        double suiteRoomPrice=booking.getNoOfSuiteRoomNeeded()*hotel.getSuiteRoomMaxPrice();
+    double getMaxPrice(CustomerBooking booking,Hotel hotel){
+        double singleBedRoomPrice=booking.getNoOfSingleBedroomsBooked()*hotel.getSingleBedRoomMaxPrice();
+        double doubleBedRoomPrice=booking.getNoOfDoubleBedRoomsBooked()*hotel.getDoubleBedRoomMaxPrice();
+        double suiteRoomPrice=booking.getNoOfSuiteRoomsBooked()*hotel.getSuiteRoomMaxPrice();
         return singleBedRoomPrice+doubleBedRoomPrice+suiteRoomPrice;
     }
 
@@ -355,7 +366,7 @@ public class CustomerDriver implements Driver {
     }
 
 
-    boolean expandedHotelDetails(Booking booking,Hotel hotel,Customer customer,int totalDays){
+    boolean expandedHotelDetails(CustomerBooking customerBooking,Hotel hotel,User customer,int totalDays){
         System.out.println(hotel.getHotelType()+" "+hotel.getHotelID()+" "+hotel.getHotelName());
         System.out.println("\tNo."+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
         System.out.println("\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
@@ -363,8 +374,8 @@ public class CustomerDriver implements Driver {
 
         System.out.println();
         System.out.println("Your Booking Details");
-        System.out.println("Dates : "+booking.getCheckInDateString()+" - "+booking.getCheckOutDateString());
-        System.out.println("Rooms : "+booking.getTotalNoOfRoomsNeeded());
+        System.out.println("Dates : "+customerBooking.getCheckInDateString()+" - "+customerBooking.getCheckOutDateString());
+        System.out.println("Rooms : "+customerBooking.getTotalNoOfRoomsBooked());
         System.out.println("Booking for : "+customer.getUserName());
         System.out.println();
         System.out.println("Amenities : ");
@@ -378,20 +389,21 @@ public class CustomerDriver implements Driver {
                 System.out.println();
             }
         }
+
         System.out.println("\nPricing breakup : ");
-        double totalPriceOfSingleBedRooms=hotel.getSingleBedRoomListPrice()*booking.getNoOfSingleBedroomsNeeded()*totalDays;
-        if(booking.getNoOfSingleBedroomsNeeded()>0){
-            System.out.println(RoomType.SINGLE_BED_ROOM +" : ₹"+hotel.getSingleBedRoomListPrice()+" * "+booking.getNoOfSingleBedroomsNeeded()+" : ₹"+hotel.getSingleBedRoomListPrice()*booking.getNoOfSingleBedroomsNeeded()+" * "+totalDays+(totalDays>1?" days":" day")+" : ₹"+totalPriceOfSingleBedRooms);
+        double totalPriceOfSingleBedRooms=hotel.getSingleBedRoomListPrice()*customerBooking.getNoOfSingleBedroomsBooked()*totalDays;
+        if(customerBooking.getNoOfSingleBedroomsBooked()>0){
+            System.out.println(RoomType.SINGLE_BED_ROOM +" : ₹"+hotel.getSingleBedRoomListPrice()+" * "+customerBooking.getNoOfSingleBedroomsBooked()+" : ₹"+hotel.getSingleBedRoomListPrice()*customerBooking.getNoOfSingleBedroomsBooked()+" * "+totalDays+(totalDays>1?" days":" day")+" : ₹"+totalPriceOfSingleBedRooms);
         }
 
-        double totalPriceOfDoubleBedRooms=hotel.getDoubleBedRoomListPrice()*booking.getNoOfDoubleBedroomsNeeded()*totalDays;
-        if(booking.getNoOfDoubleBedroomsNeeded()>0){
-            System.out.println(RoomType.DOUBLE_BED_ROOM +" : ₹"+hotel.getDoubleBedRoomListPrice()+" * "+booking.getNoOfDoubleBedroomsNeeded()+" : ₹"+hotel.getDoubleBedRoomListPrice()*booking.getNoOfDoubleBedroomsNeeded()+" * "+totalDays+(totalDays>1?" days":" day")+" : ₹"+totalPriceOfDoubleBedRooms);
+        double totalPriceOfDoubleBedRooms=hotel.getDoubleBedRoomListPrice()*customerBooking.getNoOfDoubleBedRoomsBooked()*totalDays;
+        if(customerBooking.getNoOfDoubleBedRoomsBooked()>0){
+            System.out.println(RoomType.DOUBLE_BED_ROOM +" : ₹"+hotel.getDoubleBedRoomListPrice()+" * "+customerBooking.getNoOfDoubleBedRoomsBooked()+" : ₹"+hotel.getDoubleBedRoomListPrice()*customerBooking.getNoOfDoubleBedRoomsBooked()+" * "+totalDays+(totalDays>1?" days":" day")+" : ₹"+totalPriceOfDoubleBedRooms);
         }
 
-        double totalPriceOfSuiteRooms=hotel.getSuiteRoomListPrice()*booking.getNoOfSuiteRoomNeeded()*totalDays;
-        if(booking.getNoOfSuiteRoomNeeded()>0){
-            System.out.println(RoomType.SUITE_ROOM +" : ₹"+hotel.getSuiteRoomListPrice()+" * "+booking.getNoOfSuiteRoomNeeded()+" : ₹"+hotel.getSuiteRoomListPrice()*booking.getNoOfSuiteRoomNeeded()+" * "+totalDays+(totalDays>1?" days":" day")+" : ₹"+totalPriceOfSuiteRooms);
+        double totalPriceOfSuiteRooms=hotel.getSuiteRoomListPrice()*customerBooking.getNoOfSuiteRoomsBooked()*totalDays;
+        if(customerBooking.getNoOfSuiteRoomsBooked()>0){
+            System.out.println(RoomType.SUITE_ROOM +" : ₹"+hotel.getSuiteRoomListPrice()+" * "+customerBooking.getNoOfSuiteRoomsBooked()+" : ₹"+hotel.getSuiteRoomListPrice()*customerBooking.getNoOfSuiteRoomsBooked()+" * "+totalDays+(totalDays>1?" days":" day")+" : ₹"+totalPriceOfSuiteRooms);
         }
 
         double totalPrice=totalPriceOfSingleBedRooms+totalPriceOfDoubleBedRooms+totalPriceOfSuiteRooms;
@@ -401,11 +413,17 @@ public class CustomerDriver implements Driver {
         loop:do{
             switch (choice){
                 case 1:
-                    booking.setTotalPriceOfSingleBedRooms(totalPriceOfSingleBedRooms);
-                    booking.setTotalPriceOfDoubleBedRooms(totalPriceOfDoubleBedRooms);
-                    booking.setTotalPriceOfSuiteRooms(totalPriceOfSuiteRooms);
-                    boolean booked=bookHotel(booking,customer,hotel);
+
+                    customerBooking.setTotalPriceOfSingleBedRooms(totalPriceOfSingleBedRooms);
+                    customerBooking.setTotalPriceOfDoubleBedRooms(totalPriceOfDoubleBedRooms);
+                    customerBooking.setTotalPriceOfSuiteRooms(totalPriceOfSuiteRooms);
+                    boolean booked=paySlip(customerBooking);
                     if(booked){
+                        bookingDB.addBooking(customerBooking);
+                        customerBooking.setHotelID(hotel.getHotelID());
+                        bookedDetails(customerBooking,customer,hotel);
+
+                        InputHelper.pressEnterToContinue();
                         return true;
                     }
                     break loop;
@@ -423,24 +441,28 @@ public class CustomerDriver implements Driver {
 
     }
 
-    boolean bookHotel(Booking booking,Customer customer,Hotel hotel){
-        System.out.println("1."+Printer.PAY_NOW+"₹"+booking.getTotalPrice());
+    boolean paySlip(CustomerBooking customerBooking){
+        System.out.println("1."+Printer.PAY_NOW+"₹"+customerBooking.getTotalPrice());
         System.out.println("2."+Printer.PAY_LATER);
         System.out.println("3."+Printer.GO_BACK);
         int choice=InputHelper.getInputWithinRange(2,null);
         switch (choice){
             case 1:
                 System.out.println(Printer.PAID_USING_UPI);
-                booking.setPaid();
-                break;
+                customerBooking.setPaid();
+                return true;
             case 2:
-                System.out.println(Printer.PAY_AT_HOTEL+" "+Printer.RUPEE+booking.getTotalPrice());
-                break;
+                System.out.println(Printer.PAY_AT_HOTEL+" "+Printer.RUPEE+customerBooking.getTotalPrice());
+                return true;
             case 3:
                 return false;
         }
-        booking.setCustomerID(customer.getCustomerID());
-        hotel.updateHashMap(booking.getNoOfSingleBedroomsNeeded(),booking.getNoOfDoubleBedroomsNeeded(),booking.getNoOfSuiteRoomNeeded(),booking.getCheckInDate(),booking.getCheckOutDate());
+        return false;
+    }
+
+    void bookedDetails(CustomerBooking customerBooking, User customer,Hotel hotel){
+        customerBooking.setCustomerID(customer.getUserID());
+        hotel.updateRoomBooking(customerBooking.getNoOfSingleBedroomsBooked(),customerBooking.getNoOfDoubleBedRoomsBooked(),customerBooking.getNoOfSuiteRoomsBooked(),customerBooking.getCheckInDate(),customerBooking.getCheckOutDate(),true);
         System.out.println("\n"+Printer.BOOKING_CONFIRMED+"\n");
         System.out.println("BOOKIZ "+hotel.getHotelType()+" "+hotel.getHotelID());
         System.out.println(hotel.getHotelName());
@@ -450,36 +472,35 @@ public class CustomerDriver implements Driver {
         System.out.println("Contact : "+hotel.getPhoneNumber());
         System.out.println();
         System.out.println("Check-in                             Check-out");
-        System.out.println(booking.getCheckInDateString()+"        "+booking.getNoOfDays()+"N             "+booking.getCheckOutDateString());
+        System.out.println(customerBooking.getCheckInDateString()+"        "+customerBooking.getNoOfDays()+"N             "+customerBooking.getCheckOutDateString());
         System.out.println("12:00PM onwards                   Before 11:00AM\n");
-        bookingDB.addBooking(booking);
-        hotel.addBookingIDs(booking.getBookingID());
-        booking.setHotelID(hotel.getHotelID());
-        customer.addBookingIDs(booking.getBookingID());
+
+
         System.out.println("BOOKING ID");
-        System.out.println(" --> "+booking.getBookingID()+"\n");
+        System.out.println(" --> "+customerBooking.getBookingID()+"\n");
         System.out.println("RESERVED FOR");
         System.out.println(" --> "+customer.getUserName()+"\n");
         System.out.println("ROOMS & TYPE");
-        if(booking.getNoOfSingleBedroomsNeeded()>0){
-            System.out.println(" --> "+booking.getNoOfSingleBedroomsNeeded()+" "+RoomType.SINGLE_BED_ROOM);
+        if(customerBooking.getNoOfSingleBedroomsBooked()>0){
+            System.out.println(" --> "+customerBooking.getNoOfSingleBedroomsBooked()+" "+RoomType.SINGLE_BED_ROOM);
         }
-        if(booking.getNoOfDoubleBedroomsNeeded()>0){
-            System.out.println(" --> "+booking.getNoOfDoubleBedroomsNeeded()+" "+RoomType.DOUBLE_BED_ROOM);
+        if(customerBooking.getNoOfDoubleBedRoomsBooked()>0){
+            System.out.println(" --> "+customerBooking.getNoOfDoubleBedRoomsBooked()+" "+RoomType.DOUBLE_BED_ROOM);
         }
-        if(booking.getNoOfSuiteRoomNeeded()>0){
-            System.out.println(" --> "+booking.getNoOfSuiteRoomNeeded()+" "+RoomType.SUITE_ROOM);
+        if(customerBooking.getNoOfSuiteRoomsBooked()>0){
+            System.out.println(" --> "+customerBooking.getNoOfSuiteRoomsBooked()+" "+RoomType.SUITE_ROOM);
         }
         System.out.println("\nContact Information");
         System.out.println(" --> "+"+91-"+customer.getPhoneNumber());
-        InputHelper.pressEnterToContinue();
-        return true;
+
     }
+
+
 
     //------------------------------------------------2.List Bookings--------------------------------------------------//
 
-    boolean listBookings(Customer customer){
-        ArrayList<Integer>bookingIDs=customer.getBookingIDs();
+    boolean listBookings(User customer){
+        ArrayList<Integer>bookingIDs=bookingDB.getUserBookingIDs(customer.getUserID());
         if(bookingIDs.isEmpty()){
             System.out.println(Printer.NO_BOOKINGS_AVAIL);
             return false;
@@ -501,7 +522,7 @@ public class CustomerDriver implements Driver {
 
     //------------------------------------------------3.Cancel Bookings------------------------------------------------//
 
-    void cancelBooking(Customer customer){
+    void cancelBooking(User customer){
         if(!listBookings(customer)){
             return;
         }
@@ -511,50 +532,51 @@ public class CustomerDriver implements Driver {
         int choice=InputHelper.getInputWithinRange(2,null);
         if(choice==1){
             System.out.println(Printer.ENTER_SNO_TO_CANCEL_BOOKING);
-            int bookingIDIndex=InputHelper.getInputWithinRange(customer.getBookingIDs().size(),null);
-            int bookingID=customer.getBookingIDs().get(bookingIDIndex-1);
-            Booking booking=bookingDB.getBookingWithID(bookingID);
-            bookingDB.removeBooking(booking);
-            Hotel hotel=hotelDB.getHotelByID(booking.getHotelID());
-            hotel.removeBookingIDs(bookingID);
-            customer.removeBookingIDs(bookingID);
-            ArrayList<Date> datesInRange=InputHelper.getDatesBetweenTwoDates(booking.getCheckInDate(),booking.getCheckOutDate());
-            datesInRange.add(booking.getCheckOutDate());
-            for(int i=0;i<datesInRange.size();i++){
-                int noOfSingleBedRoomsBooked=booking.getNoOfSingleBedroomsNeeded();
-                int noOfDoubleBedRoomsBooked=booking.getNoOfDoubleBedroomsNeeded();
-                int noOfSuiteRoomsBooked=booking.getNoOfSuiteRoomNeeded();
-                hotel.cancelSingleBedRoomsBooked(datesInRange.get(i),noOfSingleBedRoomsBooked);
-                hotel.cancelDoubleBedRoomsBooked(datesInRange.get(i),noOfDoubleBedRoomsBooked);
-                hotel.cancelSuiteRoomsBooked(datesInRange.get(i),noOfSuiteRoomsBooked);
-            }
+            ArrayList<Integer> bookingIDs=bookingDB.getUserBookingIDs(customer.getUserID());
+            int bookingIDIndex=InputHelper.getInputWithinRange(bookingIDs.size(),null);
+            int bookingID=bookingIDs.get(bookingIDIndex-1);
+            CustomerBooking customerBooking=bookingDB.getCustomerBookingWithID(bookingID);
+            //bookingDB.removeBooking(booking);
+            bookingDB.removeBookingWithBookingID(bookingID);
+            Hotel hotel=hotelDB.getHotelByID(customerBooking.getHotelID());
+            hotel.updateRoomBooking(customerBooking.getNoOfSingleBedroomsBooked(),customerBooking.getNoOfDoubleBedRoomsBooked(),customerBooking.getNoOfSuiteRoomsBooked(),customerBooking.getCheckInDate(),customerBooking.getCheckOutDate(),false);
+//            ArrayList<Date> datesInRange=InputHelper.getDatesBetweenTwoDates(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate());
+//            datesInRange.add(customerBooking.getCheckOutDate());
+//            for(int i=0;i<datesInRange.size();i++){
+//                int noOfSingleBedRoomsBooked=customerBooking.getNoOfSingleBedroomsNeeded();
+//                int noOfDoubleBedRoomsBooked=customerBooking.getNoOfDoubleBedroomsNeeded();
+//                int noOfSuiteRoomsBooked=customerBooking.getNoOfSuiteRoomNeeded();
+//                hotel.cancelSingleBedRoomsBooked(datesInRange.get(i),noOfSingleBedRoomsBooked);
+//                hotel.cancelDoubleBedRoomsBooked(datesInRange.get(i),noOfDoubleBedRoomsBooked);
+//                hotel.cancelSuiteRoomsBooked(datesInRange.get(i),noOfSuiteRoomsBooked);
+//            }
             System.out.println(Printer.BOOKING_CANCELLED);
         }
     }
 
 
     //------------------------------------------------4.Favorite List----------------------------------------------------//
-    void addToFavoriteList(Customer customer,Hotel hotel){
-        customer.addFavoriteHotels(hotel.getHotelID());
+    void addToFavoriteList(User customer,Hotel hotel){
+        hotelDB.addFavoriteHotels(customer.getUserID(),hotel.getHotelID());
     }
 
-    void listFavoriteHotels(Customer customer){
-        if(customer.getFavoriteHotels().isEmpty()){
-            System.out.println(Printer.NO_FAVORITE_HOTELS);
-            return;
-        }
+    void listFavoriteHotels(User customer){
         System.out.println(Printer.FAVORITE_HOTELS);
-
-        for(int i=0;i<customer.getFavoriteHotels().size();i++){
-            Hotel hotel=hotelDB.getHotelByID(customer.getFavoriteHotels().get(i));
-            if(hotel==null){
-                customer.removeFavoriteHotels(customer.getFavoriteHotels().get(i));
+        ArrayList<Integer> favoriteHotelsIDs=hotelDB.getFavoriteHotels(customer.getUserID());
+        for(int i=0;i<favoriteHotelsIDs.size();i++){
+            Hotel hotel=hotelDB.getHotelByID(favoriteHotelsIDs.get(i));
+            if(hotel.getHotelApproveStatus()!=HotelStatus.APPROVED){
+                hotelDB.removeFavoriteHotels(customer.getUserID(), favoriteHotelsIDs.get(i));
             }
             else{
                 printHotelDetails(i,hotel);
             }
 
         }
+        if(favoriteHotelsIDs.isEmpty()){
+            System.out.println(Printer.NO_FAVORITE_HOTELS);
+        }
+
 
     }
 

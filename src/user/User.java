@@ -1,40 +1,48 @@
 package user;
 
 public class User {
+    private UserType userType;
     private String userName;
     private long phoneNumber;
     private int userID;
     private String mailID;
 
-    protected String getUserName() {
+    public void setUserType(UserType userType){
+        this.userType=userType;
+    }
+    public UserType getUserType(){
+        return userType;
+    }
+
+    public String getUserName() {
         return userName;
     }
 
-    protected void setUserName(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    protected long getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 
-    protected void setPhoneNumber(long phoneNumber) {
+    public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    protected int getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    protected void setUserID(int userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
-    protected String getMailID() {
+    public String getMailID() {
         return mailID;
     }
 
-    protected void setMailID(String mailID) {
+    public void setMailID(String mailID) {
         this.mailID = mailID;
     }
 }

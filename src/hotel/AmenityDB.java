@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class AmenityDB {
 
     private static final AmenityDB amenityDB=new AmenityDB();
+    private int idHelper=0;
     private final Amenity TV = new Amenity("TV",20);
     private final Amenity AC = new Amenity("AC",20);
     private final Amenity FRIDGE=new Amenity("FRIDGE",10);
@@ -17,58 +18,65 @@ public class AmenityDB {
     private final ArrayList<Amenity> AMENITIES=new ArrayList<>();
 
     {
-        AMENITIES.add(TV);
-        AMENITIES.add(AC);
-        AMENITIES.add(FRIDGE);
-        AMENITIES.add(WASHING_MACHINE);
-        AMENITIES.add(MODERN_WARDROBE);
-        AMENITIES.add(HIGH_SPEED_WIFI);
-        AMENITIES.add(STUDY_LAMP_TABLE);
-        AMENITIES.add(GEYSER);
+        addAmenity(TV);
+        addAmenity(AC);
+        addAmenity(FRIDGE);
+        addAmenity(WASHING_MACHINE);
+        addAmenity(MODERN_WARDROBE);
+        addAmenity(HIGH_SPEED_WIFI);
+        addAmenity(STUDY_LAMP_TABLE);
+        addAmenity(GEYSER);
     }
 
     private AmenityDB(){
 
     }
 
+    private int generateId(){
+        return ++idHelper;
+    }
+
+    public void addAmenity(Amenity amenity){
+        amenity.setAmenityID(generateId());
+        AMENITIES.add(amenity);
+    }
+
+    public void removeAmenity(int index){
+        AMENITIES.remove(index);
+    }
+
+
     public static AmenityDB getInstance(){
         return amenityDB;
     }
 
-    public Amenity getTV() {
-        return TV;
-    }
-
-    public Amenity getAC() {
-        return AC;
-    }
-
-    public Amenity getFRIDGE() {
-        return FRIDGE;
-    }
-
-    public Amenity getGEYSER() {
-        return GEYSER;
-    }
-
-    public Amenity getHighSpeedWifi() {
-        return HIGH_SPEED_WIFI;
-    }
-
-    public Amenity getModernWardrobe() {
-        return MODERN_WARDROBE;
-    }
-
-    public Amenity getStudyLampTable() {
-        return STUDY_LAMP_TABLE;
-    }
-
-    public Amenity getWashingMachine() {
-        return WASHING_MACHINE;
-    }
-
     public ArrayList<Amenity> getAmenities(){
         return AMENITIES;
+    }
+
+    public int getTotalAmenityPoints(){
+        int totalAmenityPoints=0;
+        for(Amenity amenity:AMENITIES){
+            totalAmenityPoints+=amenity.getPoints();
+        }
+        return totalAmenityPoints;
+    }
+
+    public int getAmenityPointsByID(int id){
+        for(Amenity amenity:AMENITIES){
+            if(amenity.getAmenityID()==id){
+                return amenity.getPoints();
+            }
+        }
+        return 0;
+    }
+    public Amenity getAmenityByID(int id){
+        for(Amenity amenity:AMENITIES){
+            if(amenity.getAmenityID()==id){
+                return amenity;
+            }
+        }
+        return null;
     }
 
 }

@@ -5,12 +5,12 @@ import java.util.HashMap;
 public class UserAuthenticationDB {
 
     private final HashMap<String,String> adminAuthentication=new HashMap<>();
-    private final HashMap<Long,String> hotelAuthentication=new HashMap<>();
+    private final HashMap<Long,String> hotelAdminAuthentication =new HashMap<>();
     private final HashMap<Long,String> customerAuthentication=new HashMap<>();
     private static final UserAuthenticationDB userAuthenticationDB=new UserAuthenticationDB();
 
     private UserAuthenticationDB(){
-        addAdminAuth("admin","pass");
+
     }
 
     public static UserAuthenticationDB getInstance(){
@@ -20,10 +20,9 @@ public class UserAuthenticationDB {
     public void addAdminAuth(String userName,String password){
         adminAuthentication.put(userName,password);
     }
-    public void addHotelAuth(Long phoneNumber,String password){
-        hotelAuthentication.put(phoneNumber,password);
+    public void addHotelAdminAuth(Long phoneNumber, String password){
+        hotelAdminAuthentication.put(phoneNumber,password);
     }
-
     public void addCustomerAuth(Long phoneNumber,String password){
         customerAuthentication.put(phoneNumber,password);
     }
@@ -36,9 +35,9 @@ public class UserAuthenticationDB {
         return false;
     }
 
-    public boolean authenticateHotel(Long phoneNumber,String password){
-        if(hotelAuthentication.containsKey(phoneNumber)){
-            String orgPassword=hotelAuthentication.get(phoneNumber);
+    public boolean authenticateHotelAdmin(Long phoneNumber,String password){
+        if(hotelAdminAuthentication.containsKey(phoneNumber)){
+            String orgPassword=hotelAdminAuthentication.get(phoneNumber);
             return orgPassword.equals(password);
         }
         return false;
@@ -53,7 +52,7 @@ public class UserAuthenticationDB {
     }
 
     public boolean isHotelPhoneNumberExist(Long phoneNumber){
-        if(hotelAuthentication.containsKey(phoneNumber)){
+        if(hotelAdminAuthentication.containsKey(phoneNumber)){
             return true;
         }
         return false;

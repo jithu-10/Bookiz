@@ -1,73 +1,120 @@
 package utility;
 
-import customer.Customer;
-import customer.CustomerDB;
-import hotel.Amenity;
-import hotel.AmenityDB;
-import hotel.Hotel;
-import hotel.HotelDB;
-import hotel.Address;
+
+import hotel.*;
+import user.User;
 import user.UserAuthenticationDB;
+import user.UserDB;
+import user.UserType;
 
 import java.util.ArrayList;
 
 public class Init {
 
-    public static Hotel publichotels[]=new Hotel[6];
+
     public static void init(){
-        String str[]={"ARASAN INN","TAMILNADU MANSION","THE PRINCE PARK","ANNAI GUEST HOUSE","SHAPPY IN","KB RESIDENC&"};
-        long phn[]={9092722880L,9677298160L,7358196791L,1234567890L,9876543211L,5555544444L};
-        String locality[]={"Tambaram","Sholinganallur","Potheri","Guduvancherry","Anna Nagar","Adyar"};
-        int postalCode[]={600059,600102,600048,603102,600321,600043};
-        Hotel hotels[]=new Hotel[str.length];
-        for(int i=0;i<str.length;i++){
-            hotels[i]=createHotel(str[i],phn[i],getAddress(i+1,locality[i],postalCode[i]));
-            UserAuthenticationDB.getInstance().addHotelAuth(phn[i],"pass");
+        initializeHotels();
+        initializeCustomers();
+    }
+
+    public static void initializeCustomers(){
+        String userNames[]={"Marty A. Ortiz","Florence M. Gilcrease","Charles J. Schultz","Rod L. Tarrance","Hector L. Joyner","Michael N. Bell"};
+        long phoneNumber[]={9092722880L,9677298160L,7358196791L,1234567890L,9876543211L,5555544444L};
+        String mailID[]={"13jackf9@masjoco.com","bxv6414@traz.xyz","keff85@ikanchana.com","frostschneider@happiseektest.com","ff6se@mymailcr.com","djevens@twichzhuce.com"};
+        for(int i=0;i<6;i++){
+            User user=new User();
+            user.setUserType(UserType.CUSTOMER);
+            user.setUserName(userNames[i]);
+            user.setPhoneNumber(phoneNumber[i]);
+            user.setMailID(mailID[i]);
+            UserDB.getInstance().addUser(user);
+            UserAuthenticationDB.getInstance().addCustomerAuth(phoneNumber[i],"pass");
         }
-
-//        Hotel hotel=new Hotel("Special One",9747575427L,"pass","Special One","Vodafone Kattuppakam","Mumbai");
-//        hotel.addSingleBedRooms(5,500,800);
-//        hotel.addDoubleBedRooms(5,2000,2400);
-//        hotel.addSuiteRooms(5,4000,5000);
-//        HotelDB.getInstance().addApprovedHotelList(hotel);
-//        ArrayList<Amenity> amenities=AmenityDB.getInstance().getAmenities();
-//        for(int i=0;i<amenities.size();i++){
-//            hotel.addAmenity(amenities.get(i));
-//        }
-        Customer customer=new Customer("Jadon Sancho",1234567890,"jithin@gmail.com");
-        CustomerDB.getInstance().addCustomer(customer);
-        publichotels=hotels;
-        UserAuthenticationDB.getInstance().addCustomerAuth(1234567890L,"pass");
     }
 
-    public static Address getAddress(int buildingNo,String locality,int postalCode){
-        return new Address(buildingNo,"New Street",locality,"Chennai","Tamil Nadu",postalCode);
+    public static void initializeHotels(){
+        User users[]=getHotelOwners();
+        String hotelName[]={"ARASAN INN","TAMILNADU MANSION","THE PRINCE PARK","ANNAI GUEST HOUSE","SHAPPY IN","KB RESIDENC&"};
+        Address address[]=initAddress();
+        HotelType hotelType[]={HotelType.TOWNHOUSE,HotelType.SPOTZ,HotelType.COLLECTIONZ,HotelType.TOWNHOUSE,HotelType.SPOTZ,HotelType.COLLECTIONZ};
+        HotelStatus hotelStatus=HotelStatus.APPROVED;
+        ArrayList<Integer> amenities=getAmenityIDs( AmenityDB.getInstance().getAmenities());
+        ArrayList<Room> rooms[]=setRooms();
+        Price singleBedRoomPrice=new Price(1000,2000);
+        Price doubleBedRoomPrice=new Price(3000,4000);
+        Price suiteRoomPrice=new Price(6000,7000);
+        Hotel hotels[]=new Hotel[6];
+        for(int i=0;i<hotels.length;i++){
+            Hotel hotel=new Hotel(users[i].getUserID(),hotelName[i],address[i],hotelType[i],hotelStatus,amenities,rooms[i],singleBedRoomPrice,doubleBedRoomPrice,suiteRoomPrice);
+            HotelDB.getInstance().registerHotel(hotel);
+            HotelDB.getInstance().approveHotel(hotel);
+        }
     }
 
+    public static User[] getHotelOwners(){
+        String userNames[]={"User 1","User 2","User 3","User 4","User 5","User 6"};
+        long phoneNumber[]={9092722880L,9677298160L,7358196791L,1234567890L,9876543211L,5555544444L};
+        User[] users=new User[6];
+        for(int i=0;i<6;i++){
+            User user=new User();
+            user.setUserType(UserType.HOTEL_OWNER);
+            user.setUserName(userNames[i]);
+            user.setPhoneNumber(phoneNumber[i]);
+            UserDB.getInstance().addUser(user);
+            users[i]=user;
+            UserAuthenticationDB.getInstance().addHotelAdminAuth(phoneNumber[i],"pass");
+        }
+        return users;
+    }
 
-    public static Hotel createHotel(String name,long phoneNumber,Address address){
-        Hotel hotel=new Hotel(name,phoneNumber,name,address);
-        hotel.addSingleBedRooms(2,300,700);
-        hotel.addDoubleBedRooms(2,1000,2000);
-        hotel.addSuiteRooms(2,2500,3500);
-        ArrayList<Amenity> amenities=AmenityDB.getInstance().getAmenities();
+    public static ArrayList<Integer> getAmenityIDs(ArrayList<Amenity> amenities){
+        ArrayList<Integer> amenitiesID=new ArrayList<>();
         for(int i=0;i<amenities.size();i++){
-            hotel.addAmenity(amenities.get(i));
+            amenitiesID.add(amenities.get(i).getAmenityID());
         }
-        HotelDB.getInstance().addApprovedHotelList(hotel);
-        return hotel;
+        return amenitiesID;
     }
 
-    public static void endingInit(){
-        for(int i=0;i<publichotels.length;i++){
-            Hotel hotel=publichotels[i];
-            System.out.println(hotel.getHotelID());
-            System.out.println(hotel.getTotalNumberofRooms()+" "+hotel.getNumberofSingleBedRooms()+" "+hotel.getNumberofDoubleBedRooms()+" "+hotel.getNumberofSuiteRooms());
-            System.out.println(hotel.getSingleBedroomsBooked());
-            System.out.println(hotel.getDoubleBedroomsBooked());
-            System.out.println(hotel.getSuiteRoomsBooked());
+    public static Address[] initAddress(){
+        int buildingNo[]={1,23,32,3,5,54};
+        String street[]={"Periyar","MGR","Shivaji","Kannagi","Karikalan","Mamta"};
+        String city[]={"Chennai","Chennai","Mumbai","Chennai","Chennai","Kolkata"};
+        String locality[]={"Tambaram","Sholinganallur","Potheri","Guduvancherry","Anna Nagar","Adyar"};
+        String state[]={"Tamil Nadu","Tamil Nadu","Maharashtra","Tamil Nadu","Tamil Nadu","West Bengal"};
+        int postalCode[]={600059,600102,600048,603102,600321,600043};
+        Address addressList[]=new Address[6];
+        for(int i=0;i<addressList.length;i++){
+            Address address=new Address(buildingNo[i],street[i],locality[i],city[i],state[i],postalCode[i]);
+            addressList[i]=address;
         }
+        return addressList;
     }
+
+    public static ArrayList<Room>[] setRooms(){
+        ArrayList<Room> rooms[]=new ArrayList[6];
+        for(int i=0;i<rooms.length;i++){
+            rooms[i]=initRooms();
+        }
+        return rooms;
+    }
+    public static ArrayList<Room> initRooms(){
+        ArrayList<Room> rooms=new ArrayList<>();
+        for(int i=1;i<=2;i++){
+            Room room=new Room(RoomType.SINGLE_BED_ROOM);
+            rooms.add(room);
+        }
+        for(int i=1;i<=2;i++){
+            Room room=new Room(RoomType.DOUBLE_BED_ROOM);
+            rooms.add(room);
+        }
+        for(int i=1;i<=2;i++){
+            Room room=new Room(RoomType.SUITE_ROOM);
+            rooms.add(room);
+        }
+        return rooms;
+    }
+
+
 
 
 }
