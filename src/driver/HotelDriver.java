@@ -136,7 +136,7 @@ public class HotelDriver implements Driver{
     }
 
 
-    public void unApprovedHotelMenu(User user){
+    private void unApprovedHotelMenu(User user){
         Hotel hotel=hotelDB.getHotelByUserID(user.getUserID());
         System.out.println(Printer.WELCOME+user.getUserName()+Printer.SMILE);
         System.out.println();
@@ -174,7 +174,7 @@ public class HotelDriver implements Driver{
         }while (true);
     }
 
-    public void rejectedHotelMenu(User user){
+    private void rejectedHotelMenu(User user){
         Hotel hotel=hotelDB.getHotelByUserID(user.getUserID());
         System.out.println(Printer.WELCOME+user.getUserName()+Printer.SMILE);
         System.out.println();
@@ -215,7 +215,7 @@ public class HotelDriver implements Driver{
         }while (true);
     }
 
-    public void removedHotelMenu(User user){
+    private void removedHotelMenu(User user){
         Hotel hotel=hotelDB.getHotelByUserID(user.getUserID());
         System.out.println(Printer.WELCOME+user.getUserName()+Printer.SMILE);
         System.out.println();
@@ -266,7 +266,7 @@ public class HotelDriver implements Driver{
 
     //------------------------------------------------Hotel Registration----------------------------------------------//
 
-    public boolean acceptTermsAndConditions(){
+    private boolean acceptTermsAndConditions(){
         if(adminDB.getTermsAndConditions().isEmpty()){
             return true;
         }
@@ -298,7 +298,7 @@ public class HotelDriver implements Driver{
         System.out.println(Printer.HOTEL_REGISTERED);
     }
 
-    public void registerAgain(Hotel hotel){
+    private void registerAgain(Hotel hotel){
         if(hotel.getHotelApproveStatus()==HotelStatus.REJECTED){
             hotel.setHotelApproveStatus(HotelStatus.ON_PROCESS);
         }
@@ -308,7 +308,7 @@ public class HotelDriver implements Driver{
         System.out.println(Printer.HOTEL_REGISTERED_AGAIN);
     }
 
-    public User getHotelOwnerDetails(){
+    private User getHotelOwnerDetails(){
         System.out.println(Printer.ENTER_HOTEL_ADMIN_NAME);
         String hotelOwnerName=InputHelper.getStringInput();
         System.out.println(Printer.ENTER_EMAIL);
@@ -354,14 +354,14 @@ public class HotelDriver implements Driver{
         return hotelOwner;
     }
 
-    public Hotel getHotelDetails(int userID){
+    private Hotel getHotelDetails(int userID){
         System.out.println(Printer.ENTER_HOTEL_NAME);
         String hotelName=InputHelper.getStringInput();
         Address address=getHotelAddress();
         return new Hotel(userID,hotelName,address);
     }
 
-    public Address getHotelAddress(){
+    private Address getHotelAddress(){
         System.out.println(Printer.ENTER_BUILDING_NO);
         int buildingNo=InputHelper.getIntegerInput();
         System.out.println(Printer.ENTER_STREET);
@@ -377,7 +377,7 @@ public class HotelDriver implements Driver{
         return new Address(buildingNo,street,locality,city,state,postalCode);
     }
 
-    public void roomDetails(Hotel hotel){
+    private void roomDetails(Hotel hotel){
 
         System.out.println(Printer.ROOM_DETAILS);
 
@@ -400,7 +400,7 @@ public class HotelDriver implements Driver{
 
     }
 
-    public void changeHotelType(Hotel hotel){
+    private void changeHotelType(Hotel hotel){
         System.out.println("Hotel Type : "+hotel.getHotelType());
         System.out.println("1."+"Change Hotel Type");
         System.out.println("2."+"Back");
@@ -410,7 +410,7 @@ public class HotelDriver implements Driver{
         }
     }
 
-    public void hotelTypeSpecification(Hotel hotel){
+    private void hotelTypeSpecification(Hotel hotel){
         System.out.println("Select Hotel Type : ");
         System.out.println("1."+"ELITE HOTEL - "+HotelType.TOWNHOUSE);
         System.out.println("2."+"PREMIUM HOTEL - "+HotelType.COLLECTIONZ);
@@ -440,7 +440,7 @@ public class HotelDriver implements Driver{
 
     //-------------------------------------------1.Add Rooms-----------------------------------------------------------//
 
-    public void addRooms(Hotel hotel){
+    private void addRooms(Hotel hotel){
         System.out.println(Printer.ADD_ROOMS);
         System.out.println(Printer.ENTER_TYPE_OF_ROOM);
         System.out.println("1."+ RoomType.SINGLE_BED_ROOM);
@@ -472,7 +472,7 @@ public class HotelDriver implements Driver{
 
     //-------------------------------------------2.Remove Rooms--------------------------------------------------------//
 
-    public void removeRooms(Hotel hotel){
+    private void removeRooms(Hotel hotel){
         System.out.println(Printer.REMOVE_ROOMS);
         System.out.println(Printer.ENTER_TYPE_OF_ROOM);
         System.out.println("1."+ RoomType.SINGLE_BED_ROOM);
@@ -506,7 +506,7 @@ public class HotelDriver implements Driver{
 
     //-----------------------------------------------3.Add Amenities---------------------------------------------------//
 
-    void addHotelAmenities(Hotel hotel){
+    private void addHotelAmenities(Hotel hotel){
 
         ArrayList<Amenity>totalAmenities=amenityDB.getAmenities();
         ArrayList<Amenity>hotelAmenities=hotel.getAmenities();
@@ -531,7 +531,7 @@ public class HotelDriver implements Driver{
 
     //-----------------------------------------------4.Remove Amenities------------------------------------------------//
 
-    void removeHotelAmenities(Hotel hotel){
+    private void removeHotelAmenities(Hotel hotel){
         System.out.println(Printer.REMOVE_HOTEL_AMENITIES);
         ArrayList<Amenity>hotelAmenities=hotel.getAmenities();
         for(int i=0;i<hotelAmenities.size();i++){
@@ -545,7 +545,7 @@ public class HotelDriver implements Driver{
 
     //----------------------------------------5.Show Rooms which are booked and non booked-----------------------------//
 
-    void showRoomsBookedNonBooked(Hotel hotel){
+    private void showRoomsBookedNonBooked(Hotel hotel){
         System.out.println(Printer.ENTER_DATE);
         Date date=InputHelper.getDate();
         Date currentDate=InputHelper.setTime(new Date());
@@ -567,7 +567,7 @@ public class HotelDriver implements Driver{
 
     //----------------------------------------------6.Change Price of Rooms--------------------------------------------//
 
-    void changeRoomPrices(Hotel hotel){
+    private void changeRoomPrices(Hotel hotel){
         System.out.println(Printer.CHANGE_ROOM_PRICES);
         System.out.println(Printer.ENTER_TYPE_OF_ROOM);
         System.out.println("1."+ RoomType.SINGLE_BED_ROOM);
@@ -604,7 +604,7 @@ public class HotelDriver implements Driver{
         adminDB.addPriceUpdatedHotelList(hotel.getHotelID());
     }
 
-    double setBaseRoomPrice(String str){
+    private double setBaseRoomPrice(String str){
         System.out.println((str==null?"":str+" ")+Printer.BASE_PRICE);
         double basePrice=InputHelper.getDoubleInput();
         do{
@@ -619,7 +619,7 @@ public class HotelDriver implements Driver{
 
     }
 
-    double setMaxRoomPrice(double basePrice,String str){
+    private double setMaxRoomPrice(double basePrice,String str){
         System.out.println((str==null?"":str+" ")+Printer.MAX_PRICE);
         double maxPrice=InputHelper.getDoubleInput();
         do{
@@ -635,7 +635,7 @@ public class HotelDriver implements Driver{
 
     //----------------------------------------------7.List of Customers who booked rooms-------------------------------//
 
-    void bookedCustomersList(Hotel hotel){
+    private void bookedCustomersList(Hotel hotel){
         ArrayList<Integer> bookingIDs=bookingDB.getHotelBookingIDs(hotel.getHotelID());
         if(bookingIDs.isEmpty()){
             System.out.println(Printer.NO_CUSTOMER_BOOKED_ROOMS);
@@ -651,7 +651,7 @@ public class HotelDriver implements Driver{
         InputHelper.pressEnterToContinue();
     }
 
-    void customerDetails(int sno,CustomerBooking customerBooking,User customer){
+    private void customerDetails(int sno,CustomerBooking customerBooking,User customer){
         System.out.println((sno!=-1?((sno+1)+"."):"")+Printer.CUSTOMER_NAME+customer.getUserName());
         System.out.println(Printer.BOOKING_ID+customerBooking.getBookingID());
         System.out.println(Printer.CHECK_IN_DATE+customerBooking.getCheckInDateString());
@@ -666,7 +666,7 @@ public class HotelDriver implements Driver{
 
     //------------------------------------------------------Verify Customer--------------------------------------------//
 
-    void verifyCustomer(Hotel hotel){
+    private void verifyCustomer(Hotel hotel){
         ArrayList<Integer> bookingIDs=bookingDB.getHotelBookingIDs(hotel.getHotelID());
         if(bookingIDs.isEmpty()){
             System.out.println(Printer.NO_CUSTOMER_BOOKED_ROOMS);
