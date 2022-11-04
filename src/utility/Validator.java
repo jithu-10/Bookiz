@@ -23,9 +23,17 @@ public class Validator {
     }
 
     public static boolean emailValidator(String email){
-        Pattern p = Pattern.compile("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
-        Matcher m = p.matcher(email);
-        return m.matches();
+        return regexValidator("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$",email);
+    }
+
+    public static boolean phoneNumberValidator(String phoneNumber){
+        return regexValidator("([1-9]\\d{9})",phoneNumber);
+    }
+
+    public static boolean regexValidator(String regex,String value){
+        Pattern pattern=Pattern.compile(regex);
+        Matcher matcher=pattern.matcher(value);
+        return matcher.matches();
     }
 
 

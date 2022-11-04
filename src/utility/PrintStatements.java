@@ -1,6 +1,6 @@
 package utility;
 
-public class Printer {
+public class PrintStatements {
 
     public static final String WELCOME_MESSAGE = "   Welcome to Bookiz !!!! ";
     public static final String STARTUP_MENU = "1.Admin\n2.Hotel Owner\n3.Customer\n4.Exit";

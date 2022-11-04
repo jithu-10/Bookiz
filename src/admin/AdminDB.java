@@ -18,10 +18,8 @@ public class AdminDB {
     private ArrayList<QA> faq=new ArrayList<QA>();
     private ArrayList<QA> newQuestions=new ArrayList<QA>();
     private static AdminDB adminDB=new AdminDB();
-    private User admin = new User();
+    private User admin = new User("admin",UserType.ADMIN);
     private AdminDB(){
-        admin.setUserName("admin");
-        admin.setUserType(UserType.ADMIN);
         UserAuthenticationDB.getInstance().addAdminAuth(admin.getUserName(),"pass");
     }
 

@@ -16,7 +16,7 @@ public class InputHelper {
         }
         catch(InputMismatchException e){
             input.nextLine();
-            System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
+            System.out.println(PrintStatements.ENTER_VALUE_IN_INTEGER_FORMAT);
             value=getIntegerInput();
         }
         return value;
@@ -29,12 +29,12 @@ public class InputHelper {
         try{
             value=input.nextInt();
             if(value<0){
-                throw new ValidateException(Printer.WHOLE_NUMBER_CONDITION);
+                throw new ValidateException(PrintStatements.WHOLE_NUMBER_CONDITION);
             }
         }
         catch (InputMismatchException e){
             input.nextLine();
-            System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
+            System.out.println(PrintStatements.ENTER_VALUE_IN_INTEGER_FORMAT);
             value=getWholeNumberIntegerInput();
         } catch (ValidateException e) {
             value=getWholeNumberIntegerInput();
@@ -48,12 +48,12 @@ public class InputHelper {
         try{
             value=input.nextInt();
             if(value<1){
-                throw new ValidateException(Printer.POSITIVE_NUMBER_CONDITION);
+                throw new ValidateException(PrintStatements.POSITIVE_NUMBER_CONDITION);
             }
         }
         catch (InputMismatchException e){
             input.nextLine();
-            System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
+            System.out.println(PrintStatements.ENTER_VALUE_IN_INTEGER_FORMAT);
             value=getWholeNumberIntegerInput();
         } catch (ValidateException e) {
             value=getWholeNumberIntegerInput();
@@ -72,11 +72,11 @@ public class InputHelper {
         try{
             value=input.nextLine();
             if(value.equals("")){
-                throw new ValidateException(Printer.FIELD_CANT_BE_EMPTY);
+                throw new ValidateException(PrintStatements.FIELD_CANT_BE_EMPTY);
             }
         }
         catch(InputMismatchException e){
-            System.out.println(Printer.ENTER_VALUE_IN_STRING_FORMAT);
+            System.out.println(PrintStatements.ENTER_VALUE_IN_STRING_FORMAT);
             value=getStringInput();
         }
         catch(ValidateException e){
@@ -89,7 +89,7 @@ public class InputHelper {
         String email=getStringInput();
 
         if(!Validator.emailValidator(email)){
-            System.out.println(Printer.ENTER_VALID_EMAIL);
+            System.out.println(PrintStatements.ENTER_VALID_EMAIL);
             return getEmailInput();
         }
         else{
@@ -106,7 +106,7 @@ public class InputHelper {
         }
         catch (InputMismatchException e){
             input.nextLine();
-            System.out.println(Printer.ENTER_VALUE_IN_INTEGER_FORMAT);
+            System.out.println(PrintStatements.ENTER_VALUE_IN_INTEGER_FORMAT);
             value=getDoubleInput();
         }
         return value;
@@ -119,16 +119,37 @@ public class InputHelper {
         try{
             phoneNumber=input.nextLong();
             if(String.valueOf(phoneNumber).length()!=10){
-                throw new ValidateException(Printer.ENTER_VALID_PHONE_NUMBER);
+                throw new ValidateException(PrintStatements.ENTER_VALID_PHONE_NUMBER);
             }
         }catch (InputMismatchException e){
             input.nextLine();
-            System.out.println(Printer.ENTER_VALID_PHONE_NUMBER);
+            System.out.println(PrintStatements.ENTER_VALID_PHONE_NUMBER);
             phoneNumber=getPhoneNumber();
         } catch (ValidateException e) {
             phoneNumber=getPhoneNumber();
         }
         return phoneNumber;
+    }
+
+    public static Object getPhoneNumberOrEmail(){
+        String mail_phone;
+        try{
+            mail_phone=getStringInput();
+            if(Validator.emailValidator(mail_phone)){
+                return mail_phone;
+            }
+            else if(Validator.phoneNumberValidator(mail_phone)){
+                return Long.valueOf(mail_phone);
+            }
+            else{
+                throw new ValidateException();
+            }
+
+        } catch (ValidateException e) {
+            System.out.println("Please Enter Valid Phone Number or Mail Id..");
+            return getPhoneNumberOrEmail();
+        }
+
     }
 
     public static int getPostalCode(){
@@ -137,11 +158,11 @@ public class InputHelper {
         try{
             postalCode=input.nextInt();
             if(String.valueOf(postalCode).length()!=6){
-                throw new ValidateException(Printer.ENTER_VALID_POSTAL_CODE);
+                throw new ValidateException(PrintStatements.ENTER_VALID_POSTAL_CODE);
             }
         }catch (InputMismatchException e){
             input.nextLine();
-            System.out.println(Printer.ENTER_VALID_POSTAL_CODE);
+            System.out.println(PrintStatements.ENTER_VALID_POSTAL_CODE);
             postalCode=getPostalCode();
         } catch (ValidateException e) {
             postalCode=getPostalCode();
@@ -151,7 +172,7 @@ public class InputHelper {
 
     public static int getInputWithinRange(int end,String str){
         if(str==null){
-            str=Printer.ENTER_INPUT_FROM_GIVEN_OPTION;
+            str= PrintStatements.ENTER_INPUT_FROM_GIVEN_OPTION;
         }
         int start=1;
         int value=InputHelper.getIntegerInput();
@@ -163,11 +184,11 @@ public class InputHelper {
     }
 
     public static Date getDate(){
-        System.out.println(Printer.ENTER_DATE_IN_FORMAT);
+        System.out.println(PrintStatements.ENTER_DATE_IN_FORMAT);
         String dateStr=getStringInput();
 
         if(!Validator.dateValidator(dateStr)){
-            System.out.println(Printer.ENTER_VALID_DATE);
+            System.out.println(PrintStatements.ENTER_VALID_DATE);
             return getDate();
         }
         else{
@@ -257,7 +278,7 @@ public class InputHelper {
 
     public static void pressEnterToContinue()
     {
-        System.out.println(Printer.PRESS_ENTER_TO_CONTINUE);
+        System.out.println(PrintStatements.PRESS_ENTER_TO_CONTINUE);
         try
         {
             System.in.read();
@@ -284,7 +305,7 @@ public class InputHelper {
     public static ArrayList<String> getFileInput(){
         ArrayList<String> textFile=new ArrayList<>();
         try {
-            System.out.println(Printer.ENTER_FILE_PATH);
+            System.out.println(PrintStatements.ENTER_FILE_PATH);
             String filePath=InputHelper.getStringInput();
             File file = new File(filePath);
             Scanner myReader = new Scanner(file);
@@ -306,7 +327,7 @@ public class InputHelper {
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println(Printer.FILE_NOT_EXIST);
+            System.out.println(PrintStatements.FILE_NOT_EXIST);
         }
         return textFile;
     }

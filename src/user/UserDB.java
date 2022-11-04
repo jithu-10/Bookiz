@@ -44,6 +44,26 @@ public class UserDB {
         return null;
     }
 
+    public User getUserByPhoneNumber_Mail(Object phone_mail,UserType userType){
+        for(User user:userList){
+            if(phone_mail instanceof Long){
+                if(user.getUserType()==userType){
+                    if(phone_mail.equals(user.getPhoneNumber())){
+                        return user;
+                    }
+                }
+            }
+            else if(phone_mail instanceof String){
+                if(user.getUserType()==userType){
+                    if(phone_mail.equals(user.getMailID())){
+                        return user;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public User getUserByID(int userID,UserType userType){
         for(User user: userList){
             if(user.getUserType()==userType){

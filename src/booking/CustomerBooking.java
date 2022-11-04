@@ -1,5 +1,7 @@
 package booking;
 
+import java.util.Date;
+
 public class CustomerBooking extends Booking{
 
 
@@ -10,6 +12,10 @@ public class CustomerBooking extends Booking{
     private double totalPriceOfDoubleBedRooms;
     private double totalPriceOfSuiteRooms;
     private boolean paid;
+
+    public CustomerBooking(Date checkInDate, Date checkOutDate){
+        super(checkInDate,checkOutDate);
+    }
 
 
     public int getNoOfSingleBedroomsBooked() {
@@ -42,24 +48,13 @@ public class CustomerBooking extends Booking{
         return noOfSingleBedRoomsBooked + noOfDoubleBedRoomsBooked + noOfSuiteRoomsBooked;
     }
 
-    public double getTotalPriceOfSingleBedRooms() {
-        return totalPriceOfSingleBedRooms;
-    }
 
     public void setTotalPriceOfSingleBedRooms(double totalPriceOfSingleBedRooms) {
         this.totalPriceOfSingleBedRooms = totalPriceOfSingleBedRooms;
     }
 
-    public double getTotalPriceOfDoubleBedRooms() {
-        return totalPriceOfDoubleBedRooms;
-    }
-
     public void setTotalPriceOfDoubleBedRooms(double totalPriceOfDoubleBedRooms) {
         this.totalPriceOfDoubleBedRooms = totalPriceOfDoubleBedRooms;
-    }
-
-    public double getTotalPriceOfSuiteRooms() {
-        return totalPriceOfSuiteRooms;
     }
 
     public void setTotalPriceOfSuiteRooms(double totalPriceOfSuiteRooms) {

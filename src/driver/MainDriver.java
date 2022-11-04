@@ -1,15 +1,15 @@
 package driver;
 
 import utility.InputHelper;
-import utility.Printer;
+import utility.PrintStatements;
 
 public class MainDriver {
     public static void selectUser(){
         Driver d=null;
         loop:do{
-            System.out.println(Printer.WELCOME_MESSAGE);
-            System.out.println(Printer.STARTUP_MENU);
-            System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
+            System.out.println(PrintStatements.WELCOME_MESSAGE);
+            System.out.println(PrintStatements.STARTUP_MENU);
+            System.out.println(PrintStatements.ENTER_INPUT_IN_INTEGER);
             int choice = InputHelper.getInputWithinRange(4,null);
 
             switch (choice){

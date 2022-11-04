@@ -18,7 +18,6 @@ public class BookingDB {
         return ++idHelper;
     }
     public void addBooking(Booking booking){
-
         booking.setBookingID(generateId());
         bookings.add(booking);
     }

@@ -10,13 +10,12 @@ import user.UserAuthenticationDB;
 import user.UserDB;
 import user.UserType;
 import utility.InputHelper;
-import utility.Printer;
-import utility.Validator;
+import utility.PrintStatements;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class HotelDriver implements Driver{
+public class HotelDriver extends AbstractDriver{
 
     static final HotelDriver hotelDriver=new HotelDriver();
     private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
@@ -35,15 +34,15 @@ public class HotelDriver implements Driver{
 
     @Override
     public void startDriver() {
-        System.out.println(Printer.LOGIN_REGISTER);
-        System.out.println(Printer.ENTER_INPUT);
+        System.out.println(PrintStatements.LOGIN_REGISTER);
+        System.out.println(PrintStatements.ENTER_INPUT);
         int choice = InputHelper.getInputWithinRange(2,null);
 
         switch (choice){
             case 1:
                 User hotelOwner;
                 if((hotelOwner=signIn())!=null){
-                    System.out.println(Printer.SIGNED_IN);
+                    System.out.println(PrintStatements.SIGNED_IN);
                     switch(hotelDB.getHotelStatusByUserID(hotelOwner.getUserID())){
                         case APPROVED:
                             menu(hotelOwner);
@@ -62,7 +61,7 @@ public class HotelDriver implements Driver{
                     }
                 }
                 else{
-                    System.out.println(Printer.INVALID_CREDENTIALS);
+                    System.out.println(PrintStatements.INVALID_CREDENTIALS);
                 }
                 break;
             case 2:
@@ -80,14 +79,14 @@ public class HotelDriver implements Driver{
     //------------------------------------------------ Hotel Login ---------------------------------------------------//
     @Override
     public User signIn() {
-        System.out.println(Printer.SIGN_IN);
-        System.out.println(Printer.ENTER_PHONE_NUMBER);
-        long phoneNumber= InputHelper.getPhoneNumber();
-        System.out.println(Printer.ENTER_PASSWORD);
+        System.out.println(PrintStatements.SIGN_IN);
+        System.out.println("Enter Phone Number or Email ");
+        Object mail_or_phone=InputHelper.getPhoneNumberOrEmail();
+        System.out.println(PrintStatements.ENTER_PASSWORD);
         String password= InputHelper.getStringInput();
         User hotelOwner=null;
-        if(userAuthenticationDB.authenticateHotelAdmin(phoneNumber,password)){
-            hotelOwner=userDB.getUserByPhoneNumber(phoneNumber, UserType.HOTEL_OWNER);
+        if(userAuthenticationDB.authenticateHotelAdmin(mail_or_phone,password)){
+            hotelOwner=userDB.getUserByPhoneNumber_Mail(mail_or_phone, UserType.HOTEL_OWNER);
         }
         return hotelOwner;
     }
@@ -95,10 +94,10 @@ public class HotelDriver implements Driver{
     @Override
     public void menu(User user) {
         Hotel hotel=hotelDB.getHotelByUserID(user.getUserID());
-        System.out.println(Printer.WELCOME+user.getUserName()+Printer.SMILE);
+        System.out.println(PrintStatements.WELCOME+user.getUserName()+ PrintStatements.SMILE);
         do{
-            System.out.println(Printer.HOTEL_MENU);
-            System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
+            System.out.println(PrintStatements.HOTEL_MENU);
+            System.out.println(PrintStatements.ENTER_INPUT_IN_INTEGER);
             int choice = InputHelper.getInputWithinRange(9,null);
             switch (choice){
                 case 1:
@@ -127,7 +126,7 @@ public class HotelDriver implements Driver{
                     verifyCustomer(hotel);
                     break;
                 case 9:
-                    System.out.println(Printer.SIGNED_OUT);
+                    System.out.println(PrintStatements.SIGNED_OUT);
                     return;
             }
 
@@ -138,13 +137,13 @@ public class HotelDriver implements Driver{
 
     private void unApprovedHotelMenu(User user){
         Hotel hotel=hotelDB.getHotelByUserID(user.getUserID());
-        System.out.println(Printer.WELCOME+user.getUserName()+Printer.SMILE);
+        System.out.println(PrintStatements.WELCOME+user.getUserName()+ PrintStatements.SMILE);
         System.out.println();
-        System.out.println(Printer.HOTEL_YET_TO_APPROVED);
+        System.out.println(PrintStatements.HOTEL_YET_TO_APPROVED);
         System.out.println();
         do{
-            System.out.println(Printer.UNAPPROVED_HOTEL_MENU);
-            System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
+            System.out.println(PrintStatements.UNAPPROVED_HOTEL_MENU);
+            System.out.println(PrintStatements.ENTER_INPUT_IN_INTEGER);
             int choice = InputHelper.getInputWithinRange(7,null);
             switch (choice){
                 case 1:
@@ -166,7 +165,7 @@ public class HotelDriver implements Driver{
                     changeHotelType(hotel);
                     break;
                 case 7:
-                    System.out.println(Printer.SIGNED_OUT);
+                    System.out.println(PrintStatements.SIGNED_OUT);
                     return;
             }
 
@@ -176,13 +175,13 @@ public class HotelDriver implements Driver{
 
     private void rejectedHotelMenu(User user){
         Hotel hotel=hotelDB.getHotelByUserID(user.getUserID());
-        System.out.println(Printer.WELCOME+user.getUserName()+Printer.SMILE);
+        System.out.println(PrintStatements.WELCOME+user.getUserName()+ PrintStatements.SMILE);
         System.out.println();
         System.out.println("Your Hotel has been rejected. ");
         System.out.println();
         do{
-            System.out.println(Printer.REJECTED_HOTEL_MENU);
-            System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
+            System.out.println(PrintStatements.REJECTED_HOTEL_MENU);
+            System.out.println(PrintStatements.ENTER_INPUT_IN_INTEGER);
             int choice = InputHelper.getInputWithinRange(8,null);
             switch (choice){
                 case 1:
@@ -207,7 +206,7 @@ public class HotelDriver implements Driver{
                     registerAgain(hotel);
                     break;
                 case 8:
-                    System.out.println(Printer.SIGNED_OUT);
+                    System.out.println(PrintStatements.SIGNED_OUT);
                     return;
             }
 
@@ -217,13 +216,13 @@ public class HotelDriver implements Driver{
 
     private void removedHotelMenu(User user){
         Hotel hotel=hotelDB.getHotelByUserID(user.getUserID());
-        System.out.println(Printer.WELCOME+user.getUserName()+Printer.SMILE);
+        System.out.println(PrintStatements.WELCOME+user.getUserName()+ PrintStatements.SMILE);
         System.out.println();
         System.out.println("Your Hotel been removed from the app . Your Hotel Will not shown to customers until further update");
         System.out.println();
         do{
-            System.out.println(Printer.REMOVED_HOTEL_MENU);
-            System.out.println(Printer.ENTER_INPUT_IN_INTEGER);
+            System.out.println(PrintStatements.REMOVED_HOTEL_MENU);
+            System.out.println(PrintStatements.ENTER_INPUT_IN_INTEGER);
             int choice = InputHelper.getInputWithinRange(10,null);
             switch (choice){
                 case 1:
@@ -255,7 +254,7 @@ public class HotelDriver implements Driver{
                     registerAgain(hotel);
                     break;
                 case 10:
-                    System.out.println(Printer.SIGNED_OUT);
+                    System.out.println(PrintStatements.SIGNED_OUT);
                     return;
             }
 
@@ -266,22 +265,10 @@ public class HotelDriver implements Driver{
 
     //------------------------------------------------Hotel Registration----------------------------------------------//
 
-    private boolean acceptTermsAndConditions(){
-        if(adminDB.getTermsAndConditions().isEmpty()){
-            return true;
-        }
-        InputHelper.printFile(adminDB.getTermsAndConditions());
-        System.out.println(Printer.ACCEPT_DECLINE_OPTION);
-        int choice=InputHelper.getInputWithinRange(2,null);
-        if(choice==1){
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void register(){
-        User hotelOwner=getHotelOwnerDetails();
+        User hotelOwner= getUserDetails(UserType.HOTEL_OWNER);
         if(hotelOwner==null){
             return;
         }
@@ -295,7 +282,7 @@ public class HotelDriver implements Driver{
         userDB.addUser(hotelOwner);
         hotel.setHotelOwnerID(hotelOwner.getUserID());
         hotelDB.registerHotel(hotel);
-        System.out.println(Printer.HOTEL_REGISTERED);
+        System.out.println(PrintStatements.HOTEL_REGISTERED);
     }
 
     private void registerAgain(Hotel hotel){
@@ -305,94 +292,49 @@ public class HotelDriver implements Driver{
         else if(hotel.getHotelApproveStatus()==HotelStatus.REMOVED){
             hotel.setHotelApproveStatus(HotelStatus.REMOVED_RE_PROCESS);
         }
-        System.out.println(Printer.HOTEL_REGISTERED_AGAIN);
+        System.out.println(PrintStatements.HOTEL_REGISTERED_AGAIN);
     }
 
-    private User getHotelOwnerDetails(){
-        System.out.println(Printer.ENTER_HOTEL_ADMIN_NAME);
-        String hotelOwnerName=InputHelper.getStringInput();
-        System.out.println(Printer.ENTER_EMAIL);
-        String mailID=InputHelper.getEmailInput();
-        /*TODO Duplicate Mail ID Check*/
-        long phoneNumber;
-        do{
-            System.out.println(Printer.ENTER_PHONE_NUMBER);
-            phoneNumber=InputHelper.getPhoneNumber();
-            if(userAuthenticationDB.isHotelPhoneNumberExist(phoneNumber)){
-                System.out.println(Printer.PHONE_NUMBER_ALREADY_EXIST);
-                System.out.println("1."+Printer.TRY_AGAIN);
-                System.out.println("2."+Printer.GO_BACK);
-                System.out.println(Printer.ENTER_INPUT);
-                int choice=InputHelper.getInputWithinRange(2,null);
-                if(choice==2){
-                    return null;
-                }
-            }
-            else{
-                break;
-            }
-        }while(true);
-        String password,confirmPassword;
-        while(true){
-            System.out.println(Printer.ENTER_PASSWORD);
-            password=InputHelper.getStringInput();
-            System.out.println(Printer.CONFIRM_PASSWORD);
-            confirmPassword=InputHelper.getStringInput();
-
-
-            if(Validator.confirmPasswordValidatator(password,confirmPassword)){
-                break;
-            }
-            System.out.println(Printer.PASSWORD_NOT_MATCH);
-        }
-        User hotelOwner=new User();
-        hotelOwner.setUserName(hotelOwnerName);
-        hotelOwner.setPhoneNumber(phoneNumber);
-        hotelOwner.setMailID(mailID);
-        hotelOwner.setUserType(UserType.HOTEL_OWNER);
-        userAuthenticationDB.addHotelAdminAuth(phoneNumber,password);
-        return hotelOwner;
-    }
 
     private Hotel getHotelDetails(int userID){
-        System.out.println(Printer.ENTER_HOTEL_NAME);
+        System.out.println(PrintStatements.ENTER_HOTEL_NAME);
         String hotelName=InputHelper.getStringInput();
         Address address=getHotelAddress();
         return new Hotel(userID,hotelName,address);
     }
 
     private Address getHotelAddress(){
-        System.out.println(Printer.ENTER_BUILDING_NO);
+        System.out.println(PrintStatements.ENTER_BUILDING_NO);
         int buildingNo=InputHelper.getIntegerInput();
-        System.out.println(Printer.ENTER_STREET);
+        System.out.println(PrintStatements.ENTER_STREET);
         String street=InputHelper.getStringInput();
-        System.out.println(Printer.ENTER_LOCALITY);
+        System.out.println(PrintStatements.ENTER_LOCALITY);
         String locality=InputHelper.getStringInput();
-        System.out.println(Printer.ENTER_CITY);
+        System.out.println(PrintStatements.ENTER_CITY);
         String city=InputHelper.getStringInput();
-        System.out.println(Printer.ENTER_STATE);
+        System.out.println(PrintStatements.ENTER_STATE);
         String state=InputHelper.getStringInput();
-        System.out.println(Printer.ENTER_POSTAL_CODE);
+        System.out.println(PrintStatements.ENTER_POSTAL_CODE);
         int postalCode=InputHelper.getPostalCode();
         return new Address(buildingNo,street,locality,city,state,postalCode);
     }
 
     private void roomDetails(Hotel hotel){
 
-        System.out.println(Printer.ROOM_DETAILS);
+        System.out.println(PrintStatements.ROOM_DETAILS);
 
-        System.out.println(Printer.SINGLE_BED_COUNT);
+        System.out.println(PrintStatements.SINGLE_BED_COUNT);
         int singleBedCount=InputHelper.getWholeNumberIntegerInput();
         double basePrice=setBaseRoomPrice(null);
         double maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addSingleBedRooms(singleBedCount,basePrice,maxPrice);
-        System.out.println(Printer.DOUBLE_BED_COUNT);
+        System.out.println(PrintStatements.DOUBLE_BED_COUNT);
         int doubleBedCount=InputHelper.getWholeNumberIntegerInput();
         basePrice=setBaseRoomPrice(null);
         maxPrice=setMaxRoomPrice(basePrice,null);
         hotel.addDoubleBedRooms(doubleBedCount,basePrice,maxPrice);
 
-        System.out.println(Printer.SUITE_ROOM_COUNT);
+        System.out.println(PrintStatements.SUITE_ROOM_COUNT);
         int suiteRoomCount=InputHelper.getWholeNumberIntegerInput();
         basePrice=setBaseRoomPrice(null);
         maxPrice=setMaxRoomPrice(basePrice,null);
@@ -441,20 +383,20 @@ public class HotelDriver implements Driver{
     //-------------------------------------------1.Add Rooms-----------------------------------------------------------//
 
     private void addRooms(Hotel hotel){
-        System.out.println(Printer.ADD_ROOMS);
-        System.out.println(Printer.ENTER_TYPE_OF_ROOM);
+        System.out.println(PrintStatements.ADD_ROOMS);
+        System.out.println(PrintStatements.ENTER_TYPE_OF_ROOM);
         System.out.println("1."+ RoomType.SINGLE_BED_ROOM);
         System.out.println("2."+RoomType.DOUBLE_BED_ROOM);
         System.out.println("3."+RoomType.SUITE_ROOM);
-        System.out.println("4."+Printer.EXIT);
-        System.out.println(Printer.ENTER_INPUT);
+        System.out.println("4."+ PrintStatements.EXIT);
+        System.out.println(PrintStatements.ENTER_INPUT);
         int choice=InputHelper.getInputWithinRange(4,null);
         if(choice==4){
-            System.out.println(Printer.BACK_TO_MAIN);
+            System.out.println(PrintStatements.BACK_TO_MAIN);
             return;
         }
-        System.out.println(Printer.ENTER_NO_OF_ROOMS_TO_ADD);
-        int count=InputHelper.getInputWithinRange(10,Printer.ROOM_ADD_CONDITION);
+        System.out.println(PrintStatements.ENTER_NO_OF_ROOMS_TO_ADD);
+        int count=InputHelper.getInputWithinRange(10, PrintStatements.ROOM_ADD_CONDITION);
 
         switch (choice){
             case 1:
@@ -467,25 +409,25 @@ public class HotelDriver implements Driver{
                 hotel.addRooms(count,RoomType.SUITE_ROOM);
                 break;
         }
-        System.out.println(Printer.ROOMS_ADDED_SUCCESSFULLY);
+        System.out.println(PrintStatements.ROOMS_ADDED_SUCCESSFULLY);
     }
 
     //-------------------------------------------2.Remove Rooms--------------------------------------------------------//
 
     private void removeRooms(Hotel hotel){
-        System.out.println(Printer.REMOVE_ROOMS);
-        System.out.println(Printer.ENTER_TYPE_OF_ROOM);
+        System.out.println(PrintStatements.REMOVE_ROOMS);
+        System.out.println(PrintStatements.ENTER_TYPE_OF_ROOM);
         System.out.println("1."+ RoomType.SINGLE_BED_ROOM);
         System.out.println("2."+RoomType.DOUBLE_BED_ROOM);
         System.out.println("3."+RoomType.SUITE_ROOM);
-        System.out.println("4."+Printer.GO_BACK);
-        System.out.println(Printer.ENTER_INPUT);
+        System.out.println("4."+ PrintStatements.GO_BACK);
+        System.out.println(PrintStatements.ENTER_INPUT);
         int choice=InputHelper.getInputWithinRange(4,null);
         if(choice==4){
-            System.out.println(Printer.BACK_TO_MAIN);
+            System.out.println(PrintStatements.BACK_TO_MAIN);
             return;
         }
-        System.out.println(Printer.ENTER_NO_OF_ROOMS_TO_REMOVE);
+        System.out.println(PrintStatements.ENTER_NO_OF_ROOMS_TO_REMOVE);
         int count=0;
         switch (choice){
             case 1:
@@ -501,7 +443,7 @@ public class HotelDriver implements Driver{
                 hotel.removeRooms(count,RoomType.SUITE_ROOM);
                 break;
         }
-        System.out.println(Printer.ROOMS_REMOVED_SUCCESSFULLY);
+        System.out.println(PrintStatements.ROOMS_REMOVED_SUCCESSFULLY);
     }
 
     //-----------------------------------------------3.Add Amenities---------------------------------------------------//
@@ -511,15 +453,15 @@ public class HotelDriver implements Driver{
         ArrayList<Amenity>totalAmenities=amenityDB.getAmenities();
         ArrayList<Amenity>hotelAmenities=hotel.getAmenities();
         if(totalAmenities.size()==hotelAmenities.size()){
-            System.out.println(Printer.ALL_AMENITY_ALREADY_ADDED);
+            System.out.println(PrintStatements.ALL_AMENITY_ALREADY_ADDED);
             return;
         }
-        System.out.println(Printer.ADD_HOTEL_AMENITIES);
+        System.out.println(PrintStatements.ADD_HOTEL_AMENITIES);
         for(Amenity amenity: totalAmenities){
             if(!hotelAmenities.contains(amenity)){
-                System.out.println(Printer.DOES_HOTEL_HAVE_QUESTION+amenity.getName()+" ?");
-                System.out.println(Printer.YES_NO_OPTION);
-                System.out.println(Printer.ENTER_INPUT);
+                System.out.println(PrintStatements.DOES_HOTEL_HAVE_QUESTION+amenity.getName()+" ?");
+                System.out.println(PrintStatements.YES_NO_OPTION);
+                System.out.println(PrintStatements.ENTER_INPUT);
                 int choice = InputHelper.getInputWithinRange(2,null);
                 if(choice==1){
                     hotel.addAmenity(amenity);
@@ -532,13 +474,13 @@ public class HotelDriver implements Driver{
     //-----------------------------------------------4.Remove Amenities------------------------------------------------//
 
     private void removeHotelAmenities(Hotel hotel){
-        System.out.println(Printer.REMOVE_HOTEL_AMENITIES);
+        System.out.println(PrintStatements.REMOVE_HOTEL_AMENITIES);
         ArrayList<Amenity>hotelAmenities=hotel.getAmenities();
         for(int i=0;i<hotelAmenities.size();i++){
             Amenity amenity=hotelAmenities.get(i);
             System.out.println((i+1)+" "+amenity.getName());
         }
-        System.out.println(Printer.ENTER_SNO_TO_REMOVE_AMENITY);
+        System.out.println(PrintStatements.ENTER_SNO_TO_REMOVE_AMENITY);
         int value=InputHelper.getInputWithinRange(hotelAmenities.size(),null);
         hotel.removeAmenity(hotelAmenities.get(value-1));
     }
@@ -546,11 +488,11 @@ public class HotelDriver implements Driver{
     //----------------------------------------5.Show Rooms which are booked and non booked-----------------------------//
 
     private void showRoomsBookedNonBooked(Hotel hotel){
-        System.out.println(Printer.ENTER_DATE);
+        System.out.println(PrintStatements.ENTER_DATE);
         Date date=InputHelper.getDate();
         Date currentDate=InputHelper.setTime(new Date());
         if(currentDate.compareTo(date)==1){
-            System.out.println(Printer.CANT_SHOW_BOOKED_ROOMS_BEFORE_CURRENT_DATE);
+            System.out.println(PrintStatements.CANT_SHOW_BOOKED_ROOMS_BEFORE_CURRENT_DATE);
             return;
         }
 
@@ -558,7 +500,7 @@ public class HotelDriver implements Driver{
         int noOfDoubleBedRoomsBookedByDate=hotel.getNoOfRoomsBookedByDate(date,RoomType.DOUBLE_BED_ROOM);
         int noOfSuiteRoomsBookedByDate=hotel.getNoOfRoomsBookedByDate(date,RoomType.SUITE_ROOM);
 
-        System.out.println(Printer.BOOKED_UNBOOKED_OPTION+"\n");
+        System.out.println(PrintStatements.BOOKED_UNBOOKED_OPTION+"\n");
         System.out.println(RoomType.SINGLE_BED_ROOM +"        "+noOfSingleBedRoomsBookedByDate+"        "+(hotel.getTotalNumberOfRooms(RoomType.SINGLE_BED_ROOM)-noOfSingleBedRoomsBookedByDate));
         System.out.println(RoomType.DOUBLE_BED_ROOM +"        "+noOfDoubleBedRoomsBookedByDate+"        "+(hotel.getTotalNumberOfRooms(RoomType.DOUBLE_BED_ROOM)-noOfDoubleBedRoomsBookedByDate));
         System.out.println(RoomType.SUITE_ROOM +"            "+noOfSuiteRoomsBookedByDate+"        "+(hotel.getTotalNumberOfRooms(RoomType.SUITE_ROOM)-noOfSuiteRoomsBookedByDate));
@@ -568,48 +510,48 @@ public class HotelDriver implements Driver{
     //----------------------------------------------6.Change Price of Rooms--------------------------------------------//
 
     private void changeRoomPrices(Hotel hotel){
-        System.out.println(Printer.CHANGE_ROOM_PRICES);
-        System.out.println(Printer.ENTER_TYPE_OF_ROOM);
+        System.out.println(PrintStatements.CHANGE_ROOM_PRICES);
+        System.out.println(PrintStatements.ENTER_TYPE_OF_ROOM);
         System.out.println("1."+ RoomType.SINGLE_BED_ROOM);
         System.out.println("2."+RoomType.DOUBLE_BED_ROOM);
         System.out.println("3."+RoomType.SUITE_ROOM);
-        System.out.println("4."+Printer.GO_BACK);
-        System.out.println(Printer.GO_BACK);
+        System.out.println("4."+ PrintStatements.GO_BACK);
+        System.out.println(PrintStatements.GO_BACK);
         int choice=InputHelper.getInputWithinRange(4,null);
 
         switch (choice){
             case 1:
-                System.out.println(RoomType.SINGLE_BED_ROOM +" -> "+Printer.CURRENT_BASE_PRICE+hotel.getSingleBedRoomBasePrice()+Printer.CURRENT_MAX_PRICE+hotel.getSingleBedRoomMaxPrice()+Printer.CURRENT_LIST_PRICE+hotel.getSingleBedRoomListPrice());
+                System.out.println(RoomType.SINGLE_BED_ROOM +" -> "+ PrintStatements.CURRENT_BASE_PRICE+hotel.getSingleBedRoomBasePrice()+ PrintStatements.CURRENT_MAX_PRICE+hotel.getSingleBedRoomMaxPrice()+ PrintStatements.CURRENT_LIST_PRICE+hotel.getSingleBedRoomListPrice());
                 double newBaseRoomPrice=setBaseRoomPrice("New");
                 double newMaxRoomPrice=setMaxRoomPrice(newBaseRoomPrice,"New");
                 hotel.setSingleBedRoomPrice(newBaseRoomPrice,newMaxRoomPrice);
                 break;
             case 2:
-                System.out.println(RoomType.DOUBLE_BED_ROOM +" ->"+Printer.CURRENT_BASE_PRICE+hotel.getDoubleBedRoomBasePrice()+Printer.CURRENT_MAX_PRICE+hotel.getDoubleBedRoomMaxPrice()+Printer.CURRENT_LIST_PRICE+hotel.getDoubleBedRoomListPrice());
+                System.out.println(RoomType.DOUBLE_BED_ROOM +" ->"+ PrintStatements.CURRENT_BASE_PRICE+hotel.getDoubleBedRoomBasePrice()+ PrintStatements.CURRENT_MAX_PRICE+hotel.getDoubleBedRoomMaxPrice()+ PrintStatements.CURRENT_LIST_PRICE+hotel.getDoubleBedRoomListPrice());
                 newBaseRoomPrice=setBaseRoomPrice("New");
                 newMaxRoomPrice=setMaxRoomPrice(newBaseRoomPrice,"New");
                 hotel.setDoubleBedRoomPrice(newBaseRoomPrice,newMaxRoomPrice);
                 break;
             case 3:
-                System.out.println(RoomType.SUITE_ROOM +" ->"+Printer.CURRENT_BASE_PRICE+hotel.getSuiteRoomBasePrice()+Printer.CURRENT_MAX_PRICE+hotel.getSuiteRoomMaxPrice()+Printer.CURRENT_LIST_PRICE+hotel.getSuiteRoomListPrice());
+                System.out.println(RoomType.SUITE_ROOM +" ->"+ PrintStatements.CURRENT_BASE_PRICE+hotel.getSuiteRoomBasePrice()+ PrintStatements.CURRENT_MAX_PRICE+hotel.getSuiteRoomMaxPrice()+ PrintStatements.CURRENT_LIST_PRICE+hotel.getSuiteRoomListPrice());
                 newBaseRoomPrice=setBaseRoomPrice("New");
                 newMaxRoomPrice=setMaxRoomPrice(newBaseRoomPrice,"New");
                 hotel.setSuiteRoomPrice(newBaseRoomPrice,newMaxRoomPrice);
                 break;
             case 4:
-                System.out.println(Printer.BACK_TO_MAIN);
+                System.out.println(PrintStatements.BACK_TO_MAIN);
                 return;
         }
-        System.out.println(Printer.ROOM_PRICE_CHANGED_SUCCESSFULLY);
+        System.out.println(PrintStatements.ROOM_PRICE_CHANGED_SUCCESSFULLY);
         adminDB.addPriceUpdatedHotelList(hotel.getHotelID());
     }
 
     private double setBaseRoomPrice(String str){
-        System.out.println((str==null?"":str+" ")+Printer.BASE_PRICE);
+        System.out.println((str==null?"":str+" ")+ PrintStatements.BASE_PRICE);
         double basePrice=InputHelper.getDoubleInput();
         do{
             if(basePrice<1){
-                System.out.println(Printer.BASE_PRICE_CONDITION);
+                System.out.println(PrintStatements.BASE_PRICE_CONDITION);
                 return setBaseRoomPrice(str);
             }
             else{
@@ -620,11 +562,11 @@ public class HotelDriver implements Driver{
     }
 
     private double setMaxRoomPrice(double basePrice,String str){
-        System.out.println((str==null?"":str+" ")+Printer.MAX_PRICE);
+        System.out.println((str==null?"":str+" ")+ PrintStatements.MAX_PRICE);
         double maxPrice=InputHelper.getDoubleInput();
         do{
             if(maxPrice<=basePrice){
-                System.out.println(Printer.MAX_PRICE_CONDITION+Printer.BASE_PRICE+basePrice);
+                System.out.println(PrintStatements.MAX_PRICE_CONDITION+ PrintStatements.BASE_PRICE+basePrice);
                 return setMaxRoomPrice(basePrice,str);
             }
             else{
@@ -638,7 +580,7 @@ public class HotelDriver implements Driver{
     private void bookedCustomersList(Hotel hotel){
         ArrayList<Integer> bookingIDs=bookingDB.getHotelBookingIDs(hotel.getHotelID());
         if(bookingIDs.isEmpty()){
-            System.out.println(Printer.NO_CUSTOMER_BOOKED_ROOMS);
+            System.out.println(PrintStatements.NO_CUSTOMER_BOOKED_ROOMS);
             InputHelper.pressEnterToContinue();
             return;
         }
@@ -652,15 +594,15 @@ public class HotelDriver implements Driver{
     }
 
     private void customerDetails(int sno,CustomerBooking customerBooking,User customer){
-        System.out.println((sno!=-1?((sno+1)+"."):"")+Printer.CUSTOMER_NAME+customer.getUserName());
-        System.out.println(Printer.BOOKING_ID+customerBooking.getBookingID());
-        System.out.println(Printer.CHECK_IN_DATE+customerBooking.getCheckInDateString());
-        System.out.println(Printer.CHECK_OUT_DATE+customerBooking.getCheckOutDateString());
-        System.out.println(Printer.NO_OF_ROOMS_BOOKED);
+        System.out.println((sno!=-1?((sno+1)+"."):"")+ PrintStatements.CUSTOMER_NAME+customer.getUserName());
+        System.out.println(PrintStatements.BOOKING_ID+customerBooking.getBookingID());
+        System.out.println(PrintStatements.CHECK_IN_DATE+customerBooking.getCheckInDateString());
+        System.out.println(PrintStatements.CHECK_OUT_DATE+customerBooking.getCheckOutDateString());
+        System.out.println(PrintStatements.NO_OF_ROOMS_BOOKED);
         System.out.println("     1."+RoomType.SINGLE_BED_ROOM +" - "+customerBooking.getNoOfSingleBedroomsBooked());
         System.out.println("     2."+RoomType.DOUBLE_BED_ROOM +" - "+customerBooking.getNoOfDoubleBedRoomsBooked());
         System.out.println("     3."+RoomType.SUITE_ROOM +" - "+customerBooking.getNoOfSuiteRoomsBooked());
-        System.out.println(Printer.PAID+(customerBooking.getPaid()?Printer.YES:Printer.NO));
+        System.out.println(PrintStatements.PAID+(customerBooking.getPaid()? PrintStatements.YES: PrintStatements.NO));
         System.out.println("\n");
     }
 
@@ -669,11 +611,11 @@ public class HotelDriver implements Driver{
     private void verifyCustomer(Hotel hotel){
         ArrayList<Integer> bookingIDs=bookingDB.getHotelBookingIDs(hotel.getHotelID());
         if(bookingIDs.isEmpty()){
-            System.out.println(Printer.NO_CUSTOMER_BOOKED_ROOMS);
+            System.out.println(PrintStatements.NO_CUSTOMER_BOOKED_ROOMS);
             InputHelper.pressEnterToContinue();
             return;
         }
-        System.out.println(Printer.ENTER_BOOKING_ID);
+        System.out.println(PrintStatements.ENTER_BOOKING_ID);
         int bookingID=InputHelper.getIntegerInput();
         for(int i=0;i<bookingIDs.size();i++){
             if(bookingIDs.get(i)==bookingID){
@@ -684,7 +626,7 @@ public class HotelDriver implements Driver{
             }
         }
 
-        System.out.println(Printer.NO_CUSTOMER_BOOKED_WITH_FOLLOWING_ID);
+        System.out.println(PrintStatements.NO_CUSTOMER_BOOKED_WITH_FOLLOWING_ID);
 
     }
 

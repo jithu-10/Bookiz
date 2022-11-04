@@ -1,6 +1,7 @@
 package utility;
 
 
+import admin.AdminDB;
 import hotel.*;
 import user.User;
 import user.UserAuthenticationDB;
@@ -22,13 +23,11 @@ public class Init {
         long phoneNumber[]={9092722880L,9677298160L,7358196791L,1234567890L,9876543211L,5555544444L};
         String mailID[]={"13jackf9@masjoco.com","bxv6414@traz.xyz","keff85@ikanchana.com","frostschneider@happiseektest.com","ff6se@mymailcr.com","djevens@twichzhuce.com"};
         for(int i=0;i<6;i++){
-            User user=new User();
-            user.setUserType(UserType.CUSTOMER);
-            user.setUserName(userNames[i]);
+            User user=new User(userNames[i],UserType.CUSTOMER);
             user.setPhoneNumber(phoneNumber[i]);
             user.setMailID(mailID[i]);
             UserDB.getInstance().addUser(user);
-            UserAuthenticationDB.getInstance().addCustomerAuth(phoneNumber[i],"pass");
+            UserAuthenticationDB.getInstance().addCustomerAuth(phoneNumber[i],mailID[i],"pass");
         }
     }
 
@@ -53,16 +52,16 @@ public class Init {
 
     public static User[] getHotelOwners(){
         String userNames[]={"User 1","User 2","User 3","User 4","User 5","User 6"};
-        long phoneNumber[]={9092722880L,9677298160L,7358196791L,1234567890L,9876543211L,5555544444L};
+        Long phoneNumber[]={9092722880L,9677298160L,7358196791L,1234567890L,9876543211L,5555544444L};
+        String mailID[]={"13jackf9@masjoco.com","bxv6414@traz.xyz","keff85@ikanchana.com","frostschneider@happiseektest.com","ff6se@mymailcr.com","djevens@twichzhuce.com"};
         User[] users=new User[6];
         for(int i=0;i<6;i++){
-            User user=new User();
-            user.setUserType(UserType.HOTEL_OWNER);
-            user.setUserName(userNames[i]);
+            User user=new User(userNames[i], UserType.HOTEL_OWNER);
             user.setPhoneNumber(phoneNumber[i]);
+            user.setMailID(mailID[i]);
             UserDB.getInstance().addUser(user);
             users[i]=user;
-            UserAuthenticationDB.getInstance().addHotelAdminAuth(phoneNumber[i],"pass");
+            UserAuthenticationDB.getInstance().addHotelAdminAuth(phoneNumber[i],mailID[i],"pass");
         }
         return users;
     }

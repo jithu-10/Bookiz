@@ -13,11 +13,8 @@ public class Booking {
     private int customerID;
     private int hotelID;
 
-    public void setCheckInDate(Date checkInDate){
+    public Booking(Date checkInDate,Date checkOutDate){
         this.checkInDate=checkInDate;
-    }
-
-    public void setCheckOutDate(Date checkOutDate){
         this.checkOutDate=checkOutDate;
     }
 

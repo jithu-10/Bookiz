@@ -7,7 +7,8 @@ public class User {
     private int userID;
     private String mailID;
 
-    public void setUserType(UserType userType){
+    public User(String userName,UserType userType){
+        this.userName=userName;
         this.userType=userType;
     }
     public UserType getUserType(){
@@ -16,10 +17,6 @@ public class User {
 
     public String getUserName() {
         return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public long getPhoneNumber() {
@@ -38,11 +35,10 @@ public class User {
         this.userID = userID;
     }
 
-    public String getMailID() {
-        return mailID;
-    }
-
     public void setMailID(String mailID) {
         this.mailID = mailID;
+    }
+    public String getMailID(){
+        return  mailID;
     }
 }

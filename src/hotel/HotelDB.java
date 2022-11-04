@@ -1,6 +1,10 @@
 package hotel;
 
+import booking.CustomerBooking;
+import utility.InputHelper;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -9,8 +13,6 @@ public class HotelDB {
     private static HotelDB hotelDB=new HotelDB();
     private AddressDB addressDB =AddressDB.getInstance();
     private ArrayList<Hotel> hotelList =new ArrayList<>();
-
-    // HashMap<UserID,ArrayList of HotelID> favHotels
     private HashMap<Integer,ArrayList<Integer>> favoriteHotels=new HashMap<>();
 
     private HotelDB(){}
@@ -82,6 +84,8 @@ public class HotelDB {
         hotelList.add(hotel);
     }
 
+
+    /*TODO Try to change to ArrayList<Integer>*/
     public ArrayList<Hotel> getHotelListByStatus(HotelStatus hotelStatus){
         ArrayList<Hotel> hotels=new ArrayList<>();
         for(Hotel hotel: hotelList){
@@ -91,6 +95,8 @@ public class HotelDB {
         }
         return hotels;
     }
+
+
 
 
     public void addFavoriteHotels(int userID,int hotelID){
@@ -115,6 +121,46 @@ public class HotelDB {
             return favoriteHotels.get(userID);
         }
         return new ArrayList<>();
+    }
+
+
+
+    public ArrayList<Integer> filterHotels(CustomerBooking customerBooking,String locality){
+        ArrayList<Date> datesInRange= InputHelper.getDatesBetweenTwoDates(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate());
+        datesInRange.add(customerBooking.getCheckOutDate());
+        ArrayList<Hotel> hotels=hotelDB.getHotelListByStatus(HotelStatus.APPROVED);
+        ArrayList<Integer> filteredHotelsID=new ArrayList<>();
+        loop:for(int i=0;i<hotels.size();i++){
+            Hotel hotel=hotels.get(i);
+            if(!InputHelper.modifyString(hotel.getAddress().getLocality()).equals(locality)&&!InputHelper.modifyString(hotel.getAddress().getCity()).equals(locality)){
+                continue;
+            }
+
+            for(int j=0;j<datesInRange.size();j++){
+
+                int noOfRemSingleBedRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.SINGLE_BED_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.SINGLE_BED_ROOM);
+                int noOfRemDoubleBedRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.DOUBLE_BED_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.DOUBLE_BED_ROOM);
+                int noOfRemSuiteRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.SUITE_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.SUITE_ROOM);
+                int totalNoOfRemRoomsBookedByDate=noOfRemSuiteRoomsBookedByDate+noOfRemDoubleBedRoomsBookedByDate+noOfRemSingleBedRoomsBookedByDate;
+                if(customerBooking.getTotalNoOfRoomsBooked()>totalNoOfRemRoomsBookedByDate){
+                    continue loop;
+                }
+                else if(customerBooking.getNoOfSingleBedroomsBooked()>noOfRemSingleBedRoomsBookedByDate){
+                    continue loop;
+                }
+                else if(customerBooking.getNoOfDoubleBedRoomsBooked()>noOfRemDoubleBedRoomsBookedByDate){
+                    continue loop;
+                }
+                else if(customerBooking.getNoOfSuiteRoomsBooked()>noOfRemSuiteRoomsBookedByDate){
+                    continue loop;
+                }
+
+            }
+            filteredHotelsID.add(hotel.getHotelID());
+
+        }
+        return filteredHotelsID;
+
     }
 
 
