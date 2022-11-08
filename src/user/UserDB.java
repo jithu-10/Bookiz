@@ -1,12 +1,18 @@
 package user;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import customer.Customer;
 
-public class UserDB {
+import java.util.ArrayList;
+
+public class UserDB  {
     private static int idHelper=0;
     private static UserDB userDB=new UserDB();
-    private ArrayList<User> userList=new ArrayList<>();
+    private ArrayList<User> hotelAdminList =new ArrayList<>();
+    private ArrayList<User> customerList=new ArrayList<>();
+
+    // Admin
+    // Customers
+    // Hotel
 
     private UserDB(){
 
@@ -18,58 +24,68 @@ public class UserDB {
     private static int generateId(){
         return ++idHelper;
     }
-    public void addUser(User user){
+
+
+    public void addHotelAdmin(User user){
         user.setUserID(generateId());
-        userList.add(user);
+        hotelAdminList.add(user);
     }
 
-    public ArrayList<Integer> getUserList(UserType userType){
-        ArrayList<Integer> users=new ArrayList<>();
-        for(User user: userList){
-            if(user.getUserType()==userType){
-                users.add(user.getUserID());
-            }
-        }
-        return users;
+    public void addCustomer(User user){
+        user.setUserID(generateId());
+        customerList.add(user);
     }
 
-    public User getUserByPhoneNumber(long phoneNumber,UserType userType){
-        for(User user: userList){
-            if(user.getUserType()==userType){
-                if(user.getPhoneNumber()==phoneNumber){
+
+    public User getHotelAdminByPhoneNumber_Mail(Object phone_mail){
+        for(User user: hotelAdminList){
+            if(phone_mail instanceof Long){
+                if(phone_mail.equals(user.getPhoneNumber())){
                     return user;
                 }
-            }
-        }
-        return null;
-    }
 
-    public User getUserByPhoneNumber_Mail(Object phone_mail,UserType userType){
-        for(User user:userList){
-            if(phone_mail instanceof Long){
-                if(user.getUserType()==userType){
-                    if(phone_mail.equals(user.getPhoneNumber())){
-                        return user;
-                    }
-                }
             }
             else if(phone_mail instanceof String){
-                if(user.getUserType()==userType){
-                    if(phone_mail.equals(user.getMailID())){
-                        return user;
-                    }
+                if(phone_mail.equals(user.getMailID())){
+                    return user;
                 }
+
             }
         }
         return null;
     }
 
-    public User getUserByID(int userID,UserType userType){
-        for(User user: userList){
-            if(user.getUserType()==userType){
-                if(user.getUserID()==userID){
-                    return user;
+    public User getCustomerByPhoneNumber_Mail(Object phone_mail){
+        for(User customer:customerList){
+            if(phone_mail instanceof Long){
+                if(phone_mail.equals(customer.getPhoneNumber())){
+                    return customer;
                 }
+
+            }
+            else if(phone_mail instanceof String){
+                if(phone_mail.equals(customer.getMailID())){
+                    return customer;
+                }
+
+            }
+        }
+        return null;
+    }
+
+    public User getHotelAdminByID(int userID){
+        for(User user: hotelAdminList){
+            if(user.getUserID()==userID){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public User getCustomerByID(int userID){
+        for(User customer:customerList){
+            if(customer.getUserID()==userID){
+                return customer;
             }
         }
         return null;

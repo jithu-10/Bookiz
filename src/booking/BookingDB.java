@@ -30,15 +30,6 @@ public class BookingDB {
 
 
 
-    public Booking getBookingWithID(int ID){
-        for(int i=0;i<bookings.size();i++){
-            if(bookings.get(i).getBookingID()==ID){
-                return bookings.get(i);
-            }
-        }
-        return null;
-    }
-
     public CustomerBooking getCustomerBookingWithID(int ID){
         for(int i=0;i<bookings.size();i++){
             if(bookings.get(i).getBookingID()==ID){
@@ -54,16 +45,6 @@ public class BookingDB {
                 bookings.remove(bookings.get(i));
             }
         }
-    }
-
-    public ArrayList<Integer> getUserBookingIDs(int userID){
-        ArrayList<Integer> userBookings=new ArrayList<>();
-        for(Booking booking:bookings){
-            if(booking.getCustomerID()==userID){
-                userBookings.add(booking.getBookingID());
-            }
-        }
-        return userBookings;
     }
 
     public ArrayList<Integer> getHotelBookingIDs(int hotelID){

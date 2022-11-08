@@ -3,9 +3,7 @@ package hotel;
 import booking.CustomerBooking;
 import utility.InputHelper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class HotelDB {
@@ -13,15 +11,13 @@ public class HotelDB {
     private static HotelDB hotelDB=new HotelDB();
     private AddressDB addressDB =AddressDB.getInstance();
     private ArrayList<Hotel> hotelList =new ArrayList<>();
-    private HashMap<Integer,ArrayList<Integer>> favoriteHotels=new HashMap<>();
-
     private HotelDB(){}
     public static HotelDB getInstance(){
         return hotelDB;
     }
 
     public void approveHotel(Hotel hotel){
-        hotel.setHotelApproveStatus(HotelStatus.APPROVED);
+        hotel.setHotelApprovalStatus(HotelApprovalStatus.APPROVED);
         if(hotel.getHotelID()==0){
             hotel.setHotelId(generateID());
         }
@@ -46,13 +42,13 @@ public class HotelDB {
     }
 
     public boolean removeHotels(int hotelID){
-        ArrayList<Hotel> approvedHotels=getHotelListByStatus(HotelStatus.APPROVED);
+        ArrayList<Integer> approvedHotels= getHotelListByStatus(HotelApprovalStatus.APPROVED);
         for(int i=0;i<approvedHotels.size();i++){
-            Hotel hotel=approvedHotels.get(i);
+            Hotel hotel=getHotelByID(approvedHotels.get(i));
             if(hotelID==hotel.getHotelID()){
                 addressDB.removeLocality(hotel.getAddress().getLocality());
                 addressDB.removeCity(hotel.getAddress().getCity());
-                hotel.setHotelApproveStatus(HotelStatus.REMOVED);
+                hotel.setHotelApprovalStatus(HotelApprovalStatus.REMOVED);
                 return true;
             }
         }
@@ -70,98 +66,107 @@ public class HotelDB {
         return null;
     }
 
-    public HotelStatus getHotelStatusByUserID(int userID){
+    public HotelApprovalStatus getHotelStatusByUserID(int userID){
         for(Hotel hotel: hotelList){
             if(hotel.getHotelOwnerID()==userID){
-                return hotel.getHotelApproveStatus();
+                return hotel.getHotelApprovalStatus();
             }
         }
         return null;
     }
 
     public void registerHotel(Hotel hotel){
-        hotel.setHotelApproveStatus(HotelStatus.ON_PROCESS);
+        hotel.setHotelApprovalStatus(HotelApprovalStatus.ON_PROCESS);
         hotelList.add(hotel);
     }
 
 
-    /*TODO Try to change to ArrayList<Integer>*/
-    public ArrayList<Hotel> getHotelListByStatus(HotelStatus hotelStatus){
-        ArrayList<Hotel> hotels=new ArrayList<>();
-        for(Hotel hotel: hotelList){
-            if(hotel.getHotelApproveStatus()==hotelStatus){
-                hotels.add(hotel);
+    public ArrayList<Integer> getHotelListByStatus(HotelApprovalStatus hotelApprovalStatus){
+        ArrayList<Integer> hotelsID=new ArrayList<>();
+        for(Hotel hotel:hotelList){
+            if(hotel.getHotelApprovalStatus()== hotelApprovalStatus){
+                hotelsID.add(hotel.getHotelID());
             }
         }
-        return hotels;
+        return hotelsID;
     }
 
 
-
-
-    public void addFavoriteHotels(int userID,int hotelID){
-        if(favoriteHotels.containsKey(userID)){
-            favoriteHotels.get(userID).add(hotelID);
-        }
-        else{
-            ArrayList<Integer> hotelIDs=new ArrayList<>();
-            hotelIDs.add(hotelID);
-            favoriteHotels.put(userID,hotelIDs);
-        }
-    }
-
-    public void removeFavoriteHotels(int userID,int hotelID){
-        if(favoriteHotels.containsKey(userID)){
-            favoriteHotels.get(userID).remove(Integer.valueOf(hotelID));
-        }
-    }
-
-    public ArrayList<Integer> getFavoriteHotels(int userID){
-        if(favoriteHotels.containsKey(userID)){
-            return favoriteHotels.get(userID);
-        }
-        return new ArrayList<>();
-    }
-
-
-
-    public ArrayList<Integer> filterHotels(CustomerBooking customerBooking,String locality){
+    public LinkedHashMap<Integer,ArrayList<Integer>> filterHotels(CustomerBooking customerBooking, String locality){
         ArrayList<Date> datesInRange= InputHelper.getDatesBetweenTwoDates(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate());
         datesInRange.add(customerBooking.getCheckOutDate());
-        ArrayList<Hotel> hotels=hotelDB.getHotelListByStatus(HotelStatus.APPROVED);
-        ArrayList<Integer> filteredHotelsID=new ArrayList<>();
-        loop:for(int i=0;i<hotels.size();i++){
-            Hotel hotel=hotels.get(i);
+        ArrayList<Integer> hotelIDs= getHotelListByStatus(HotelApprovalStatus.APPROVED);
+        LinkedHashMap<Integer,ArrayList<Integer>> hotelRoomMap=new LinkedHashMap<>();
+
+        for(int i=0;i<hotelIDs.size();i++){
+            Hotel hotel=getHotelByID(hotelIDs.get(i));
             if(!InputHelper.modifyString(hotel.getAddress().getLocality()).equals(locality)&&!InputHelper.modifyString(hotel.getAddress().getCity()).equals(locality)){
                 continue;
             }
-
-            for(int j=0;j<datesInRange.size();j++){
-
-                int noOfRemSingleBedRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.SINGLE_BED_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.SINGLE_BED_ROOM);
-                int noOfRemDoubleBedRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.DOUBLE_BED_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.DOUBLE_BED_ROOM);
-                int noOfRemSuiteRoomsBookedByDate=hotel.getTotalNumberOfRooms(RoomType.SUITE_ROOM)-hotel.getNoOfRoomsBookedByDate(datesInRange.get(j),RoomType.SUITE_ROOM);
-                int totalNoOfRemRoomsBookedByDate=noOfRemSuiteRoomsBookedByDate+noOfRemDoubleBedRoomsBookedByDate+noOfRemSingleBedRoomsBookedByDate;
-                if(customerBooking.getTotalNoOfRoomsBooked()>totalNoOfRemRoomsBookedByDate){
-                    continue loop;
-                }
-                else if(customerBooking.getNoOfSingleBedroomsBooked()>noOfRemSingleBedRoomsBookedByDate){
-                    continue loop;
-                }
-                else if(customerBooking.getNoOfDoubleBedRoomsBooked()>noOfRemDoubleBedRoomsBookedByDate){
-                    continue loop;
-                }
-                else if(customerBooking.getNoOfSuiteRoomsBooked()>noOfRemSuiteRoomsBookedByDate){
-                    continue loop;
-                }
-
+            if(hotel.getTotalNumberOfRooms()<customerBooking.getTotalNoOfRoomsBooked()){
+                continue;
             }
-            filteredHotelsID.add(hotel.getHotelID());
+
+            ArrayList<Integer> filteredRooms=filterRooms(customerBooking,hotel,datesInRange);
+
+            if(filteredRooms==null){
+                continue;
+            }
+
+
+            hotelRoomMap.put(hotel.getHotelID(),filteredRooms);
 
         }
-        return filteredHotelsID;
+
+        return hotelRoomMap;
+    }
+
+
+
+    public ArrayList<Integer> filterRooms(CustomerBooking customerBooking, Hotel hotel,ArrayList<Date> datesInRange){
+
+        int noOfRoomsNeeded=customerBooking.getTotalNoOfRoomsBooked();
+        ArrayList<Integer> guests=customerBooking.getNoOfGuestsInEachRoom();
+        Collections.sort(guests,Collections.reverseOrder());
+        ArrayList<Room> rooms=hotel.getRooms();
+        ArrayList<Integer> selectedRooms=new ArrayList<>();
+        int availableRooms=0;
+        for(int i=0;i<noOfRoomsNeeded;i++){
+            int noOfGuests=guests.get(i);
+            for(int j=0;j<rooms.size();j++){
+                if(selectedRooms.contains(rooms.get(j).getId())){
+                    continue;
+                }
+                if(noOfGuests>rooms.get(j).getRoomCapacity()){
+                    continue;
+                }
+                if(!dateAvailabilityCheck(datesInRange,rooms.get(j))){
+                    continue;
+                }
+
+
+                selectedRooms.add(rooms.get(j).getId());
+                availableRooms++;
+                break;
+            }
+        }
+
+        if(availableRooms==noOfRoomsNeeded){
+            return selectedRooms;
+        }
+        return null;
 
     }
+
+    public boolean dateAvailabilityCheck(ArrayList<Date> datesInRange,Room room){
+        for(int i=0;i<datesInRange.size();i++){
+            if(room.checkBookedByDate(datesInRange.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 
 }

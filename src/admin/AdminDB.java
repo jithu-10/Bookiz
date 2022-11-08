@@ -1,15 +1,12 @@
 package admin;
 
 
-import hotel.Hotel;
 import user.User;
 import user.UserAuthenticationDB;
-import user.UserType;
 import utility.QA;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 
 public class AdminDB {
 
@@ -18,7 +15,7 @@ public class AdminDB {
     private ArrayList<QA> faq=new ArrayList<QA>();
     private ArrayList<QA> newQuestions=new ArrayList<QA>();
     private static AdminDB adminDB=new AdminDB();
-    private User admin = new User("admin",UserType.ADMIN);
+    private User admin = new User("admin");
     private AdminDB(){
         UserAuthenticationDB.getInstance().addAdminAuth(admin.getUserName(),"pass");
     }

@@ -4,44 +4,82 @@ import utility.InputHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 public class Room {
 
 
-    private RoomType roomType;
-    private ArrayList<Date> booked2=new ArrayList<>();
+    private int id;
+    private int roomCapacity;
+    private Price roomPrice;
+    private Price bedPrice;
 
 
-    public Room(RoomType roomType){
-        this.roomType=roomType;
+    private ArrayList<Date> booked =new ArrayList<>();
 
+
+    public Room(int id,int roomCapacity,Price roomPrice,Price bedPrice){
+        this.id=id;
+        this.roomCapacity=roomCapacity;
+        this.roomPrice=roomPrice;
+        this.bedPrice=bedPrice;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public double getRoomBasePrice(){
+        return roomPrice.getBasePrice();
+    }
+
+    public double getRoomMaxPrice(){
+        return roomPrice.getMaxPrice();
+    }
+    public double getRoomListPrice(){
+        return roomPrice.getListPrice();
+    }
+
+    public void setRoomListPrice(double listPrice){
+        roomPrice.setListPrice(listPrice);
+    }
+
+    public double getBedPrice(){
+        return bedPrice.getBasePrice();
+    }
+
+    public int getRoomCapacity(){
+        return roomCapacity;
     }
 
 
-    public RoomType getRoomType() {
-        return roomType;
-    }
 
-    public void updateBookings2(Date checkInDate,Date checkOutDate,boolean book){
+    public void updateBookings(Date checkInDate, Date checkOutDate, boolean book){
         if(book){
-            booked2.addAll(InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate));
-            booked2.add(checkOutDate);
+            booked.addAll(InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate));
+            booked.add(checkOutDate);
         }
         else{
-            booked2.removeAll(InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate));
-            booked2.remove(checkOutDate);
+            booked.removeAll(InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate));
+            booked.remove(checkOutDate);
         }
 
     }
 
-    public boolean checkBookedByDate2(Date date){
-        if(booked2.contains(date)){
+    public boolean checkBookedByDate(Date date){
+        if(booked.contains(date)){
             return true;
         }
         else {
             return false;
         }
+    }
+
+    public void changeRoomPrice(Price roomPrice){
+        this.roomPrice=roomPrice;
+    }
+
+    public void changeBedPrice(Price bedPrice){
+        this.bedPrice=bedPrice;
     }
 
 

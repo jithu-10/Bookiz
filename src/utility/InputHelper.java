@@ -113,6 +113,7 @@ public class InputHelper {
 
     }
 
+
     public static long getPhoneNumber(){
         lastIntegerValue=true;
         long phoneNumber;
@@ -182,6 +183,31 @@ public class InputHelper {
         }
         return value;
     }
+
+    public static int getInputWithinRange(int start,int end,String str){
+        if(str==null){
+            str= PrintStatements.ENTER_INPUT_FROM_GIVEN_OPTION;
+        }
+        int value=InputHelper.getIntegerInput();
+        if(value<start||value>end){
+            System.out.println(str);
+            return getInputWithinRange(start,end,str);
+        }
+        return value;
+    }
+
+    public static double getDoubleInputWithinRange(int start,int end,String str){
+        if(str==null){
+            str=PrintStatements.ENTER_INPUT_FROM_GIVEN_OPTION;
+        }
+        double value=InputHelper.getDoubleInput();
+        if(value<start||value>end){
+            System.out.println(str);
+            return getInputWithinRange(start,end,str);
+        }
+        return value;
+    }
+
 
     public static Date getDate(){
         System.out.println(PrintStatements.ENTER_DATE_IN_FORMAT);
@@ -336,6 +362,16 @@ public class InputHelper {
         for (String file : files) {
             System.out.println(file);
         }
+    }
+
+    public static double findPercent(double parts,double whole){
+        double d=parts/whole;
+        return d*100;
+    }
+
+    public static double findParts(double percent,double whole){
+        double d=whole*percent;
+        return d/100;
     }
 
 

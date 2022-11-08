@@ -124,7 +124,7 @@ public class PrintStatements {
     public static final String ENTER_SNO_TO_REMOVE_AMENITY="Enter S.No to Remove Amenity";
     public static final String DOES_HOTEL_HAVE_QUESTION="Does your hotel have ";
     public static final String CANT_SHOW_BOOKED_ROOMS_BEFORE_CURRENT_DATE="Cant Show Booked rooms before current date";
-    public static final String BOOKED_UNBOOKED_OPTION="TYPE OF ROOM      BOOKED  |  UNBOOKED";
+    public static final String BOOKED_UNBOOKED_OPTION="BOOKED  |  UNBOOKED";
 
         //----------------Room Prices-----------//
 
@@ -169,7 +169,7 @@ public class PrintStatements {
           //------------------Customers-----------------//
 
     public static final String CUSTOMER=" Bookiz for Customers ";
-    public static final String CUSTOMER_MENU="1.Book Hotel\n2.List Bookings\n3.Cancel Booking\n4.Favorite List\n5.Help\n6.Log Out\n";
+    public static final String CUSTOMER_MENU="1.Book Hotel\n2.List Bookings\n3.Cancel Booking\n4.List Cancelled Bookings\n5.Favorite List\n6.Help\n7.Log Out\n";
     public static final String SIGN_UP_COMPLETED="Sign Up Completed . You can Sign in Now";
     public static final String NO_HOTELS_AVAILABLE_LOCALITY="No hotels available in your locality";
     public static final String PAY_NOW="Pay Now : ";

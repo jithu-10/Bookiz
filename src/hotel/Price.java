@@ -8,6 +8,7 @@ public class Price {
     public Price(double basePrice,double maxPrice){
         this.basePrice=basePrice;
         this.maxPrice=maxPrice;
+        this.listPrice=basePrice;
     }
 
     public void setListPrice(double listPrice){

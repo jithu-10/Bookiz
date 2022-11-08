@@ -1,7 +1,6 @@
 package driver;
 
 import user.User;
-import user.UserType;
 
 public interface Driver {
     void startDriver();

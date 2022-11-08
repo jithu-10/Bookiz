@@ -1,6 +1,6 @@
 package hotel;
 
-public enum HotelStatus {
+public enum HotelApprovalStatus {
     APPROVED,
     REJECTED,
     ON_PROCESS,

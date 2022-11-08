@@ -7,7 +7,6 @@ import hotel.*;
 import user.User;
 import user.UserAuthenticationDB;
 import user.UserDB;
-import user.UserType;
 import utility.InputHelper;
 import utility.PrintStatements;
 import utility.QA;
@@ -113,14 +112,15 @@ public class AdminDriver extends AbstractDriver {
     }
 
     private void listHotelsRequestedforApproval(){
-        ArrayList<Hotel> hotelsRequested=hotelDB.getHotelListByStatus(HotelStatus.ON_PROCESS);
-        hotelsRequested.addAll(hotelDB.getHotelListByStatus(HotelStatus.REMOVED_RE_PROCESS));
-        if(hotelsRequested.size()==0){
+
+        ArrayList<Integer> hotelsRequestedID=hotelDB.getHotelListByStatus(HotelApprovalStatus.ON_PROCESS);
+        hotelsRequestedID.addAll(hotelDB.getHotelListByStatus(HotelApprovalStatus.REMOVED_RE_PROCESS));
+        if(hotelsRequestedID.size()==0){
             System.out.println(PrintStatements.NO_SUCH_REQUEST_AVAILABLE_NOW);
             return;
         }
-        for(int i=0;i<hotelsRequested.size();i++){
-            Hotel hotel=hotelsRequested.get(i);
+        for(int i=0;i<hotelsRequestedID.size();i++){
+            Hotel hotel=hotelDB.getHotelByID(hotelsRequestedID.get(i));
             System.out.println((i+1)+" . "+hotel.getHotelName());
             System.out.println("\t"+ PrintStatements.NUMBER_NO+hotel.getAddress().getBuildingNo()+","+hotel.getAddress().getStreet());
             System.out.println("\t"+hotel.getAddress().getLocality()+","+hotel.getAddress().getCity());
@@ -128,9 +128,6 @@ public class AdminDriver extends AbstractDriver {
 
             System.out.println(PrintStatements.PHONE_NUMBER_SHORT+hotel.getPhoneNumber());
             System.out.println(PrintStatements.TOTAL_NO_OF_ROOMS+hotel.getTotalNumberOfRooms());
-            System.out.println(PrintStatements.SINGLE_BED_COUNT+hotel.getTotalNumberOfRooms(RoomType.SINGLE_BED_ROOM));
-            System.out.println(PrintStatements.DOUBLE_BED_COUNT+hotel.getTotalNumberOfRooms(RoomType.DOUBLE_BED_ROOM));
-            System.out.println(PrintStatements.SUITE_ROOM_COUNT+hotel.getTotalNumberOfRooms(RoomType.SUITE_ROOM));
             System.out.println(PrintStatements.AMENITY_PERCENT+(int)hotel.getTotalAmenityPercent()+"%");
             System.out.println(PrintStatements.REQUESTED_HOTEL_TYPE+hotel.getHotelType());
             System.out.println("\n\n");
@@ -140,26 +137,27 @@ public class AdminDriver extends AbstractDriver {
             return;
         }
         System.out.println("\n"+ PrintStatements.ENTER_SNO_TO_SELECT_HOTEL);
-        int choice = InputHelper.getInputWithinRange(hotelsRequested.size(),null);
+        int choice = InputHelper.getInputWithinRange(hotelsRequestedID.size(),null);
         int approval=approvalOptions();
-        Hotel hotel=hotelsRequested.get(choice-1);
+
+        Hotel hotel=hotelDB.getHotelByID(hotelsRequestedID.get(choice-1));
         if(approval==1){
             if(changeHotelTypeOption()==1){
                 changeHotelTypeSpecification(hotel);
             }
             hotelDB.approveHotel(hotel);
             setPriceforHotelRooms(hotel);
-            hotelsRequested.remove(choice-1);
+            hotelsRequestedID.remove(choice-1);
         }
         else{
-            if(hotel.getHotelApproveStatus()==HotelStatus.ON_PROCESS) {
-                hotel.setHotelApproveStatus(HotelStatus.REJECTED);
+            if(hotel.getHotelApprovalStatus()== HotelApprovalStatus.ON_PROCESS) {
+                hotel.setHotelApprovalStatus(HotelApprovalStatus.REJECTED);
             }
             else{
-                hotel.setHotelApproveStatus(HotelStatus.REMOVED);
+                hotel.setHotelApprovalStatus(HotelApprovalStatus.REMOVED);
             }
 
-            hotelsRequested.remove(choice-1);
+            hotelsRequestedID.remove(choice-1);
         }
     }
 
@@ -185,27 +183,29 @@ public class AdminDriver extends AbstractDriver {
 
     private void setPriceforHotelRooms(Hotel hotel){
 
-        System.out.println(PrintStatements.SET_PRICE_FOR_HOTEL_ROOMS);
-        double basePrice=hotel.getSingleBedRoomBasePrice();
-        double maxPrice=hotel.getSingleBedRoomMaxPrice();
-        System.out.println(RoomType.SINGLE_BED_ROOM +"->"+ PrintStatements.BASE_PRICE+basePrice+ PrintStatements.MAX_PRICE+maxPrice);
-        System.out.println(PrintStatements.SET_LIST_PRICE);
-        double listPrice=createCurrentPrice(basePrice,maxPrice);
-        hotel.setSingleBedRoomListPrice(listPrice);
+        /********* Set Room List Price************/
+        do{
+            System.out.println(PrintStatements.SET_PRICE_FOR_HOTEL_ROOMS);
+            ArrayList<Room> rooms=hotel.getRooms();
+            for(int i=0;i<rooms.size();i++){
+                Room room=rooms.get(i);
+                System.out.println((i+1)+". Max Guest : "+ room.getRoomCapacity()+" Base Price : "+room.getRoomBasePrice()+" Max Price : "+room.getRoomMaxPrice()+" List Price : "+room.getRoomListPrice());
+            }
+            System.out.println("1.Change Room List Price");
+            System.out.println("2.Back");
+            int options=InputHelper.getInputWithinRange(2,null);
+            if(options==2){
+                return;
+            }
+            System.out.println("Enter Room No. to change list price : ");
+            int choice=InputHelper.getInputWithinRange(rooms.size(),null);
+            Room room=rooms.get(choice-1);
+            System.out.println("Base Price : "+room.getRoomBasePrice()+" Max Price : "+room.getRoomMaxPrice()+" List Price : "+room.getRoomListPrice());
+            double listPrice=createCurrentPrice(room.getRoomBasePrice(),room.getRoomMaxPrice());
+            room.setRoomListPrice(listPrice);
 
-        basePrice=hotel.getDoubleBedRoomBasePrice();
-        maxPrice=hotel.getDoubleBedRoomMaxPrice();
-        System.out.println(RoomType.DOUBLE_BED_ROOM +"->"+ PrintStatements.BASE_PRICE+basePrice+ PrintStatements.MAX_PRICE+maxPrice);
-        System.out.println(PrintStatements.SET_LIST_PRICE);
-        listPrice=createCurrentPrice(basePrice,maxPrice);
-        hotel.setDoubleBedRoomListPrice(listPrice);
+        }while (true);
 
-        basePrice=hotel.getSuiteRoomBasePrice();
-        maxPrice=hotel.getSuiteRoomMaxPrice();
-        System.out.println(RoomType.SUITE_ROOM +"->"+ PrintStatements.BASE_PRICE+basePrice+ PrintStatements.MAX_PRICE+maxPrice);
-        System.out.println(PrintStatements.SET_LIST_PRICE);
-        listPrice=createCurrentPrice(basePrice,maxPrice);
-        hotel.setSuiteRoomListPrice(listPrice);
     }
 
     private void changeHotelTypeSpecification(Hotel hotel){
@@ -250,14 +250,14 @@ public class AdminDriver extends AbstractDriver {
 
 //---------------------------------------------2.List Registered Hotels------------------------------------------------//
     private void listRegisteredHotels(){
-        ArrayList<Hotel> hotels = hotelDB.getHotelListByStatus(HotelStatus.APPROVED);
+        ArrayList<Integer> hotels = hotelDB.getHotelListByStatus(HotelApprovalStatus.APPROVED);
         if(hotels.size()==0){
             System.out.println(PrintStatements.NO_HOTEL_AVAIL);
             return;
         }
         System.out.println("ID\t Hotel Name\t\t\t\tLocality \t\t\t\tRooms\tTypeofRoom\n");
         for(int i=0;i<hotels.size();i++){
-            Hotel hotel=hotels.get(i);
+            Hotel hotel=hotelDB.getHotelByID(hotels.get(i));
             System.out.printf("%-4s %-20s %-25s %-7s %-7s",hotel.getHotelID(),hotel.getHotelName(),hotel.getAddress().getLocality()+","+hotel.getAddress().getCity(),hotel.getTotalNumberOfRooms(),hotel.getHotelType());
             System.out.println();
 
@@ -322,7 +322,8 @@ public class AdminDriver extends AbstractDriver {
         System.out.println(PrintStatements.BOOKING_LIST);
         for(int i=0;i<bookings.size();i++){
             Booking booking=bookings.get(i);
-            User customer=userDB.getUserByID(booking.getCustomerID(),UserType.CUSTOMER);
+            //User customer=userDB.getUserByID(booking.getCustomerID(),UserType.CUSTOMER);
+            User customer=userDB.getCustomerByID(booking.getCustomerID());
             Hotel hotel=hotelDB.getHotelByID(booking.getHotelID());
             System.out.println((i+1)+". "+ PrintStatements.BOOKING_ID+booking.getBookingID());
             System.out.println(PrintStatements.CHECK_IN_DATE+booking.getCheckInDateString());
@@ -364,20 +365,7 @@ public class AdminDriver extends AbstractDriver {
             System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
             System.out.println("Postal Code : "+hotel.getAddress().getPostalCode());
             System.out.println("No of Rooms : "+hotel.getTotalNumberOfRooms());
-            System.out.println("Set Price for Rooms");
-            System.out.println("SingleBed Rooms -> Base Price : "+hotel.getSingleBedRoomBasePrice()+" Max Price : "+hotel.getSingleBedRoomMaxPrice()+" Current List Price : "+hotel.getSingleBedRoomListPrice());
-            double listPrice;
-            if((listPrice=priceChangeOptions(hotel.getSingleBedRoomBasePrice(),hotel.getSingleBedRoomMaxPrice()))!=-1){
-                hotel.setSingleBedRoomListPrice(listPrice);
-            }
-            System.out.println("DoubleBed Rooms -> Base Price : "+hotel.getDoubleBedRoomBasePrice()+" Max Price : "+hotel.getDoubleBedRoomMaxPrice()+" Current List Price : "+hotel.getDoubleBedRoomListPrice());
-            if((listPrice=priceChangeOptions(hotel.getDoubleBedRoomBasePrice(),hotel.getDoubleBedRoomMaxPrice()))!=-1){
-                hotel.setDoubleBedRoomListPrice(listPrice);
-            }
-            System.out.println("Suite Rooms -> Base Price : "+hotel.getSuiteRoomBasePrice()+" Max Price : "+hotel.getSuiteRoomMaxPrice()+" Current List Price : "+hotel.getSuiteRoomListPrice());
-            if((listPrice=priceChangeOptions(hotel.getSuiteRoomBasePrice(),hotel.getSuiteRoomMaxPrice()))!=-1){
-                hotel.setSuiteRoomListPrice(listPrice);
-            }
+            setPriceforHotelRooms(hotel);
             adminDB.removeHotelfromPriceUpdatedHotelList(hotel.getHotelID());
             return;
         }
@@ -385,20 +373,6 @@ public class AdminDriver extends AbstractDriver {
 
     }
 
-    private double priceChangeOptions(double basePrice,double maxPrice){
-        System.out.println("1.Change List Price");
-        System.out.println("2.Skip");
-        System.out.println("Enter Input :");
-        int choice = InputHelper.getInputWithinRange(2,null);
-        if(choice==2){
-            return -1;
-        }
-        else{
-            System.out.println("Set List Price : ");
-            return createCurrentPrice(basePrice,maxPrice);
-        }
-
-    }
 
     private void listHotelsWhichChangedPrice(){
         LinkedHashSet<Integer> hotelList= adminDB.getPriceUpdatedHotelList();

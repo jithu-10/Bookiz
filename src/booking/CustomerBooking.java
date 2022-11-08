@@ -1,16 +1,16 @@
 package booking;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CustomerBooking extends Booking{
 
 
-    private int noOfSingleBedRoomsBooked;
-    private int noOfDoubleBedRoomsBooked;
-    private int noOfSuiteRoomsBooked;
-    private double totalPriceOfSingleBedRooms;
-    private double totalPriceOfDoubleBedRooms;
-    private double totalPriceOfSuiteRooms;
+
+    private int noOfRoomsBooked;
+    private ArrayList<Integer> noOfGuestsInEachRoom;
+    private ArrayList<Integer> roomIDs;
+    private double totalPrice;
     private boolean paid;
 
     public CustomerBooking(Date checkInDate, Date checkOutDate){
@@ -18,50 +18,29 @@ public class CustomerBooking extends Booking{
     }
 
 
-    public int getNoOfSingleBedroomsBooked() {
-        return noOfSingleBedRoomsBooked;
-    }
-
-    public void setNoOfSingleBedroomsBooked(int noOfSingleBedroomsBooked) {
-        this.noOfSingleBedRoomsBooked = noOfSingleBedroomsBooked;
-    }
-
-    
-    public int getNoOfDoubleBedRoomsBooked() {
-        return noOfDoubleBedRoomsBooked;
-    }
-
-    public void setNoOfDoubleBedRoomsBooked(int noOfDoubleBedRoomsBooked) {
-        this.noOfDoubleBedRoomsBooked = noOfDoubleBedRoomsBooked;
-    }
-
-    
-    public int getNoOfSuiteRoomsBooked() {
-        return noOfSuiteRoomsBooked;
-    }
-
-    public void setNoOfSuiteRoomsBooked(int noOfSuiteRoomsBooked) {
-        this.noOfSuiteRoomsBooked = noOfSuiteRoomsBooked;
-    }
-
     public int getTotalNoOfRoomsBooked() {
-        return noOfSingleBedRoomsBooked + noOfDoubleBedRoomsBooked + noOfSuiteRoomsBooked;
+        return noOfRoomsBooked;
+    }
+
+    public void setNoOfRoomsBooked(int noOfRoomsBooked){
+        this.noOfRoomsBooked=noOfRoomsBooked;
     }
 
 
-    public void setTotalPriceOfSingleBedRooms(double totalPriceOfSingleBedRooms) {
-        this.totalPriceOfSingleBedRooms = totalPriceOfSingleBedRooms;
-    }
 
-    public void setTotalPriceOfDoubleBedRooms(double totalPriceOfDoubleBedRooms) {
-        this.totalPriceOfDoubleBedRooms = totalPriceOfDoubleBedRooms;
-    }
-
-    public void setTotalPriceOfSuiteRooms(double totalPriceOfSuiteRooms) {
-        this.totalPriceOfSuiteRooms = totalPriceOfSuiteRooms;
+    public void setTotalPrice(double totalPrice){
+        this.totalPrice=totalPrice;
     }
     public double getTotalPrice(){
-        return totalPriceOfSingleBedRooms+totalPriceOfDoubleBedRooms+totalPriceOfSuiteRooms;
+        return totalPrice;
+    }
+
+    public void setNoOfGuestsInEachRoom(ArrayList<Integer> noOfGuestsInEachRoom) {
+        this.noOfGuestsInEachRoom = noOfGuestsInEachRoom;
+    }
+
+    public ArrayList<Integer> getNoOfGuestsInEachRoom() {
+        return noOfGuestsInEachRoom;
     }
 
     public void setPaid(){
@@ -69,5 +48,13 @@ public class CustomerBooking extends Booking{
     }
     public boolean getPaid(){
         return paid;
+    }
+
+    public ArrayList<Integer> getRoomIDs() {
+        return roomIDs;
+    }
+
+    public void setRoomIDs(ArrayList<Integer> roomIDs) {
+        this.roomIDs = roomIDs;
     }
 }

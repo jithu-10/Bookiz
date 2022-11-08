@@ -1,18 +1,13 @@
 package user;
 
 public class User {
-    private UserType userType;
     private String userName;
     private long phoneNumber;
     private int userID;
     private String mailID;
 
-    public User(String userName,UserType userType){
+    public User(String userName){
         this.userName=userName;
-        this.userType=userType;
-    }
-    public UserType getUserType(){
-        return userType;
     }
 
     public String getUserName() {
