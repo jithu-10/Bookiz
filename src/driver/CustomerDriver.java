@@ -445,7 +445,7 @@ public class CustomerDriver extends AbstractDriver {
 
     private void bookedDetails(CustomerBooking customerBooking, User customer,Hotel hotel){
         customerBooking.setCustomerID(customer.getUserID());
-        hotel.updateRoomBooking(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate(),true,customerBooking.getRoomIDs());
+        hotel.addRoomBooking(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate(),customerBooking.getRoomIDs());
         System.out.println("\n"+ PrintStatements.BOOKING_CONFIRMED+"\n");
         System.out.println("BOOKIZ "+hotel.getHotelType()+" "+hotel.getHotelID());
         System.out.println(hotel.getHotelName());
@@ -520,7 +520,7 @@ public class CustomerDriver extends AbstractDriver {
             customer.removeBookings(customerBooking);
             customer.addCancelledBookings(customerBooking);
             Hotel hotel=hotelDB.getHotelByID(customerBooking.getHotelID());
-            hotel.updateRoomBooking(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate(),false,customerBooking.getRoomIDs());
+            hotel.cancelRoomBooking(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate(),customerBooking.getRoomIDs());
             System.out.println(PrintStatements.BOOKING_CANCELLED);
         }
     }

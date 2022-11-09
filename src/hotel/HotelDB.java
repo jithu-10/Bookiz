@@ -107,7 +107,7 @@ public class HotelDB {
                 continue;
             }
 
-            ArrayList<Integer> filteredRooms=filterRooms(customerBooking,hotel,datesInRange);
+            ArrayList<Integer> filteredRooms=filterRooms3(customerBooking,hotel,datesInRange);
 
             if(filteredRooms==null){
                 continue;
@@ -117,6 +117,7 @@ public class HotelDB {
             hotelRoomMap.put(hotel.getHotelID(),filteredRooms);
 
         }
+        System.out.println(hotelRoomMap);
 
         return hotelRoomMap;
     }
@@ -156,6 +157,47 @@ public class HotelDB {
         }
         return null;
 
+    }
+
+    public ArrayList<Integer> filterRooms3(CustomerBooking customerBooking,Hotel hotel,ArrayList<Date> datesInRange){
+        int noOfRoomsNeeded=customerBooking.getTotalNoOfRoomsBooked();
+        ArrayList<Integer> guests=customerBooking.getNoOfGuestsInEachRoom();
+        Collections.sort(guests,Collections.reverseOrder());
+        ArrayList<Room> rooms=hotel.getRooms();
+        ArrayList<Integer> selectedRooms=new ArrayList<>();
+
+        for(int i=0;i< guests.size();i++){
+            int noOfGuests=guests.get(i);
+            ArrayList<Integer> availRoomsIDs=new ArrayList<>();
+            for(int j=0;j<rooms.size();j++){
+                if(selectedRooms.contains(rooms.get(j).getId())){
+                    continue;
+                }
+                if(noOfGuests>rooms.get(j).getRoomCapacity()){
+                    continue;
+                }
+                if(!dateAvailabilityCheck(datesInRange,rooms.get(j))){
+                    continue;
+                }
+                availRoomsIDs.add(rooms.get(j).getId());
+            }
+            if(availRoomsIDs.isEmpty()){
+                return null;
+            }
+            int selectedRoomID=availRoomsIDs.get(0);
+            for(int k=1;k<availRoomsIDs.size();k++){
+                int previous=hotel.getRoomByID(selectedRoomID).getRoomCapacity()-noOfGuests;
+                int current=hotel.getRoomByID(availRoomsIDs.get(k)).getRoomCapacity()-noOfGuests;
+                if(current<previous){
+                    selectedRoomID=availRoomsIDs.get(k);
+                }
+            }
+            selectedRooms.add(selectedRoomID);
+        }
+        if(selectedRooms.size()==noOfRoomsNeeded){
+            return selectedRooms;
+        }
+        return null;
     }
 
     public boolean dateAvailabilityCheck(ArrayList<Date> datesInRange,Room room){

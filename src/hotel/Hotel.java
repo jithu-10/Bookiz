@@ -50,12 +50,18 @@ public class Hotel{
 
 
 
-    public void updateRoomBooking(Date checkInDate,Date checkOutDate,boolean book,ArrayList<Integer> roomIndex){
+    public void addRoomBooking(Date checkInDate,Date checkOutDate,ArrayList<Integer> roomIndex){
         for(int i=0;i<roomIndex.size();i++){
             Room room=getRoomByID(roomIndex.get(i));
-            room.updateBookings(checkInDate,checkOutDate,book);
+            room.updateBookings(checkInDate,checkOutDate,true);
         }
+    }
 
+    public void cancelRoomBooking(Date checkInDate,Date checkOutDate,ArrayList<Integer> roomIndex){
+        for(int i=0;i<roomIndex.size();i++){
+            Room room=getRoomByID(roomIndex.get(i));
+            room.updateBookings(checkInDate,checkOutDate,false);
+        }
     }
     public Address getAddress(){
         return address;

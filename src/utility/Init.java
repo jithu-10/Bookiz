@@ -22,7 +22,6 @@ public class Init {
         long phoneNumber[]={9092722880L,9677298160L,7358196791L,1234567890L,9876543211L,5555544444L};
         String mailID[]={"13jackf9@masjoco.com","bxv6414@traz.xyz","keff85@ikanchana.com","frostschneider@happiseektest.com","ff6se@mymailcr.com","djevens@twichzhuce.com"};
         for(int i=0;i<6;i++){
-            //User user=new User(userNames[i],UserType.CUSTOMER);
             Customer user=new Customer(userNames[i]);
             user.setPhoneNumber(phoneNumber[i]);
             user.setMailID(mailID[i]);
@@ -97,10 +96,10 @@ public class Init {
     }
     public static ArrayList<Room> initRooms(){
         ArrayList<Room> rooms=new ArrayList<>();
-        int[] roomCap={2,4,5,3,8,2};
+        int[] roomCap={2,4,1,3,8,2};
         Price price=new Price(2000,4000);
         Price price1=new Price(200,400);
-        for(int i=0;i<5;i++){
+        for(int i=0;i<6;i++){
             Room room=new Room(i,roomCap[i],price,price1);
             rooms.add(room);
         }

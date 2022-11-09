@@ -8,8 +8,8 @@ import java.util.Date;
 public class Booking {
 
     private int bookingID;
-    private Date checkInDate;
-    private Date checkOutDate;
+    private final Date checkInDate;
+    private final Date checkOutDate;
     private int customerID;
     private int hotelID;
 

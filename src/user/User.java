@@ -1,7 +1,7 @@
 package user;
 
 public class User {
-    private String userName;
+    private final String userName;
     private long phoneNumber;
     private int userID;
     private String mailID;

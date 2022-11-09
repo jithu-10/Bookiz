@@ -8,8 +8,8 @@ import java.util.Date;
 public class Room {
 
 
-    private int id;
-    private int roomCapacity;
+    private final int id;
+    private final int roomCapacity;
     private Price roomPrice;
     private Price bedPrice;
 
