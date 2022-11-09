@@ -1,7 +1,6 @@
 package booking;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class BookingDB {
     private static final BookingDB bookingDB=new BookingDB();

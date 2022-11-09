@@ -364,11 +364,6 @@ public class InputHelper {
         }
     }
 
-    public static double findPercent(double parts,double whole){
-        double d=parts/whole;
-        return d*100;
-    }
-
     public static double findParts(double percent,double whole){
         double d=whole*percent;
         return d/100;

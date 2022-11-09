@@ -15,7 +15,7 @@ public class Hotel{
     private HotelApprovalStatus hotelApprovalStatus;
     private ArrayList<Integer> amenities=new ArrayList<>();
     private ArrayList<Room> rooms=new ArrayList<>();
-    private AmenityDB amenityDB=AmenityDB.getInstance();
+    private final AmenityDB amenityDB=AmenityDB.getInstance();
     private int roomIDHelper=0;
 
     public Hotel(int hotelOwnerID,String hotelName,Address address){

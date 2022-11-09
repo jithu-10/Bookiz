@@ -1,6 +1,7 @@
 package utility;
 
 
+import booking.CustomerBooking;
 import customer.Customer;
 import hotel.*;
 import user.User;

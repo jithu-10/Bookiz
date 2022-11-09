@@ -96,7 +96,7 @@ public class HotelDB {
         ArrayList<Date> datesInRange= InputHelper.getDatesBetweenTwoDates(customerBooking.getCheckInDate(),customerBooking.getCheckOutDate());
         datesInRange.add(customerBooking.getCheckOutDate());
         ArrayList<Integer> hotelIDs= getHotelListByStatus(HotelApprovalStatus.APPROVED);
-        LinkedHashMap<Integer,ArrayList<Integer>> hotelRoomMap=new LinkedHashMap<>();
+        LinkedHashMap<Integer,ArrayList<Integer>> hotelAndRoomsMap=new LinkedHashMap<>();
 
         for(int i=0;i<hotelIDs.size();i++){
             Hotel hotel=getHotelByID(hotelIDs.get(i));
@@ -107,59 +107,58 @@ public class HotelDB {
                 continue;
             }
 
-            ArrayList<Integer> filteredRooms=filterRooms3(customerBooking,hotel,datesInRange);
+            ArrayList<Integer> filteredRooms= filterRooms(customerBooking,hotel,datesInRange);
 
             if(filteredRooms==null){
                 continue;
             }
 
 
-            hotelRoomMap.put(hotel.getHotelID(),filteredRooms);
+            hotelAndRoomsMap.put(hotel.getHotelID(),filteredRooms);
 
         }
-        System.out.println(hotelRoomMap);
 
-        return hotelRoomMap;
+        return hotelAndRoomsMap;
     }
 
 
 
-    public ArrayList<Integer> filterRooms(CustomerBooking customerBooking, Hotel hotel,ArrayList<Date> datesInRange){
+//    public ArrayList<Integer> filterRooms(CustomerBooking customerBooking, Hotel hotel,ArrayList<Date> datesInRange){
+//
+//        int noOfRoomsNeeded=customerBooking.getTotalNoOfRoomsBooked();
+//        ArrayList<Integer> guests=customerBooking.getNoOfGuestsInEachRoom();
+//        Collections.sort(guests,Collections.reverseOrder());
+//        ArrayList<Room> rooms=hotel.getRooms();
+//        ArrayList<Integer> selectedRooms=new ArrayList<>();
+//        int availableRooms=0;
+//        for(int i=0;i<noOfRoomsNeeded;i++){
+//            int noOfGuests=guests.get(i);
+//            for(int j=0;j<rooms.size();j++){
+//                if(selectedRooms.contains(rooms.get(j).getId())){
+//                    continue;
+//                }
+//                if(noOfGuests>rooms.get(j).getRoomCapacity()){
+//                    continue;
+//                }
+//                if(!dateAvailabilityCheck(datesInRange,rooms.get(j))){
+//                    continue;
+//                }
+//
+//
+//                selectedRooms.add(rooms.get(j).getId());
+//                availableRooms++;
+//                break;
+//            }
+//        }
+//
+//        if(availableRooms==noOfRoomsNeeded){
+//            return selectedRooms;
+//        }
+//        return null;
+//
+//    }
 
-        int noOfRoomsNeeded=customerBooking.getTotalNoOfRoomsBooked();
-        ArrayList<Integer> guests=customerBooking.getNoOfGuestsInEachRoom();
-        Collections.sort(guests,Collections.reverseOrder());
-        ArrayList<Room> rooms=hotel.getRooms();
-        ArrayList<Integer> selectedRooms=new ArrayList<>();
-        int availableRooms=0;
-        for(int i=0;i<noOfRoomsNeeded;i++){
-            int noOfGuests=guests.get(i);
-            for(int j=0;j<rooms.size();j++){
-                if(selectedRooms.contains(rooms.get(j).getId())){
-                    continue;
-                }
-                if(noOfGuests>rooms.get(j).getRoomCapacity()){
-                    continue;
-                }
-                if(!dateAvailabilityCheck(datesInRange,rooms.get(j))){
-                    continue;
-                }
-
-
-                selectedRooms.add(rooms.get(j).getId());
-                availableRooms++;
-                break;
-            }
-        }
-
-        if(availableRooms==noOfRoomsNeeded){
-            return selectedRooms;
-        }
-        return null;
-
-    }
-
-    public ArrayList<Integer> filterRooms3(CustomerBooking customerBooking,Hotel hotel,ArrayList<Date> datesInRange){
+    public ArrayList<Integer> filterRooms(CustomerBooking customerBooking, Hotel hotel, ArrayList<Date> datesInRange){
         int noOfRoomsNeeded=customerBooking.getTotalNoOfRoomsBooked();
         ArrayList<Integer> guests=customerBooking.getNoOfGuestsInEachRoom();
         Collections.sort(guests,Collections.reverseOrder());

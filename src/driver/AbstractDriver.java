@@ -1,9 +1,6 @@
 package driver;
 
 import admin.AdminDB;
-import user.User;
-import user.UserAuthenticationDB;
-
 import utility.InputHelper;
 import utility.PrintStatements;
 

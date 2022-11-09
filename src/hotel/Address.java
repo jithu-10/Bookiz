@@ -19,49 +19,21 @@ public class Address {
     public int getBuildingNo() {
         return buildingNo;
     }
-
-    public void setBuildingNo(int buildingNo) {
-        this.buildingNo = buildingNo;
-    }
-
     public String getStreet() {
         return street;
     }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
     public String getCity() {
         return city;
     }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getLocality() {
         return locality;
     }
-
-    public void setLocality(String locality) {
-        this.locality = locality;
-    }
-
     public String getState() {
         return state;
     }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public int getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(int postalCode) {
-        this.postalCode = postalCode;
-    }
 
 }
