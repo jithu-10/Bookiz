@@ -37,7 +37,7 @@ public class AdminDB {
         return priceUpdatedHotelList;
     }
 
-    public void removeHotelfromPriceUpdatedHotelList(int id){
+    public void removeHotelFromPriceUpdatedHotelList(int id){
         if(priceUpdatedHotelList.contains(id)){
             priceUpdatedHotelList.remove(id);
         }

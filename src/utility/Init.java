@@ -98,6 +98,7 @@ public class Init {
     public static ArrayList<Room> initRooms(){
         ArrayList<Room> rooms=new ArrayList<>();
         int[] roomCap={2,4,1,3,8,2};
+        //int[] roomCap={1,1,1,1,1,1};
         Price price=new Price(2000,4000);
         Price price1=new Price(200,400);
         for(int i=0;i<6;i++){

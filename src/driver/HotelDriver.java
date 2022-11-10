@@ -273,9 +273,6 @@ public class HotelDriver extends AbstractDriver{
             return;
         }
         Hotel hotel=getHotelDetails(hotelOwner.getUserID());
-        if(hotel==null){
-            return;
-        }
 
         addRooms(hotel);
         addHotelAmenities(hotel);

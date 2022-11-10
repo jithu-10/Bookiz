@@ -15,14 +15,6 @@ public class Price {
         this.listPrice = listPrice;
     }
 
-    public void setBasePrice(double basePrice) {
-        this.basePrice = basePrice;
-    }
-
-    public void setMaxPrice(double maxPrice) {
-        this.maxPrice = maxPrice;
-    }
-
     public double getListPrice() {
         return listPrice;
     }

@@ -175,7 +175,7 @@ public class HotelDB {
                 if(noOfGuests>rooms.get(j).getRoomCapacity()){
                     continue;
                 }
-                if(!dateAvailabilityCheck(datesInRange,rooms.get(j))){
+                if(!dateAvailabilityCheck(datesInRange,hotel,rooms.get(j))){
                     continue;
                 }
                 availRoomsIDs.add(rooms.get(j).getId());
@@ -199,9 +199,12 @@ public class HotelDB {
         return null;
     }
 
-    public boolean dateAvailabilityCheck(ArrayList<Date> datesInRange,Room room){
+    public boolean dateAvailabilityCheck(ArrayList<Date> datesInRange,Hotel hotel,Room room){
         for(int i=0;i<datesInRange.size();i++){
-            if(room.checkBookedByDate(datesInRange.get(i))){
+//            if(room.checkBookedByDate(datesInRange.get(i))){
+//                return false;
+//            }
+            if(hotel.checkBookedByDate(room.getId(),datesInRange.get(i))){
                 return false;
             }
         }

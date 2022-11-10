@@ -1,10 +1,5 @@
 package hotel;
 
-import utility.InputHelper;
-
-import java.util.ArrayList;
-import java.util.Date;
-
 public class Room {
 
 
@@ -13,8 +8,6 @@ public class Room {
     private Price roomPrice;
     private Price bedPrice;
 
-
-    private ArrayList<Date> booked =new ArrayList<>();
 
 
     public Room(int id,int roomCapacity,Price roomPrice,Price bedPrice){
@@ -49,29 +42,6 @@ public class Room {
 
     public int getRoomCapacity(){
         return roomCapacity;
-    }
-
-
-
-    public void updateBookings(Date checkInDate, Date checkOutDate, boolean book){
-        if(book){
-            booked.addAll(InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate));
-            booked.add(checkOutDate);
-        }
-        else{
-            booked.removeAll(InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate));
-            booked.remove(checkOutDate);
-        }
-
-    }
-
-    public boolean checkBookedByDate(Date date){
-        if(booked.contains(date)){
-            return true;
-        }
-        else {
-            return false;
-        }
     }
 
     public void changeRoomPrice(Price roomPrice){

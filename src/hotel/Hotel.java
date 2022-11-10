@@ -2,9 +2,11 @@ package hotel;
 
 import user.User;
 import user.UserDB;
+import utility.InputHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Hotel{
     private int hotelOwnerID;
@@ -16,12 +18,39 @@ public class Hotel{
     private ArrayList<Integer> amenities=new ArrayList<>();
     private ArrayList<Room> rooms=new ArrayList<>();
     private final AmenityDB amenityDB=AmenityDB.getInstance();
+    private HashMap<Integer,ArrayList<Date>> roomBookedStatus=new HashMap<>();// HashMap<RoomID,ArrayList<Date>>
     private int roomIDHelper=0;
 
     public Hotel(int hotelOwnerID,String hotelName,Address address){
         this.hotelOwnerID=hotelOwnerID;
         this.hotelName=hotelName;
         this.address=address;
+    }
+
+    public void updateRoomBookedStatus(int roomID,Date checkInDate,Date checkOutDate,boolean book){
+        if(book){
+            ArrayList<Date> bookedDates= InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate);
+            bookedDates.add(checkOutDate);
+            roomBookedStatus.put(roomID,bookedDates);
+        }
+        else{
+            ArrayList<Date> unBookedDates=InputHelper.getDatesBetweenTwoDates(checkInDate,checkOutDate);
+            unBookedDates.add(checkOutDate);
+            ArrayList<Date> dates=roomBookedStatus.get(roomID);
+            dates.removeAll(unBookedDates);
+
+        }
+    }
+
+    public boolean checkBookedByDate(int roomID,Date date){
+
+        ArrayList<Date> bookedDates=roomBookedStatus.get(roomID);
+        if(bookedDates!=null&&bookedDates.contains(date)){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 
@@ -50,17 +79,15 @@ public class Hotel{
 
 
 
-    public void addRoomBooking(Date checkInDate,Date checkOutDate,ArrayList<Integer> roomIndex){
-        for(int i=0;i<roomIndex.size();i++){
-            Room room=getRoomByID(roomIndex.get(i));
-            room.updateBookings(checkInDate,checkOutDate,true);
+    public void addRoomBooking(Date checkInDate,Date checkOutDate,ArrayList<Integer> roomIDs){
+        for(int i=0;i<roomIDs.size();i++){
+            updateRoomBookedStatus(roomIDs.get(i),checkInDate,checkOutDate,true);
         }
     }
 
-    public void cancelRoomBooking(Date checkInDate,Date checkOutDate,ArrayList<Integer> roomIndex){
-        for(int i=0;i<roomIndex.size();i++){
-            Room room=getRoomByID(roomIndex.get(i));
-            room.updateBookings(checkInDate,checkOutDate,false);
+    public void cancelRoomBooking(Date checkInDate,Date checkOutDate,ArrayList<Integer> roomIDs){
+        for(int i=0;i<roomIDs.size();i++){
+            updateRoomBookedStatus(roomIDs.get(i),checkInDate,checkOutDate,false);
         }
     }
     public Address getAddress(){
@@ -87,7 +114,7 @@ public class Hotel{
         rooms.remove(room);
     }
 
-    public void addAmenity(Amenity amenity){;
+    public void addAmenity(Amenity amenity){
         amenities.add(amenity.getAmenityID());
     }
 
@@ -170,7 +197,7 @@ public class Hotel{
     public int getNoOfRoomsBookedByDate(Date date){
         int value=0;
         for(Room room : rooms){
-            if(room.checkBookedByDate(date)){
+            if(checkBookedByDate(room.getId(),date)){
                 value++;
             }
         }

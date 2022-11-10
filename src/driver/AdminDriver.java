@@ -183,7 +183,6 @@ public class AdminDriver extends AbstractDriver {
 
     private void setPriceforHotelRooms(Hotel hotel){
 
-        /********* Set Room List Price************/
         do{
             System.out.println(PrintStatements.SET_PRICE_FOR_HOTEL_ROOMS);
             ArrayList<Room> rooms=hotel.getRooms();
@@ -366,7 +365,7 @@ public class AdminDriver extends AbstractDriver {
             System.out.println("Postal Code : "+hotel.getAddress().getPostalCode());
             System.out.println("No of Rooms : "+hotel.getTotalNumberOfRooms());
             setPriceforHotelRooms(hotel);
-            adminDB.removeHotelfromPriceUpdatedHotelList(hotel.getHotelID());
+            adminDB.removeHotelFromPriceUpdatedHotelList(hotel.getHotelID());
             return;
         }
         System.out.println("No Hotel With Respected ID Found");
