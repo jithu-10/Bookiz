@@ -1,25 +1,19 @@
 package user;
 
-import customer.Customer;
-
 import java.util.ArrayList;
 
 public class UserDB  {
     private static int idHelper=0;
-    private static UserDB userDB=new UserDB();
-    private ArrayList<User> hotelAdminList =new ArrayList<>();
-    private ArrayList<User> customerList=new ArrayList<>();
-
-    // Admin
-    // Customers
-    // Hotel
+    private static final UserDB USER_DB =new UserDB();
+    private final ArrayList<User> hotelAdminList =new ArrayList<>();
+    private final ArrayList<User> customerList=new ArrayList<>();
 
     private UserDB(){
 
     }
 
     public static UserDB getInstance(){
-        return userDB;
+        return USER_DB;
     }
     private static int generateId(){
         return ++idHelper;

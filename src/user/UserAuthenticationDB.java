@@ -9,14 +9,14 @@ public class UserAuthenticationDB {
     private final HashMap<String,String> hotelAdminAuthenticationByEmailID=new HashMap<>();
     private final HashMap<Long,String> customerAuthentication=new HashMap<>();
     private final HashMap<String,String> customerAuthenticationByEmailID=new HashMap<>();
-    private static final UserAuthenticationDB userAuthenticationDB=new UserAuthenticationDB();
+    private static final UserAuthenticationDB USER_AUTHENTICATION_DB =new UserAuthenticationDB();
 
     private UserAuthenticationDB(){
 
     }
 
     public static UserAuthenticationDB getInstance(){
-        return userAuthenticationDB;
+        return USER_AUTHENTICATION_DB;
     }
 
     public void addAdminAuth(String userName,String password){

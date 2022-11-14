@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class AmenityDB {
 
-    private static final AmenityDB amenityDB=new AmenityDB();
+    private static final AmenityDB AMENITY_DB =new AmenityDB();
     private int idHelper=0;
     private final Amenity TV = new Amenity("TV",20);
     private final Amenity AC = new Amenity("AC",20);
@@ -47,7 +47,7 @@ public class AmenityDB {
 
 
     public static AmenityDB getInstance(){
-        return amenityDB;
+        return AMENITY_DB;
     }
 
     public ArrayList<Amenity> getAmenities(){

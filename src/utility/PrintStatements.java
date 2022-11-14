@@ -56,6 +56,7 @@ public class PrintStatements {
     public static final String POSITIVE_NUMBER_CONDITION="Value Should be 1 or greater";
     public static final String NOT_AVAIL="Not Available";
     //------------Admin-----------//
+    public static final String ADMIN="Admin";
     public static final String ADMIN_MENU="1.List of hotels which have requested for approval.\n2.List of hotels registered\n3.Remove Hotels\n4.Set Terms and Conditions\n5.Set Price for hotel rooms\n6.List All Bookings\n7.Add Amenity\n8.Remove Amenity\n9.Give Solutions\n10.Sign Out";
     public static final String NO_SUCH_REQUEST_AVAILABLE_NOW="No Such Requests available now...";
     public static final String UPDATE_TERMS="Update Terms and Conditions";
@@ -185,4 +186,17 @@ public class PrintStatements {
     public static final String NO_FAQ_AVAIL="There is no frequently asked questions";
     public static final String TYPE_YOUR_QUES="Type your Questions : ";
     public static final String QUES_ADDED="Your question will be answered if it is a valid question and will be added to FAQ";
+    public static final String ANSWER_QUESTION="Answer Question";
+    public static final String QUESTIONS="Questions : ";
+    public static final String ANSWER="Answer : ";
+    public static final String REMOVE_QUESTION="Remove Question";
+
+            //--------------Amenity-------------------//
+
+    public static final String AMENITY_LIST="Amenity List : ";
+    public static final String ENTER_AMENITY_NAME="Enter Amenity Name : ";
+    public static final String ENTER_AMENITY_POINTS="Enter Amenity Points : ";
+    public static final String AMENITY_POINTS_CONDITION="Maximum 100 points can be given";
+
+
 }

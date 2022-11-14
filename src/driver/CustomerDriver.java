@@ -19,20 +19,15 @@ import java.util.*;
 
 public class CustomerDriver extends AbstractDriver {
 
-    private static final CustomerDriver customerDriver=new CustomerDriver();
     private final UserDB userDB=UserDB.getInstance();
     private final HotelDB hotelDB=HotelDB.getInstance();
     private final AdminDB adminDB=AdminDB.getInstance();
     private final AddressDB addressDB=AddressDB.getInstance();
     private final BookingDB bookingDB=BookingDB.getInstance();
-    private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
-    private CustomerDriver(){
+    private final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
 
-    }
 
-    static CustomerDriver getInstance(){
-        return customerDriver;
-    }
+
 
     @Override
     public void startDriver() {

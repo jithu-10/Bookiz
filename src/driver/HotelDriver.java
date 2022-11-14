@@ -17,20 +17,14 @@ import java.util.*;
 
 public class HotelDriver extends AbstractDriver{
 
-    static final HotelDriver hotelDriver=new HotelDriver();
+
     private static final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
     private final UserDB userDB= UserDB.getInstance();
     private final AdminDB adminDB=AdminDB.getInstance();
     private final HotelDB hotelDB=HotelDB.getInstance();
     private final AmenityDB amenityDB=AmenityDB.getInstance();
     private final BookingDB bookingDB=BookingDB.getInstance();
-    private HotelDriver(){
 
-    }
-
-    static HotelDriver getInstance(){
-        return hotelDriver;
-    }
 
     @Override
     public void startDriver() {
@@ -278,7 +272,6 @@ public class HotelDriver extends AbstractDriver{
         addHotelAmenities(hotel);
         hotelTypeSpecification(hotel);
         userDB.addHotelAdmin(hotelOwner);
-        hotel.setHotelOwnerID(hotelOwner.getUserID());
         hotelDB.registerHotel(hotel);
         System.out.println(PrintStatements.HOTEL_REGISTERED);
     }

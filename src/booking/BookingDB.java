@@ -3,7 +3,7 @@ package booking;
 import java.util.ArrayList;
 
 public class BookingDB {
-    private static final BookingDB bookingDB=new BookingDB();
+    private static final BookingDB BOOKING_DB =new BookingDB();
     private int idHelper=99999;
     private final ArrayList<Booking> bookings=new ArrayList<>();
 
@@ -11,7 +11,7 @@ public class BookingDB {
 
     }
     public static BookingDB getInstance(){
-        return bookingDB;
+        return BOOKING_DB;
     }
     private int generateId(){
         return ++idHelper;

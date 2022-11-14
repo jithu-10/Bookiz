@@ -7,9 +7,9 @@ import java.util.Date;
 
 public class Booking {
 
-    private int bookingID;
     private final Date checkInDate;
     private final Date checkOutDate;
+    private int bookingID;
     private int customerID;
     private int hotelID;
 

@@ -8,12 +8,12 @@ import java.util.*;
 
 public class HotelDB {
     private int idHelper=999999;
-    private static HotelDB hotelDB=new HotelDB();
-    private AddressDB addressDB =AddressDB.getInstance();
-    private ArrayList<Hotel> hotelList =new ArrayList<>();
+    private static final HotelDB HOTEL_DB =new HotelDB();
+    private final AddressDB addressDB =AddressDB.getInstance();
+    private final ArrayList<Hotel> hotelList =new ArrayList<>();
     private HotelDB(){}
     public static HotelDB getInstance(){
-        return hotelDB;
+        return HOTEL_DB;
     }
 
     public void approveHotel(Hotel hotel){

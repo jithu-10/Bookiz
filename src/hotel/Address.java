@@ -1,12 +1,12 @@
 package hotel;
 
 public class Address {
-    private int buildingNo;
-    private String street;
-    private String locality;
-    private String city;
-    private String state;
-    private int postalCode;
+    private final int buildingNo;
+    private final String street;
+    private final String locality;
+    private final String city;
+    private final String state;
+    private final int postalCode;
 
     public Address(int buildingNo,String street,String locality,String city,String state, int postalCode){
         this.buildingNo=buildingNo;

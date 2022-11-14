@@ -9,15 +9,15 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Hotel{
-    private int hotelOwnerID;
+    private final int hotelOwnerID;
+    private final String hotelName;
+    private final Address address;
     private int hotelID;
-    private String hotelName;
-    private Address address;
     private HotelType hotelType;
     private HotelApprovalStatus hotelApprovalStatus;
     private ArrayList<Integer> amenities=new ArrayList<>();
     private ArrayList<Room> rooms=new ArrayList<>();
-    private final AmenityDB amenityDB=AmenityDB.getInstance();
+    private static final AmenityDB AMENITY_DB =AmenityDB.getInstance();
     private HashMap<Integer,ArrayList<Date>> roomBookedStatus=new HashMap<>();// HashMap<RoomID,ArrayList<Date>>
     private int roomIDHelper=0;
 
@@ -68,11 +68,6 @@ public class Hotel{
     public int getHotelOwnerID() {
         return hotelOwnerID;
     }
-
-    public void setHotelOwnerID(int hotelOwnerID) {
-        this.hotelOwnerID = hotelOwnerID;
-    }
-
     public User getHotelOwnerDetails(){
         return UserDB.getInstance().getHotelAdminByID(hotelOwnerID);
     }
@@ -141,7 +136,7 @@ public class Hotel{
         int totalAmenityPoints=0;
 
         for(int amenityID: amenities){
-            totalAmenityPoints+=amenityDB.getAmenityPointsByID(amenityID);
+            totalAmenityPoints+= AMENITY_DB.getAmenityPointsByID(amenityID);
         }
         return totalAmenityPoints;
     }
@@ -155,9 +150,9 @@ public class Hotel{
     public ArrayList<Amenity> getAmenities(){
         ArrayList<Amenity> hotelAmenities=new ArrayList<>();
         for(int amenityId: amenities){
-            Amenity amenity=amenityDB.getAmenityByID(amenityId);
+            Amenity amenity= AMENITY_DB.getAmenityByID(amenityId);
             if(amenity!=null){
-                hotelAmenities.add(amenityDB.getAmenityByID(amenityId));
+                hotelAmenities.add(AMENITY_DB.getAmenityByID(amenityId));
             }
         }
         return hotelAmenities;

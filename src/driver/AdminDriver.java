@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 public class AdminDriver extends AbstractDriver {
-    private static final AdminDriver adminDriver=new AdminDriver();
     private final UserAuthenticationDB userAuthenticationDB=UserAuthenticationDB.getInstance();
     private final AdminDB adminDB=AdminDB.getInstance();
     private final HotelDB hotelDB=HotelDB.getInstance();
@@ -23,16 +22,10 @@ public class AdminDriver extends AbstractDriver {
     private final UserDB userDB=UserDB.getInstance();
     private final BookingDB bookingDB= BookingDB.getInstance();
 
-    private AdminDriver(){
-
-    }
-    public static AdminDriver getInstance(){
-        return adminDriver;
-    }
 
     @Override
     public void startDriver() {
-        System.out.println("Admin");
+        System.out.println(PrintStatements.ADMIN);
         User admin;
         if((admin=signIn())!=null){
             System.out.println(PrintStatements.SIGNED_IN);
@@ -78,7 +71,7 @@ public class AdminDriver extends AbstractDriver {
                     setTermsAndConditions();
                     break;
                 case 5:
-                    setPriceforRooms();
+                    setPriceForRooms();
                     break;
                 case 6:
                     listAllBookings();
@@ -108,10 +101,10 @@ public class AdminDriver extends AbstractDriver {
 
     //----------------------------------------------1.Approve Hotels------------------------------------------------------//
     private void approveHotels(){
-        listHotelsRequestedforApproval();
+        listHotelsRequestedForApproval();
     }
 
-    private void listHotelsRequestedforApproval(){
+    private void listHotelsRequestedForApproval(){
 
         ArrayList<Integer> hotelsRequestedID=hotelDB.getHotelListByStatus(HotelApprovalStatus.ON_PROCESS);
         hotelsRequestedID.addAll(hotelDB.getHotelListByStatus(HotelApprovalStatus.REMOVED_RE_PROCESS));
@@ -146,7 +139,7 @@ public class AdminDriver extends AbstractDriver {
                 changeHotelTypeSpecification(hotel);
             }
             hotelDB.approveHotel(hotel);
-            setPriceforHotelRooms(hotel);
+            setPriceForHotelRooms(hotel);
             hotelsRequestedID.remove(choice-1);
         }
         else{
@@ -181,15 +174,12 @@ public class AdminDriver extends AbstractDriver {
         return InputHelper.getInputWithinRange(2,null);
     }
 
-    private void setPriceforHotelRooms(Hotel hotel){
+    private void setPriceForHotelRooms(Hotel hotel){
 
         do{
             System.out.println(PrintStatements.SET_PRICE_FOR_HOTEL_ROOMS);
             ArrayList<Room> rooms=hotel.getRooms();
-            for(int i=0;i<rooms.size();i++){
-                Room room=rooms.get(i);
-                System.out.println((i+1)+". Max Guest : "+ room.getRoomCapacity()+" Base Price : "+room.getRoomBasePrice()+" Max Price : "+room.getRoomMaxPrice()+" List Price : "+room.getRoomListPrice());
-            }
+            displayRooms(rooms);
             System.out.println("1.Change Room List Price");
             System.out.println("2.Back");
             int options=InputHelper.getInputWithinRange(2,null);
@@ -200,11 +190,19 @@ public class AdminDriver extends AbstractDriver {
             int choice=InputHelper.getInputWithinRange(rooms.size(),null);
             Room room=rooms.get(choice-1);
             System.out.println("Base Price : "+room.getRoomBasePrice()+" Max Price : "+room.getRoomMaxPrice()+" List Price : "+room.getRoomListPrice());
+            System.out.println("Enter New List Price : ");
             double listPrice=createCurrentPrice(room.getRoomBasePrice(),room.getRoomMaxPrice());
             room.setRoomListPrice(listPrice);
 
         }while (true);
 
+    }
+
+    private void displayRooms(ArrayList<Room> rooms){
+        for(int i=0;i<rooms.size();i++){
+            Room room=rooms.get(i);
+            System.out.println((i+1)+". Max Guest : "+ room.getRoomCapacity()+" Base Price : "+room.getRoomBasePrice()+" Max Price : "+room.getRoomMaxPrice()+" List Price : "+room.getRoomListPrice());
+        }
     }
 
     private void changeHotelTypeSpecification(Hotel hotel){
@@ -321,7 +319,6 @@ public class AdminDriver extends AbstractDriver {
         System.out.println(PrintStatements.BOOKING_LIST);
         for(int i=0;i<bookings.size();i++){
             Booking booking=bookings.get(i);
-            //User customer=userDB.getUserByID(booking.getCustomerID(),UserType.CUSTOMER);
             User customer=userDB.getCustomerByID(booking.getCustomerID());
             Hotel hotel=hotelDB.getHotelByID(booking.getHotelID());
             System.out.println((i+1)+". "+ PrintStatements.BOOKING_ID+booking.getBookingID());
@@ -335,7 +332,7 @@ public class AdminDriver extends AbstractDriver {
     }
 //-------------------------------------------6.Set Price for Rooms of Hotels-------------------------------------------//
 
-    private void setPriceforRooms(){
+    private void setPriceForRooms(){
         System.out.println(PrintStatements.ROOM_PRICE_SET_MENU);
         System.out.println(PrintStatements.ENTER_INPUT);
         int choice=InputHelper.getInputWithinRange(2,null);
@@ -364,7 +361,7 @@ public class AdminDriver extends AbstractDriver {
             System.out.println("\t"+hotel.getAddress().getCity()+","+hotel.getAddress().getState());
             System.out.println("Postal Code : "+hotel.getAddress().getPostalCode());
             System.out.println("No of Rooms : "+hotel.getTotalNumberOfRooms());
-            setPriceforHotelRooms(hotel);
+            setPriceForHotelRooms(hotel);
             adminDB.removeHotelFromPriceUpdatedHotelList(hotel.getHotelID());
             return;
         }
@@ -397,10 +394,10 @@ public class AdminDriver extends AbstractDriver {
     //-----------------------------------------------7.Add Amenity----------------------------------------------------//
 
     private void addAmenity(){
-        System.out.println("Enter Amenity Name : ");
+        System.out.println(PrintStatements.ENTER_AMENITY_NAME);
         String amenityName=InputHelper.getStringInput().toUpperCase();
-        System.out.println("Enter Amenity Points : ");
-        int amenityPoints=InputHelper.getInputWithinRange(100,"Maximum 100 points can be given");
+        System.out.println(PrintStatements.ENTER_AMENITY_POINTS);
+        int amenityPoints=InputHelper.getInputWithinRange(100,PrintStatements.AMENITY_POINTS_CONDITION);
         Amenity amenity= new Amenity(amenityName,amenityPoints);
         amenityDB.addAmenity(amenity);
 
@@ -408,13 +405,13 @@ public class AdminDriver extends AbstractDriver {
     //----------------------------------------------8.Remove Amenity---------------------------------------------------//
 
     private void removeAmenity(){
-        System.out.println("Amenity List \n");
+        System.out.println(PrintStatements.AMENITY_LIST+"\n");
         int sno=1;
         for(Amenity amenity:amenityDB.getAmenities()){
             System.out.println(sno+". "+amenity.getName());
             sno++;
         }
-        System.out.println("Enter s.no to remove amenity : ");
+        System.out.println(PrintStatements.ENTER_SNO_TO_REMOVE_AMENITY);
         int choice=InputHelper.getInputWithinRange(amenityDB.getAmenities().size(),null);
         amenityDB.removeAmenity(choice-1);
 
@@ -428,7 +425,7 @@ public class AdminDriver extends AbstractDriver {
             System.out.println(PrintStatements.NO_NEW_QUES);
             return;
         }
-        System.out.println("Questions : \n");
+        System.out.println(PrintStatements.QUESTIONS+"\n");
         for(int i=0;i< newQuestions.size();i++){
             QA question=newQuestions.get(i);
             System.out.println((i+1)+". "+question.getQuestion()+"\n");
@@ -446,9 +443,9 @@ public class AdminDriver extends AbstractDriver {
     }
 
     private void answerOrDeleteQuestion(QA question){
-        System.out.println("1.Answer Question");
-        System.out.println("2.Remove Question");
-        System.out.println("3.Go Back");
+        System.out.println("1."+PrintStatements.ANSWER_QUESTION);
+        System.out.println("2."+PrintStatements.REMOVE_QUESTION);
+        System.out.println("3."+PrintStatements.GO_BACK);
         int choice=InputHelper.getInputWithinRange(3,null);
         switch (choice){
             case 1:
@@ -463,7 +460,7 @@ public class AdminDriver extends AbstractDriver {
     }
 
     private void answerQuestion(QA question){
-        System.out.println("Answer : ");
+        System.out.println(PrintStatements.ANSWER);
         String answer=InputHelper.getStringInput();
         question.setAnswer(answer);
         adminDB.addFaqQuestion(question);

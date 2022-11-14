@@ -10,18 +10,18 @@ import java.util.LinkedHashSet;
 
 public class AdminDB {
 
-    private LinkedHashSet<Integer> priceUpdatedHotelList=new LinkedHashSet<>();
+    private final LinkedHashSet<Integer> priceUpdatedHotelList=new LinkedHashSet<>();
+    private final ArrayList<QA> faq=new ArrayList<>();
+    private final ArrayList<QA> newQuestions=new ArrayList<>();
     private ArrayList<String> termsAndConditions=new ArrayList<>();
-    private ArrayList<QA> faq=new ArrayList<QA>();
-    private ArrayList<QA> newQuestions=new ArrayList<QA>();
-    private static AdminDB adminDB=new AdminDB();
-    private User admin = new User("admin");
+    private static final AdminDB ADMIN_DB =new AdminDB();
+    private final User admin = new User("admin");
     private AdminDB(){
         UserAuthenticationDB.getInstance().addAdminAuth(admin.getUserName(),"pass");
     }
 
     public static AdminDB getInstance(){
-        return adminDB;
+        return ADMIN_DB;
     }
     public User getAdmin(){
         return admin;

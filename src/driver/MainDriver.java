@@ -5,7 +5,7 @@ import utility.PrintStatements;
 
 public class MainDriver {
     public static void selectUser(){
-        Driver d=null;
+        Driver driver=null;
         loop:do{
             System.out.println(PrintStatements.WELCOME_MESSAGE);
             System.out.println(PrintStatements.STARTUP_MENU);
@@ -14,20 +14,20 @@ public class MainDriver {
 
             switch (choice){
                 case 1:
-                    d= AdminDriver.getInstance();
+                    driver = new AdminDriver();
                     break;
                 case 2:
-                    d=HotelDriver.getInstance();
+                    driver = new HotelDriver();
                     break;
                 case 3:
-                    d=CustomerDriver.getInstance();
+                    driver = new CustomerDriver();
                     break;
                 case 4:
                     break loop;
             }
 
-            if(d!=null){
-                d.startDriver();
+            if(driver!=null){
+                driver.startDriver();
             }
 
         }while(true);

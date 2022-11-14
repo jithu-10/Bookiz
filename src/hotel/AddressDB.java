@@ -5,8 +5,8 @@ import utility.InputHelper;
 import java.util.ArrayList;
 
 public class AddressDB {
-    private ArrayList<String> availableCities=new ArrayList<>();
-    private ArrayList<String> availableLocalities=new ArrayList<>();
+    private final ArrayList<String> availableCities=new ArrayList<>();
+    private final ArrayList<String> availableLocalities=new ArrayList<>();
     private static AddressDB addressDB=null;
     private AddressDB(){
 

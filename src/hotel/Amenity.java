@@ -2,9 +2,9 @@ package hotel;
 
 public class Amenity {
 
+    private final String name;
+    private final int points;
     private int amenityID;
-    private String name;
-    private int points;
 
     public Amenity(String name,int points){
         this.name=name;

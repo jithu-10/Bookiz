@@ -98,11 +98,18 @@ public class Init {
     public static ArrayList<Room> initRooms(){
         ArrayList<Room> rooms=new ArrayList<>();
         int[] roomCap={2,4,1,3,8,2};
-        //int[] roomCap={1,1,1,1,1,1};
-        Price price=new Price(2000,4000);
-        Price price1=new Price(200,400);
+
+        Price priceList[]=new Price[6];
+        Price bedPriceList[]=new Price[6];
         for(int i=0;i<6;i++){
-            Room room=new Room(i,roomCap[i],price,price1);
+            priceList[i]=new Price(2000,4000);
+        }
+        for(int i=0;i<6;i++){
+            bedPriceList[i]=new Price(200,400);
+        }
+
+        for(int i=0;i<6;i++){
+            Room room=new Room(i,roomCap[i],priceList[i],bedPriceList[i]);
             rooms.add(room);
         }
         return rooms;
